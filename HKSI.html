@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess Your Colleague Game</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #f39c12;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .compact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            flex-wrap: wrap;
+        }
+        
+        .compact-header h1 {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .game-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .progress-container {
+            width: 150px;
+            height: 15px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .score {
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .image-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+        
+        .image-frame {
+            width: 100%;
+            aspect-ratio: 4/3;
+            max-height: 50vh;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        
+        .image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        
+        .name-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            opacity: 0;
+        }
+        
+        .image-frame.matched .name-card-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .counter {
+            font-size: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .nav-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background-color: #e67e22;
+        }
+        
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .names-actions-container {
+            margin-top: 15px;
+        }
+        
+        .names-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .name-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .name-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .name-button.selected {
+            background-color: var(--secondary-color);
+        }
+        
+        .name-button.correct {
+            background-color: var(--success-color);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .action-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .action-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result-message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 1rem;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+            border: 1px solid #c0392b;
+        }
+        
+        .completion-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            display: none;
+            min-width: 280px;
+            max-width: 90%;
+        }
+        
+        .completion-message h2 {
+            color: var(--success-color);
+            margin-bottom: 15px;
+        }
+        
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 90;
+            display: none;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f39c12;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 95;
+        }
+        
+        @media (max-width: 768px) {
+            .compact-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 8px;
+            }
+            
+            .game-stats {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .nav-buttons {
+                margin-top: 5px;
+            }
+            
+            .nav-button, .name-button, .action-button {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .image-frame {
+                max-height: 40vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .compact-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .progress-container {
+                width: 100px;
+            }
+            
+            .score {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="compact-header">
+            <h1>Guess Your Colleague!</h1>
+            <div class="game-stats">
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="score">Correct: <span id="scoreCount">0</span>/<span id="totalCount">17</span></div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="image-display">
+                <div class="image-frame" id="currentImage">
+                    <img id="colleagueImage" src="" alt="Colleague">
+                    <div class="name-card-overlay" id="nameOverlay"></div>
+                </div>
+                <div class="nav-buttons">
+                    <button id="prevBtn" class="nav-button">← Previous</button>
+                    <div class="counter">Colleague <span id="currentIndex">1</span> of <span id="totalImages">17</span></div>
+                    <button id="nextBtn" class="nav-button">Next →</button>
+                </div>
+            </div>
+            
+            <div class="names-actions-container">
+                <div class="names-container" id="namesContainer"></div>
+                
+                <div class="action-buttons">
+                    <button id="checkAnswerBtn" class="action-button" disabled>Check Answer</button>
+                    <button id="resetBtn" class="action-button">Reset Game</button>
+                </div>
+                
+                <div id="resultMessage" class="result-message"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="backdrop" id="backdrop"></div>
+    <div class="completion-message" id="completionMessage">
+        <h2>Congratulations!</h2>
+        <p>You've identified all colleagues correctly!</p>
+        <button id="playAgainBtn" class="action-button">Play Again</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game data
+            const colleagues = [
+                { id: 1, name: "牛", imageUrl: "https://i.postimg.cc/fbj4fk0n/1.png" },
+                { id: 2, name: "Shirley", imageUrl: "https://i.postimg.cc/R0z5twhL/2.png" },
+                { id: 3, name: "Jone", imageUrl: "https://i.postimg.cc/Pxtg3hmL/3.png" },
+                { id: 4, name: "Laam", imageUrl: "https://i.postimg.cc/pLjMysWd/4.png" },
+                { id: 5, name: "Ocean", imageUrl: "https://i.postimg.cc/sXwtb8cT/5.png" },
+                { id: 6, name: "Wing", imageUrl: "https://i.postimg.cc/Y0PTCWTg/6.png" },
+                { id: 7, name: "Lois", imageUrl: "https://i.postimg.cc/MHHhwD3q/7.png" },
+                { id: 8, name: "Sherman", imageUrl: "https://i.postimg.cc/xjpwRwqC/8.png" },
+                { id: 9, name: "Dicky", imageUrl: "https://i.postimg.cc/VLS3HKbF/9.png" },
+                { id: 10, name: "Tom", imageUrl: "https://i.postimg.cc/pLz3PyCh/10.png" },
+                { id: 11, name: "Jason", imageUrl: "https://i.postimg.cc/yNKtxBpf/11.png" },
+                { id: 12, name: "Toby", imageUrl: "https://i.postimg.cc/cJcj8jVd/12.png" },
+                { id: 13, name: "Francis", imageUrl: "https://i.postimg.cc/Qtxzgm31/13.png" },
+                { id: 14, name: "Evelyn", imageUrl: "https://i.postimg.cc/tTSMB6qf/14.png" },
+                { id: 15, name: "Wendy", imageUrl: "https://i.postimg.cc/MHnrNGXG/15.png" },
+                { id: 16, name: "芝", imageUrl: "https://i.postimg.cc/65GmhTDj/16.png" },
+                { id: 17, name: "Hailey", imageUrl: "https://i.postimg.cc/vZFS2byQ/17.png" }
+            ];
+            
+            // Game state
+            let currentImageIndex = 0;
+            let shuffledColleagues = [];
+            let selectedName = null;
+            let correctGuesses = [];
+            let score = 0;
+            
+            // DOM elements
+            const colleagueImage = document.getElementById('colleagueImage');
+            const nameOverlay = document.getElementById('nameOverlay');
+            const namesContainer = document.getElementById('namesContainer');
+            const checkAnswerBtn = document.getElementById('checkAnswerBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const resultMessage = document.getElementById('resultMessage');
+            const completionMessage = document.getElementById('completionMessage');
+            const backdrop = document.getElementById('backdrop');
+            const progressBar = document.getElementById('progressBar');
+            const scoreCount = document.getElementById('scoreCount');
+            const totalCount = document.getElementById('totalCount');
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const currentIndex = document.getElementById('currentIndex');
+            const totalImages = document.getElementById('totalImages');
+            const currentImage = document.getElementById('currentImage');
+            
+            // Initialize game
+            function initGame() {
+                // Reset game state
+                currentImageIndex = 0;
+                selectedName = null;
+                correctGuesses = [];
+                score = 0;
+                
+                // Shuffle colleagues for random order
+                shuffledColleagues = [...colleagues].sort(() => Math.random() - 0.5);
+                
+                // Update UI
+                scoreCount.textContent = score;
+                totalCount.textContent = colleagues.length;
+                totalImages.textContent = colleagues.length;
+                progressBar.style.width = '0%';
+                resultMessage.style.display = 'none';
+                completionMessage.style.display = 'none';
+                backdrop.style.display = 'none';
+                checkAnswerBtn.disabled = true;
+                currentImage.classList.remove('matched');
+                
+                // Create name buttons
+                createNameButtons();
+                
+                // Show first image
+                showCurrentImage();
+                updateNavigationButtons();
+            }
+            
+            // Create name buttons
+            function createNameButtons() {
+                namesContainer.innerHTML = '';
+                
+                // Sort names alphabetically for display
+                const sortedNames = [...colleagues].sort((a, b) => a.name.localeCompare(b.name));
+                
+                sortedNames.forEach(colleague => {
+                    const nameButton = document.createElement('button');
+                    nameButton.className = 'name-button';
+                    nameButton.textContent = colleague.name;
+                    nameButton.dataset.id = colleague.id;
+                    
+                    // Add 'correct' class if already guessed correctly
+                    if (correctGuesses.includes(parseInt(colleague.id))) {
+                        nameButton.classList.add('correct');
+                    }
+                    
+                    namesContainer.appendChild(nameButton);
+                    
+                    // Add click event listener
+                    nameButton.addEventListener('click', () => {
+                        selectName(nameButton, colleague.id);
+                        // Auto-check answer when a name is selected
+                        if (!checkAnswerBtn.disabled) {
+                            checkAnswer();
+                        }
+                    });
+                });
+            }
+            
+            // Show current image
+            function showCurrentImage() {
+                const currentColleague = shuffledColleagues[currentImageIndex];
+                
+                // Set image src with error handling
+                colleagueImage.onerror = function() {
+                    colleagueImage.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='12' text-anchor='middle' alignment-baseline='middle' fill='%23999'%3EImage not available%3C/text%3E%3C/svg%3E";
+                };
+                colleagueImage.src = currentColleague.imageUrl;
+                
+                nameOverlay.textContent = currentColleague.name;
+                currentIndex.textContent = currentImageIndex + 1;
+                
+                // Show name overlay if already guessed correctly
+                if (correctGuesses.includes(currentColleague.id)) {
+                    currentImage.classList.add('matched');
+                } else {
+                    currentImage.classList.remove('matched');
+                }
+                
+                // Reset selected name and result message
+                selectedName = null;
+                checkAnswerBtn.disabled = true;
+                resultMessage.style.display = 'none';
+                document.querySelectorAll('.name-button.selected').forEach(button => {
+                    button.classList.remove('selected');
+                });
+            }
+            
+            // Update navigation buttons state
+            function updateNavigationButtons() {
+                prevBtn.disabled = currentImageIndex === 0;
+                nextBtn.disabled = currentImageIndex === shuffledColleagues.length - 1;
+            }
+            
+            // Select name
+            function selectName(nameButton, id) {
+                // Skip if already correctly guessed
+                if (nameButton.classList.contains('correct')) {
+                    return;
+                }
+                
+                // Remove selected class from all names
+                document.querySelectorAll('.name-button.selected').forEach(button => {
+                    button.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked name
+                nameButton.classList.add('selected');
+                selectedName = id;
+                
+                // Enable check button
+                checkAnswerBtn.disabled = !selectedName;
+            }
+            
+            // Check if answer is correct
+            function checkAnswer() {
+                if (selectedName) {
+                    const currentColleague = shuffledColleagues[currentImageIndex];
+                    const isCorrect = parseInt(selectedName) === currentColleague.id;
+                    
+                    // Display result message
+                    resultMessage.className = 'result-message ' + (isCorrect ? 'success' : 'error');
+                    resultMessage.textContent = isCorrect ? 
+                        'Correct! That is ' + currentColleague.name + '! 🎉' : 
+                        'Incorrect. Try again!';
+                    resultMessage.style.display = 'block';
+                    
+                    // If correct answer
+                    if (isCorrect && !correctGuesses.includes(currentColleague.id)) {
+                        // Add to correct guesses
+                        correctGuesses.push(currentColleague.id);
+                        
+                        // Update score and progress
+                        score++;
+                        scoreCount.textContent = score;
+                        const progress = (score / colleagues.length) * 100;
+                        progressBar.style.width = progress + '%';
+                        
+                        // Mark name button as correct
+                        const nameButton = document.querySelector(`.name-button[data-id="${selectedName}"]`);
+                        if (nameButton) {
+                            nameButton.classList.add('correct');
+                        }
+                        
+                        // Show name overlay
+                        currentImage.classList.add('matched');
+                        
+                        // Create confetti effect
+                        createConfetti();
+                        
+                        // Check if game is completed
+                        if (score === colleagues.length) {
+                            setTimeout(() => {
+                                backdrop.style.display = 'block';
+                                completionMessage.style.display = 'block';
+                                createConfetti(50);
+                            }, 1000);
+                        } else {
+                            // Automatically advance to next unsolved image after a short delay
+                            setTimeout(() => {
+                                advanceToNextUnsolved();
+                            }, 1500);
+                        }
+                    }
+                }
+            }
+            
+            // Advance to the next unsolved image
+            function advanceToNextUnsolved() {
+                const initialIndex = currentImageIndex;
+                let found = false;
+                
+                // First try to find an unsolved image after the current one
+                for (let i = currentImageIndex + 1; i < shuffledColleagues.length; i++) {
+                    if (!correctGuesses.includes(shuffledColleagues[i].id)) {
+                        currentImageIndex = i;
+                        found = true;
+                        break;
+                    }
+                }
+                
+                // If no unsolved images after current, search from beginning
+                if (!found && score < colleagues.length) {
+                    for (let i = 0; i < currentImageIndex; i++) {
+                        if (!correctGuesses.includes(shuffledColleagues[i].id)) {
+                            currentImageIndex = i;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Only update display if we moved to a different image
+                if (initialIndex !== currentImageIndex || !found) {
+                    showCurrentImage();
+                    updateNavigationButtons();
+                }
+            }
+            
+            // Go to previous image
+            function previousImage() {
+                if (currentImageIndex > 0) {
+                    currentImageIndex--;
+                    showCurrentImage();
+                    updateNavigationButtons();
+                }
+            }
+            
+            // Go to next image
+            function nextImage() {
+                if (currentImageIndex < shuffledColleagues.length - 1) {
+                    currentImageIndex++;
+                    showCurrentImage();
+                    updateNavigationButtons();
+                }
+            }
+            
+            // Create confetti effect - lighter version to prevent performance issues
+            function createConfetti(count = 20) {
+                const containerRect = document.body.getBoundingClientRect();
+                
+                for (let i = 0; i < count; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random position, color, size
+                    const left = Math.random() * containerRect.width;
+                    const size = Math.random() * 8 + 5;
+                    const colorIdx = Math.floor(Math.random() * 5);
+                    const colors = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6'];
+                    
+                    confetti.style.left = left + 'px';
+                    confetti.style.width = size + 'px';
+                    confetti.style.height = size + 'px';
+                    confetti.style.backgroundColor = colors[colorIdx];
+                    confetti.style.top = '-10px';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Animate with requestAnimationFrame for better performance
+                    const startTime = performance.now();
+                    const duration = Math.random() * 2000 + 1500;
+                    const startY = -10;
+                    const endY = containerRect.height;
+                    const rotation = Math.random() * 360;
+                    
+                    function animateConfetti(timestamp) {
+                        const elapsed = timestamp - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        const currentY = startY + (endY - startY) * progress;
+                        const opacity = 1 - progress;
+                        
+                        confetti.style.transform = `translateY(${currentY}px) rotate(${rotation * progress}deg)`;
+                        confetti.style.opacity = opacity.toString();
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(animateConfetti);
+                        } else {
+                            confetti.remove();
+                        }
+                    }
+                    
+                    requestAnimationFrame(animateConfetti);
+                }
+            }
+            
+            // Preload images to improve performance
+            function preloadImages() {
+                colleagues.forEach(colleague => {
+                    const img = new Image();
+                    img.src = colleague.imageUrl;
+                });
+            }
+            
+            // Event listeners
+            checkAnswerBtn.addEventListener('click', checkAnswer);
+            resetBtn.addEventListener('click', initGame);
+            playAgainBtn.addEventListener('click', initGame);
+            prevBtn.addEventListener('click', previousImage);
+            nextBtn.addEventListener('click', nextImage);
+            
+            // Handle keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    previousImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                } else if (e.key === 'Enter' && !checkAnswerBtn.disabled) {
+                    checkAnswer();
+                }
+            });
+            
+            // Start the game
+            preloadImages();
+            initGame();
+        });
+    </script>
+</body>
+</html>
