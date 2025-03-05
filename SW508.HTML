@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Levinson's Adult Development Theory Presentation / 利文森成人發展理論簡報</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --success: #059669;
+            --success-light: #f0fdf4;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --purple: #7c3aed;
+            --purple-light: #f5f3ff;
+            --warning: #d97706;
+            --warning-light: #fefce8;
+            --gray: #6b7280;
+            --gray-light: #f3f4f6;
+            --hover-bg: #fff9c4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--gray-light);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+            background-image: linear-gradient(to bottom right, #f5f7fa, #e4e7eb);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 0.75rem;
+            background: var(--gray-light);
+            border-radius: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-button {
+            padding: 0.75rem;
+            border: none;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .nav-button:disabled {
+            background: var(--gray-light);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-info {
+            font-size: 1rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .timer {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .timer.warning {
+            color: var(--warning);
+            background: var(--warning-light);
+        }
+
+        .timer.danger {
+            color: var(--danger);
+            background: var(--danger-light);
+            animation: pulse 1s infinite;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 1rem;
+            height: calc(100vh - 150px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--primary-light);
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 4px;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.7s ease forwards;
+        }
+
+        .development-stage {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .stage {
+            position: relative;
+            display: flex;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: stageAppear 0.5s ease forwards;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        .stage-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+        }
+
+        .stage-dot {
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stage:hover .stage-dot {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .stage-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stage-content:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stage-content .text-content {
+            flex: 1;
+            padding-right: 1rem;
+        }
+
+        .stage-content .theory-reference {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 1rem;
+            background: var(--primary-light);
+            border-radius: 0.5rem;
+            height: auto;
+            transition: all 0.3s ease;
+        }
+
+        .stage-content:hover .theory-reference {
+            background: rgba(255, 249, 196, 0.7);
+        }
+
+        .stage-content .image-wrapper {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stage-content:hover .image-wrapper {
+            transform: scale(1.03);
+        }
+
+        .stage-content .theory-reference img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .stage-content:hover .theory-reference img {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stage-content ul {
+            list-style-type: none;
+            padding-right: 1rem;
+        }
+
+        .stage-content li {
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-left: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .stage-content li:hover {
+            transform: translateX(5px);
+        }
+
+        .stage-content li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-light);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: titleAppear 1s ease forwards;
+        }
+
+        .title:hover {
+            background-color: var(--hover-bg);
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: subtitleAppear 1s ease forwards 0.3s;
+        }
+
+        .subtitle:hover {
+            background-color: var(--hover-bg);
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+            margin: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary);
+            background: linear-gradient(to bottom, var(--primary), var(--purple));
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .timeline-item:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+            transform: translateX(0) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 1.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px white, 0 0 0 6px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::before {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(37, 99, 235, 0.4);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 1.75rem;
+            width: 1.5rem;
+            height: 2px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::after {
+            width: 2rem;
+            left: -2rem;
+        }
+
+        .timeline-item .theory-reference {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--primary-light);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .theory-reference {
+            background-color: rgba(255, 249, 196, 0.7);
+        }
+
+        .timeline-item .theory-reference ul {
+            flex: 1;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            margin-right: 1rem;
+        }
+
+        .timeline-item .theory-reference li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-item .theory-reference li:hover {
+            transform: translateX(5px);
+        }
+
+        .timeline-item .theory-reference li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .image-wrapper {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: auto;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .image-wrapper {
+            transform: scale(1.03);
+        }
+
+        .timeline-item .theory-reference img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .theory-reference img {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover h3 {
+            color: var(--purple);
+            transform: translateX(3px);
+        }
+
+        .content-list {
+            list-style-type: none;
+            margin: 1rem 0;
+        }
+
+        .content-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-list li:hover {
+            background-color: var(--hover-bg);
+            border-radius: 4px;
+            padding: 6px 10px 6px 24px;
+            margin: -6px -10px 10px -10px;
+            cursor: pointer;
+            transform: translateX(5px);
+        }
+
+        .content-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .content-list li:hover::before {
+            left: 8px;
+        }
+
+        .content-list .en {
+            display: block;
+        }
+
+        .content-list .zh {
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.5s ease forwards;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: cardAppear 0.5s ease forwards;
+            animation-delay: calc(var(--i) * 0.2s);
+        }
+
+        .content-card:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .highlight-box {
+            background: var(--primary-light);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: highlightAppear 0.5s ease forwards 0.4s;
+        }
+
+        .highlight-box:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .theory-reference {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--primary-light);
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .theory-reference:hover {
+            background-color: var(--hover-bg);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .theory-reference ul {
+            flex: 1;
+        }
+
+        .theory-reference img {
+            max-width: 300px;
+            height: auto;
+            object-fit: contain;
+            margin-left: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .theory-reference:hover img {
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .blue-card,
+        .purple-card {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: cardSlideIn 0.7s ease forwards 0.3s;
+            transition: all 0.3s ease;
+        }
+
+        .blue-card {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+        }
+
+        .purple-card {
+            background: var(--purple-light);
+            border-left: 4px solid var(--purple);
+        }
+
+        .blue-card:hover,
+        .purple-card:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: var(--gray-light);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--purple) 100%);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .slide-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gray-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+        }
+
+        .slide-dot:hover {
+            background: var(--primary-light);
+            transform: scale(1.3);
+        }
+
+        .transition-label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--danger);
+            animation: blink 1.5s infinite;
+            text-align: center;
+            margin: 0.5rem 0;
+            text-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+        }
+
+        .red-text {
+            color: var(--danger);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); }
+            50% { opacity: 0.3; text-shadow: 0 0 20px rgba(220, 38, 38, 0.5); }
+            100% { opacity: 1; text-shadow: 0 0 10px rgba(220, 38, 38, 0.3); }
+        }
+
+        @keyframes stageAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes titleAppear {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes subtitleAppear {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes highlightAppear {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardSlideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .container {
+                padding: 1rem 0.5rem;
+            }
+
+            .title {
+                font-size: 1.5rem;
+                padding: 0 0.5rem 1rem 0.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                padding: 0 0.5rem;
+            }
+
+            .nav {
+                padding: 0.5rem;
+            }
+
+            .nav-center {
+                gap: 0.5rem;
+            }
+
+            .timer {
+                font-size: 1rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .nav-button {
+                padding: 0.5rem;
+                font-size: 1rem;
+            }
+
+            .slide-info {
+                font-size: 0.85rem;
+            }
+
+            .timeline {
+                padding-left: 2rem;
+            }
+
+            .timeline-item::before {
+                left: -1.75rem;
+            }
+
+            .timeline-item::after {
+                left: -0.75rem;
+            }
+
+            .theory-reference {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .theory-reference img {
+                margin-left: 0;
+                margin-top: 1rem;
+                max-width: 100%;
+            }
+
+            .slide {
+                height: calc(100vh - 120px);
+                padding: 0.75rem;
+            }
+
+            .stage-content {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .stage-content .theory-reference {
+                flex: 1;
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .stage-content .image-wrapper {
+                width: 100%;
+            }
+
+            .timeline-item .theory-reference {
+                flex-direction: column;
+            }
+
+            .image-wrapper {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            h3 {
+                font-size: 1rem;
+            }
+
+            .content-card, .highlight-box, .blue-card, .purple-card {
+                padding: 1rem;
+            }
+
+            .content-list li:hover {
+                padding: 4px 6px 4px 20px;
+                margin: -4px -6px 8px -8px;
+            }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
+        @media print {
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; max-width: 100%; }
+            .nav { display: none; }
+            .slide { display: block !important; opacity: 1 !important; height: auto; page-break-after: always; }
+            .timeline-item { opacity: 1 !important; transform: none !important; }
+            .stage { opacity: 1 !important; transform: none !important; }
+            .content-card, .highlight-box, .blue-card, .purple-card { 
+                opacity: 1 !important; 
+                transform: none !important;
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+            .title, .subtitle { opacity: 1 !important; transform: none !important; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="nav">
+            <button class="nav-button" id="prevBtn" disabled>←</button>
+            <div class="nav-center">
+                <button class="nav-button" id="homeBtn">🏠</button>
+                <div class="slide-info">
+                    <span id="slideTitle"></span>
+                    (<span id="currentSlide">1</span>/<span id="totalSlides">6</span>)
+                </div>
+                <div class="timer" id="timer">10:00</div>
+            </div>
+            <button class="nav-button" id="nextBtn">→</button>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="slides">
+            <div class="slide active" data-title="Introduction & Theory Overview / 導論與理論概述">
+                <div class="title">Levinson's Adult Development Theory<br>利文森成人發展理論</div>
+                <div class="subtitle">Daniel J. Levinson (1920-1994)</div>
+                <div class="content-card" style="--i:0">
+                    <h3>Core Theoretical Premises<br>核心理論前提</h3>
+                    <div class="content-list">
+                        <li><span class="en">Universal stage model of life development</span><span class="zh">人生發展階段具普遍性</span></li>
+                        <li><span class="en">Specific developmental tasks in each stage</span><span class="zh">每個階段均有特定發展任務</span></li>
+                        <li><span class="en">Emphasis on adult development</span><span class="zh">着重成年期發展</span></li>
+                        <li><span class="en">Interaction between individual and social environment</span><span class="zh">個人與社會環境的互動關係</span></li>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <h3>Research Methods & Contributions<br>研究方法與貢獻</h3>
+                    <div class="content-list">
+                        <li><span class="en">In-depth interview methodology</span><span class="zh">深入訪談研究方法</span></li>
+                        <li><span class="en">Comprehensive adult development framework</span><span class="zh">完整的成年發展理論框架</span></li>
+                        <li><span class="en">Expanded scope of psychosocial development</span><span class="zh">擴闊心理社會發展的研究範疇</span></li>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" data-title="Seasons of Life Stages / 生命發展階段">
+                <div class="title">Life Development Stages<br>生命發展階段</div>
+                <div class="development-stage">
+                    <div class="stage" style="--i:0">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3 class="red-text">Early Adult Transition (17-22)<br>早期成人過渡期 (17-22歲)</h3>
+                                <ul>
+                                    <li><span class="en">Separation from adolescent world</span><br><span class="zh">離開青少年世界</span></li>
+                                    <li><span class="en">Initial adult identity formation</span><br><span class="zh">建立初步成人身份</span></li>
+                                    <li><span class="en">Testing preliminary life choices</span><br><span class="zh">嘗試初步人生選擇</span></li>
+                                    <li><span class="en">Psychological separation from parents</span><br><span class="zh">個人在心理和情感上逐漸獨立於父母</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="transition-label">TRANSITION / 轉換期</div>
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/WbJdrJ9J/1.png" alt="Early Adult Transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:1">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3>Entering the Adult World (22-28)<br>進入成人世界 (22-28歲)</h3>
+                                <ul>
+                                    <li><span class="en">Exploring life alternatives</span><br><span class="zh">探索人生選擇</span></li>
+                                    <li><span class="en">Building stable life structure</span><br><span class="zh">建立穩定生活模式</span></li>
+                                    <li><span class="en">Making stronger commitments</span><br><span class="zh">做出堅定承諾</span></li>
+                                    <li><span class="en">Establishing career and relationships</span><br><span class="zh">建立事業和人際關係</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/GpztrPp6/2.png" alt="Entering the Adult World">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:2">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3 class="red-text">Age 30 Transition (28-33)<br>30歲轉變期 (28-33歲)</h3>
+                                <ul>
+                                    <li><span class="en">Life quality reassessment</span><br><span class="zh">重新評估生活質量</span></li>
+                                    <li><span class="en">Realignment with goals</span><br><span class="zh">重新調整目標</span></li>
+                                    <li><span class="en">Marriage and family choices</span><br><span class="zh">婚姻與家庭選擇</span></li>
+                                    <li><span class="en">Career path decisions</span><br><span class="zh">職業發展決策</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="transition-label">TRANSITION / 轉換期</div>
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/vmGTp2GW/3.png" alt="Age 30 Transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:3">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3>Settling Down (33-40)<br>安定下來 (33-40歲)</h3>
+                                <ul>
+                                    <li><span class="en">Self-investment in key life areas</span><br><span class="zh">投資重要生活領域</span></li>
+                                    <li><span class="en">Developing independence</span><br><span class="zh">發展獨立能力</span></li>
+                                    <li><span class="en">Building self-sufficiency</span><br><span class="zh">建立自給自足能力</span></li>
+                                    <li><span class="en">'Becoming One's Own Man'</span><br><span class="zh">成為真正的自己</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/RZ7qpxxS/4.png" alt="Settling Down">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:4">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3 class="red-text">Mid-Life Transition (40-45)<br>中年轉變期 (40-45歲)</h3>
+                                <ul>
+                                    <li><span class="en">Life choices reevaluation</span><br><span class="zh">重新評估生命選擇</span></li>
+                                    <li><span class="en">Comparing progress with goals</span><br><span class="zh">比較進展與目標</span></li>
+                                    <li><span class="en">Setting new life objectives</span><br><span class="zh">設定新的人生目標</span></li>
+                                    <li><span class="en">Developmental crisis period</span><br><span class="zh">發展危機時期</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="transition-label">TRANSITION / 轉換期</div>
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/rwXK9FbZ/5.png" alt="Mid-Life Transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:5">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3>Entering Middle Adulthood (45-50)<br>進入中年成熟期 (45-50歲)</h3>
+                                <ul>
+                                    <li><span class="en">Future-oriented choices</span><br><span class="zh">面向未來的選擇</span></li>
+                                    <li><span class="en">Retirement planning</span><br><span class="zh">退休規劃</span></li>
+                                    <li><span class="en">Legacy consideration</span><br><span class="zh">思考生命傳承</span></li>
+                                    <li><span class="en">New task commitments</span><br><span class="zh">承擔新的任務</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/bNTw1Hxr/8.png" alt="Entering Middle Adulthood">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:6">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3 class="red-text">Late Adult Transition (60-65)<br>晚年成人過渡期 (60-65歲)</h3>
+                                <ul>
+                                    <li><span class="en">Physical function decline</span><br><span class="zh">身體功能衰退</span></li>
+                                    <li><span class="en">Social role transformation</span><br><span class="zh">社會角色轉變</span></li>
+                                    <li><span class="en">Life retrospection</span><br><span class="zh">心理反思</span></li>
+                                    <li><span class="en">Creative expression</span><br><span class="zh">創造性表達</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="transition-label">TRANSITION / 轉換期</div>
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/k4445V6G/6.png" alt="Late Adult Transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stage" style="--i:7">
+                        <div class="stage-line"></div>
+                        <div class="stage-dot"></div>
+                        <div class="stage-content">
+                            <div class="text-content">
+                                <h3>Late Adulthood (60+)<br>晚年成熟期 (60歲以上)</h3>
+                                <ul>
+                                    <li><span class="en">Life experience reflection</span><br><span class="zh">反思人生經歷</span></li>
+                                    <li><span class="en">Decision evaluation</span><br><span class="zh">評估人生決定</span></li>
+                                    <li><span class="en">Experience integration</span><br><span class="zh">整合生命經驗</span></li>
+                                    <li><span class="en">Finding inner balance</span><br><span class="zh">達到內心平衡</span></li>
+                                </ul>
+                            </div>
+                            <div class="theory-reference">
+                                <div class="image-wrapper">
+                                    <img src="https://i.postimg.cc/KxRbfbmQ/9.png" alt="Late Adulthood">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" data-title="Case Study Analysis / 個案分析">
+                <div class="title">Life Course Analysis of Kyle<br>阿牛生命歷程分析</div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h3 class="red-text">Early Adult Transition (17-22)<br>早期成人過渡期 (17-22歲)</h3>
+                        <p><span class="en">Lack of learning motivation, unclear life direction</span><br><span class="zh">缺乏學習動力，生活方向未明</span></p>
+                        <div class="theory-reference">
+                            <ul>
+                                <li><span class="en">Initial adult identity formation period</span><br><span class="zh">建立初步成人身份</span></li>
+                                <li><span class="en">Preliminary life decisions phase</span><br><span class="zh">嘗試初步人生選擇</span></li>
+                                <li><span class="en">Psychological separation from parents phase</span><br><span class="zh">個人在心理和情感上逐漸獨立於父母</span></li>
+                                <li><span class="en">Career orientation challenges</span><br><span class="zh">面臨生涯定向挑戰</span></li>
+                            </ul>
+                            <div class="image-wrapper">
+                                <img src="https://i.postimg.cc/vmD4RtDT/1.png" alt="Initial adult identity formation">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>Entering Adult World (22-28)<br>進入成人世界 (22-28歲)</h3>
+                        <p><span class="en">Participated in ERB courses, exploring career interests (Life Alternatives)</span><br><span class="zh">參與ERB課程，開始探索職業興趣(人生選擇)</span></p>
+                        <div class="theory-reference">
+                            <ul>
+                                <li><span class="en">Building stable life structure</span><br><span class="zh">建立穩定生活模式</span></li>
+                                <li><span class="en">Establishing Career and relationships and Professional skills development</span><br><span class="zh">建立事業和人際關係，培養專業技能</span></li>
+                                <li><span class="en">Making stronger commitments, Career planning awareness</span><br><span class="zh">做出堅定承諾，建立生涯規劃意識</span></li>
+                            </ul>
+                            <div class="image-wrapper">
+                                <img src="https://i.postimg.cc/vmjcGx6z/2.png" alt="Building stable life structure">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>From Entering the Adult World to Age 30 Transition (28-33)<br>從進入成人世界至30歲轉變期 (28-33歲)</h3>
+                        <p><span class="en">Engaged in social work, career establishment</span><br><span class="zh">投身社工專業，確立事業發展</span></p>
+                        <div class="theory-reference">
+                            <ul>
+                                <li><span class="en">Life quality reassessment</span><br><span class="zh">重新評估生活質量</span></li>
+                                <li><span class="en">Social status establishment</span><br><span class="zh">建立社會地位</span></li>
+                                <li><span class="en">Marriage and family choices</span><br><span class="zh">婚姻與家庭選擇</span></li>
+                                <li><span class="en">Career path decisions</span><br><span class="zh">職業發展決策</span></li>
+                            </ul>
+                            <div class="image-wrapper">
+                                <img src="https://i.postimg.cc/TwDh12VX/3.png" alt="Life quality reassessment">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <h3>From Age 30 Transition to Settling Down (33+)<br>30歲轉變期至安定下來 (33歲後)</h3>
+                        <p><span class="en">Pursued MSW, deepened professional development</span><br><span class="zh">進修社工碩士，深化專業發展</span></p>
+                        <div class="theory-reference">
+                            <ul>
+                                <li><span class="en">Life domain investment</span><br><span class="zh">投資重要生活領域</span></li>
+                                <li><span class="en">Developing independence and Professional growth</span><br><span class="zh">發展獨立能力，專業成長</span></li>
+                                <li><span class="en">Building self-sufficiency and 'Becoming One's Own Man'</span><br><span class="zh">建立自給自足能力，成為真正的自己</span></li>
+                            </ul>
+                            <div class="image-wrapper">
+                                <img src="https://i.postimg.cc/Bb565h7Y/5.png" alt="Life domain investment">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" data-title="Theory Evaluation & Contributions / 理論評析與貢獻">
+                <div class="title">Theory Evaluation & Impact<br>理論評價與影響</div>
+                <div class="content-card" style="--i:0">
+                    <h3>Theory Strengths<br>理論優勢</h3>
+                    <div class="content-list">
+                        <li><span class="en">Clear developmental stage framework</span><span class="zh">提供清晰的發展階段框架</span></li>
+                        <li><span class="en">Dynamism of adult development</span><span class="zh">重視成年期發展的動態性</span></li>
+                        <li><span class="en">Sociocultural context influence</span><span class="zh">強調社會文化脈絡的影響</span></li>
+                    </div>
+                </div>
+                <div class="content-card" style="--i:1">
+                    <h3>Theory Limitations<br>理論限制</h3>
+                    <div class="content-list">
+                        <li><span class="en">Limited sample representativeness</span><span class="zh">研究樣本代表性有限</span></li>
+                        <li><span class="en">Gender differences under-addressed</span><span class="zh">未充分考慮性別差異</span></li>
+                        <li><span class="en">Cross-cultural applicability unverified</span><span class="zh">跨文化適用性待驗證</span></li>
+                    </div>
+                </div>
+                <div class="highlight-box">                  
+                    <h3>Contributions to Developmental Psychology<br>對發展心理學的貢獻</h3>
+                    <div class="content-list">
+                        <li><span class="en">Expanded adult development research</span><span class="zh">擴展成年發展研究視野</span></li>
+                        <li><span class="en">Advanced life course research methods</span><span class="zh">促進生命歷程研究方法發展</span></li>
+                        <li><span class="en">Influenced practical approaches</span><span class="zh">影響實務工作取向</span></li>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" data-title="Summary & Applications / 總結與應用">
+                <div class="title">Theory Applications & Modern Relevance<br>理論應用與現代意義</div>
+                <div class="content-card" style="--i:0">
+                    <h3>Practical Application Areas<br>實務應用領域</h3>
+                    <div class="content-list">
+                        <li><span class="en">Adult education & career counseling</span><span class="zh">成人教育與職涯輔導</span></li>
+                        <li><span class="en">Psychological counseling & therapy</span><span class="zh">心理諮商與治療實務</span></li>
+                        <li><span class="en">Organizational development & HR</span><span class="zh">組織發展與人力資源管理</span></li>
+                    </div>
+                </div>
+                <div class="content-card" style="--i:1">
+                    <h3>Insights for Modern Society<br>現代社會的啟示</h3>
+                    <div class="content-list">
+                        <li><span class="en">Diversity of adult developmental tasks</span><span class="zh">關注成人發展任務的多元性</span></li>
+                        <li><span class="en">Flexible life course adaptation</span><span class="zh">重視生命歷程的彈性調適</span></li>
+                        <li><span class="en">Importance of lifelong learning</span><span class="zh">強調終身學習的重要性</span></li>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <h3>Future Research Directions<br>未來研究方向</h3>
+                    <div class="content-list">
+                        <li><span class="en">Cross-cultural comparative studies</span><span class="zh">跨文化比較研究</span></li>
+                        <li><span class="en">Digital era developmental traits</span><span class="zh">數位時代的發展特徵</span></li>
+                        <li><span class="en">Intergenerational differences & social change</span><span class="zh">世代差異與社會變遷</span></li>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" data-title="Reflection & Insights / 反思及啟示">
+                <div class="title">Reflection & Practical Applications<br>反思及實務應用</div>
+                <div class="blue-card fade-in">
+                    <h3><span class="en">In Hong Kong, people aged 28-33,40-45 often seek social work services only when facing problems. Does this indicate a service gap? How should we view and promote preventive services at "this stage" to enhance personal and societal well-being?</span><br><span class="zh">在香港，28至33歲及40歲-45歲的人多在面對問題時才尋求社工服務，這是否顯示服務缺口？我們應如何看待並推廣「這階段」預防性服務，以提升個人及社會的福祉？</span></h3>
+                </div>
+            </div>
+        </div>
+        <div class="slide-dots" id="slideDots"></div>
+    </div>
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const slideTitle = document.getElementById('slideTitle');
+        const currentSlideNum = document.getElementById('currentSlide');
+        const totalSlides = document.getElementById('totalSlides');
+        const timerDisplay = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const slideDots = document.getElementById('slideDots');
+        let timeLeft = 600;
+        let timerInterval;
+
+        // Add animation delay to stages
+        document.querySelectorAll('.stage').forEach((stage, index) => {
+            stage.style.setProperty('--i', index);
+        });
+
+        // Add animation delay to content cards
+        document.querySelectorAll('.content-card').forEach((card, index) => {
+            card.style.setProperty('--i', index);
+        });
+
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('slide-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                updateSlide();
+            });
+            slideDots.appendChild(dot);
+        });
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            if (timeLeft <= 60) {
+                timerDisplay.classList.add('danger');
+                timerDisplay.classList.remove('warning');
+            } else if (timeLeft <= 180) {
+                timerDisplay.classList.add('warning');
+                timerDisplay.classList.remove('danger');
+            } else {
+                timerDisplay.classList.remove('warning', 'danger');
+            }
+            if (timeLeft === 0) {
+                clearInterval(timerInterval);
+                alert("Time's up! / 時間到！");
+            } else {
+                timeLeft--;
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 600;
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                slideDots.children[index].classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    slideDots.children[index].classList.add('active');
+                    slideTitle.textContent = slide.getAttribute('data-title');
+                }
+            });
+            currentSlideNum.textContent = currentSlide + 1;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            progressBar.style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+            
+            // Animate timeline items with staggered delay
+            const timelineItems = document.querySelectorAll('.active .timeline-item');
+            timelineItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 200);
+            });
+
+            // Reset focus to the current slide for screen readers
+            document.querySelector('.slide.active').focus();
+        }
+
+        totalSlides.textContent = slides.length;
+        updateSlide();
+        startTimer();
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        });
+
+        homeBtn.addEventListener('click', () => {
+            currentSlide = 0;
+            updateSlide();
+            startTimer();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            } else if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            } else if (e.key === 'Home') {
+                currentSlide = 0;
+                updateSlide();
+                startTimer();
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchEndX < touchStartX - swipeThreshold && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            } else if (touchEndX > touchStartX + swipeThreshold && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        // Add animated entrance for stages
+        window.onload = function() {
+            document.querySelectorAll('.stage').forEach((stage, index) => {
+                stage.style.animationDelay = `${index * 0.1}s`;
+            });
+        };
+    </script>
+</body>
+
+</html>
