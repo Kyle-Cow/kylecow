@@ -1,0 +1,2070 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>垃圾徵費政策分析</title>
+<style>
+:root {
+--blue: #2980b9;
+--green: #27ae60;
+--red: #c0392b;
+--yellow: #f39c12;
+--dark: #2c3e50;
+--light: #ecf0f1;
+--purple: #8e44ad;
+--orange: #d35400;
+--gray: #7f8c8d;
+/* 從 Code2 添加的新變量 */
+--primary-color: #16a085;
+--secondary-color: #2980b9; /* 等於 --blue，可共用 */
+--text-dark: #2c3e50; /* 等於 --dark，可共用 */
+--text-light: #34495e;
+--accent-red: #e74c3c;
+--accent-green: #27ae60; /* 等於 --green，可共用 */
+--shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+--border-radius: 8px;
+}
+body, html {
+margin: 0;
+padding: 0;
+font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+background-color: var(--light);
+color: var(--dark);
+font-size: 18px;
+line-height: 1.6;
+overflow-x: hidden;
+height: 100%;
+}
+.container {
+width: 100%;
+max-width: 1200px;
+margin: 0 auto;
+padding: 10px;
+position: relative;
+min-height: 100%;
+display: flex;
+flex-direction: column;
+box-sizing: border-box;
+}
+.slide {
+background: white;
+border-radius: 8px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+padding: 20px;
+margin-bottom: 20px;
+display: none;
+flex: 1;
+position: relative;
+overflow-y: auto;
+max-height: calc(100vh - 120px);
+}
+.slide.active {
+display: block;
+}
+h2 {
+color: var(--blue);
+font-size: 2rem;
+margin-top: 0;
+margin-bottom: 20px;
+border-bottom: 2px solid var(--light);
+padding-bottom: 10px;
+text-align: center;
+}
+.icon-text {
+display: flex;
+align-items: center;
+margin: 15px 0;
+}
+.icon {
+font-size: 30px;
+margin-right: 15px;
+min-width: 40px;
+text-align: center;
+}
+.hk-status {
+background-color: rgba(44, 62, 80, 0.1);
+border-radius: 8px;
+padding: 20px;
+margin: 20px auto;
+border-left: 4px solid var(--dark);
+max-width: 90%;
+}
+.theory-box {
+background-color: rgba(241, 196, 15, 0.1);
+border-radius: 8px;
+padding: 20px;
+margin: 25px auto;
+border-left: 4px solid var(--yellow);
+max-width: 90%;
+}
+.theory-title {
+color: var(--orange);
+font-weight: bold;
+font-size: 1.3rem;
+margin-bottom: 15px;
+}
+.compare-box {
+display: flex;
+justify-content: center;
+margin: 30px auto;
+flex-wrap: wrap;
+max-width: 90%;
+}
+.compare-item {
+flex: 1;
+min-width: 250px;
+margin: 10px;
+padding: 20px;
+border-radius: 8px;
+}
+.no-fee {
+background-color: rgba(192, 57, 43, 0.1);
+border-left: 4px solid var(--red);
+}
+.with-fee {
+background-color: rgba(39, 174, 96, 0.1);
+border-left: 4px solid var(--green);
+}
+.item-title {
+font-size: 1.5rem;
+font-weight: bold;
+margin-bottom: 20px;
+text-align: center;
+}
+.no-fee .item-title {
+color: var(--red);
+}
+.with-fee .item-title {
+color: var(--green);
+}
+.two-column {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+margin: 30px auto;
+max-width: 90%;
+}
+.column {
+flex: 1;
+min-width: 250px;
+}
+/* 垃圾桶特效 */
+.trash-bin-container {
+position: relative;
+width: 150px;
+height: 200px;
+margin: 20px auto;
+}
+.trash-bin-svg {
+width: 150px;
+height: 200px;
+cursor: pointer;
+filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+.lid-animation {
+transform-origin: center top;
+animation: lid-open 2s infinite;
+}
+@keyframes lid-open {
+0% { transform: rotate(0deg); }
+20% { transform: rotate(-20deg); }
+30% { transform: rotate(-20deg); }
+50% { transform: rotate(0deg); }
+100% { transform: rotate(0deg); }
+}
+.trash-bin-svg.shake {
+animation: shake 2s infinite;
+}
+@keyframes shake {
+0% { transform: rotate(0deg); }
+25% { transform: rotate(1deg); }
+50% { transform: rotate(0deg); }
+75% { transform: rotate(-1deg); }
+100% { transform: rotate(0deg); }
+}
+.falling-trash {
+font-size: 24px;
+position: absolute;
+animation: falling 2s linear forwards;
+}
+@keyframes falling {
+0% {
+top: -30px;
+transform: translateX(-50%) rotate(0deg);
+opacity: 1;
+}
+100% {
+top: 100px;
+transform: translateX(-50%) rotate(360deg);
+opacity: 0;
+}
+}
+.waste-simulation {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin: 20px auto;
+width: 100%;
+max-width: 300px;
+}
+.waste-meter-container {
+width: 90px;
+height: 250px;
+background-color: rgba(255,255,255,0.5);
+border: 2px solid var(--dark);
+border-radius: 8px;
+margin: 0 auto;
+position: relative;
+overflow: hidden;
+}
+.waste-meter {
+width: 100%;
+height: 0%;
+background: linear-gradient(to top, var(--red), var(--orange));
+position: absolute;
+bottom: 0;
+transition: height 0.5s;
+}
+.waste-control {
+margin-top: 20px;
+display: flex;
+flex-direction: column;
+align-items: center;
+width: 100%;
+}
+.btn {
+background-color: var(--blue);
+color: white;
+border: none;
+border-radius: 30px;
+padding: 12px 25px;
+margin: 10px;
+font-size: 16px;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+.btn:hover {
+background-color: var(--green);
+transform: translateY(-2px);
+}
+.btn:disabled {
+background-color: var(--gray);
+cursor: not-allowed;
+}
+.trash-counter {
+font-size: 18px;
+margin: 10px 0;
+font-weight: bold;
+text-align: center;
+}
+.sad-earth {
+width: 200px;
+height: 200px;
+margin: 20px auto;
+font-size: 160px;
+cursor: pointer;
+transition: transform 0.3s;
+text-align: center;
+}
+.sad-earth:hover {
+transform: scale(1.1);
+}
+.fee-usage-container {
+display: none;
+margin: 20px auto;
+max-width: 600px;
+width: 90%;
+}
+.fee-usage-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+gap: 15px;
+margin-top: 20px;
+}
+.usage-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 15px;
+background-color: rgba(255,255,255,0.8);
+border-radius: 8px;
+box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+transition: all 0.3s;
+}
+.usage-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.usage-icon {
+font-size: 40px;
+margin-bottom: 10px;
+}
+.usage-title {
+font-weight: bold;
+text-align: center;
+}
+.pigou-explanation {
+display: flex;
+flex-direction: column;
+gap: 20px;
+margin: 20px auto;
+max-width: 90%;
+}
+.pigou-step {
+background-color: white;
+border-radius: 8px;
+padding: 20px;
+box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+display: flex;
+align-items: flex-start;
+}
+.step-number {
+font-size: 24px;
+font-weight: bold;
+color: white;
+background-color: var(--blue);
+border-radius: 50%;
+width: 40px;
+height: 40px;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-right: 20px;
+flex-shrink: 0;
+}
+.pigou-diagram {
+height: 200px;
+margin: 20px auto;
+position: relative;
+width: 80%;
+max-width: 400px;
+}
+.axis {
+position: absolute;
+background-color: var(--dark);
+}
+.x-axis {
+width: 100%;
+height: 3px;
+bottom: 0;
+}
+.y-axis {
+width: 3px;
+height: 100%;
+left: 0;
+}
+.curve {
+position: absolute;
+border: 3px solid;
+border-radius: 50%;
+}
+.social-cost {
+border-color: var(--red);
+width: 180px;
+height: 180px;
+bottom: 0;
+left: 0;
+border-bottom: none;
+border-left: none;
+}
+.private-cost {
+border-color: var(--blue);
+width: 180px;
+height: 140px;
+bottom: 0;
+left: 0;
+border-bottom: none;
+border-left: none;
+}
+.pigou-tax {
+position: absolute;
+left: 100px;
+bottom: 20px;
+width: 50px;
+height: 40px;
+background-color: rgba(231, 76, 60, 0.5);
+border: 2px dashed var(--red);
+}
+.axis-label {
+position: absolute;
+font-weight: bold;
+}
+.x-label {
+bottom: -30px;
+right: 0;
+}
+.y-label {
+top: -20px;
+left: 10px;
+}
+.nav-buttons {
+display: flex;
+justify-content: center;
+margin: 20px auto;
+width: 100%;
+position: sticky;
+bottom: 0;
+padding: 10px 0;
+background-color: var(--light);
+z-index: 100;
+}
+.slide-counter {
+padding: 12px;
+font-size: 16px;
+font-weight: bold;
+}
+/* 目錄樣式 */
+.toc {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 20px;
+width: 100%;
+margin: 0 auto;
+}
+.toc-item {
+background: linear-gradient(135deg, var(--light), white);
+border-radius: 8px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+padding: 20px;
+transition: all 0.3s;
+cursor: default;
+border-left: 4px solid var(--blue);
+position: relative;
+overflow: hidden;
+}
+.toc-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.toc-number {
+font-size: 4rem;
+font-weight: bold;
+color: rgba(41, 128, 185, 0.1);
+position: absolute;
+right: -20px;
+bottom: -30px;
+}
+.toc-title {
+font-weight: bold;
+font-size: 1.5rem;
+color: var(--dark);
+margin-bottom: 10px;
+z-index: 10;
+position: relative;
+}
+.toc-desc {
+font-size: 1rem;
+color: var(--gray);
+z-index: 10;
+position: relative;
+}
+/* 巴士疊加特效 */
+.bus-container {
+width: 100%;
+position: relative;
+margin: 20px auto;
+cursor: pointer;
+text-align: center;
+}
+.bus-img {
+width: 100%;
+max-width: 300px;
+height: auto;
+display: block;
+margin: 0 auto;
+border-radius: 8px;
+transition: all 0.3s;
+}
+.bus-img:hover {
+transform: scale(1.05);
+}
+.bus-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.9);
+z-index: 1000;
+display: none;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+.bus-stack-container {
+position: relative;
+width: 100%;
+height: 80vh;
+overflow: hidden;
+}
+.stacked-bus {
+position: absolute;
+background-color: #e74c3c;
+border-radius: 5px;
+color: white;
+font-weight: bold;
+box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+transition: all 0.3s ease;
+display: flex;
+justify-content: center;
+align-items: center;
+overflow: hidden;
+}
+.bus-svg {
+width: 100%;
+height: 100%;
+position: absolute;
+top: 0;
+left: 0;
+}
+.height-marker {
+position: absolute;
+right: 70px;
+height: 100%;
+width: 3px;
+background: rgba(255,255,255,0.3);
+}
+.height-label {
+position: absolute;
+right: 80px;
+color: white;
+font-size: 14px;
+}
+.bus-overlay-close {
+position: absolute;
+top: 20px;
+right: 20px;
+color: white;
+font-size: 30px;
+cursor: pointer;
+}
+.bus-counter {
+color: white;
+font-size: 24px;
+font-weight: bold;
+margin-top: 20px;
+}
+.title-container {
+position: relative;
+text-align: center;
+margin: 30px auto;
+max-width: 90%;
+}
+.title-main {
+font-size: 3rem;
+font-weight: bold;
+color: var(--dark);
+margin: 0;
+text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+position: relative;
+z-index: 2;
+}
+.restart-text {
+color: var(--red);
+font-weight: bold;
+font-size: 1.2em;
+}
+.title-bg {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 8rem;
+color: rgba(0,0,0,0.03);
+white-space: nowrap;
+z-index: 1;
+}
+.start-btn {
+display: inline-block;
+padding: 15px 40px;
+margin-top: 30px;
+background: linear-gradient(135deg, var(--blue), var(--green));
+color: white;
+border: none;
+border-radius: 50px;
+font-size: 20px;
+font-weight: bold;
+cursor: pointer;
+box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+transition: all 0.3s;
+position: relative;
+overflow: hidden;
+}
+.start-btn:before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+transition: 0.5s;
+}
+.start-btn:hover:before {
+left: 100%;
+}
+.start-btn:hover {
+transform: translateY(-5px);
+box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+/* 行動呼籲樣式 */
+.quote-container {
+margin: 30px auto;
+text-align: center;
+max-width: 90%;
+}
+.quote {
+font-size: 1.8rem;
+line-height: 1.5;
+color: var(--dark);
+font-weight: 300;
+position: relative;
+padding: 20px 40px;
+}
+.quote:before, .quote:after {
+content: '"';
+font-size: 4rem;
+position: absolute;
+color: rgba(0,0,0,0.1);
+font-family: Georgia, serif;
+line-height: 1;
+}
+.quote:before {
+top: 0;
+left: 0;
+}
+.quote:after {
+bottom: -20px;
+right: 0;
+}
+.mission-statement {
+margin: 40px auto;
+padding: 30px;
+background-color: rgba(44, 62, 80, 0.05);
+border-radius: 12px;
+text-align: center;
+position: relative;
+max-width: 90%;
+}
+.mission-title {
+font-size: 2rem;
+font-weight: bold;
+color: var(--dark);
+margin-bottom: 20px;
+}
+.mission-text {
+font-size: 1.3rem;
+line-height: 1.8;
+color: var(--dark);
+}
+.highlight-word {
+color: var(--blue);
+font-weight: bold;
+background-color: rgba(41, 128, 185, 0.1);
+padding: 0 5px;
+border-radius: 4px;
+}
+.statistic {
+font-size: 2rem;
+font-weight: bold;
+color: var(--blue);
+margin: 5px 0;
+}
+@keyframes pulse {
+0% { transform: scale(1); }
+50% { transform: scale(1.05); }
+100% { transform: scale(1); }
+}
+.pulse {
+animation: pulse 2s infinite;
+}
+.simulation-layout {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+justify-content: center;
+width: 100%;
+}
+.simulation-col {
+flex: 1;
+min-width: 280px;
+max-width: 500px;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.money-sides {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+}
+/* 新增: 學生友好的樣式 */
+.student-section {
+background-color: rgba(255, 255, 255, 0.9);
+border-radius: 12px;
+padding: 20px;
+margin: 20px auto;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+max-width: 90%;
+}
+.student-title {
+font-size: 1.8rem;
+font-weight: bold;
+color: var(--blue);
+margin-bottom: 20px;
+border-bottom: 2px solid var(--light);
+padding-bottom: 10px;
+}
+.student-point {
+margin: 15px 0;
+padding: 15px;
+border-left: 4px solid var(--green);
+background-color: rgba(39, 174, 96, 0.05);
+border-radius: 0 8px 8px 0;
+}
+.student-example {
+margin: 15px 0;
+padding: 15px;
+border-left: 4px solid var(--orange);
+background-color: rgba(211, 84, 0, 0.05);
+border-radius: 0 8px 8px 0;
+}
+.comparison-table {
+width: 100%;
+border-collapse: collapse;
+margin: 20px 0;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+border-radius: 8px;
+overflow: hidden;
+}
+.comparison-table th {
+background-color: var(--blue);
+color: white;
+padding: 12px;
+text-align: left;
+}
+.comparison-table td {
+padding: 12px;
+border-bottom: 1px solid #e0e0e0;
+}
+.comparison-table tr:nth-child(even) {
+background-color: rgba(41, 128, 185, 0.05);
+}
+.earth-container {
+display: flex;
+justify-content: center;
+margin: 30px auto;
+max-width: 200px;
+}
+.earth-svg {
+width: 100%;
+height: auto;
+aspect-ratio: 1/1;
+}
+.earth-link {
+display: inline-block;
+margin-top: 20px;
+text-align: center;
+}
+/* 新增：巴士堆疊後的視覺展示 */
+.bus-impact-section {
+display: none;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.95);
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 1100;
+}
+.impact-content {
+display: flex;
+width: 90%;
+height: 80%;
+max-width: 1200px;
+}
+.impact-left {
+flex: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.impact-right {
+flex: 1;
+padding: 20px;
+color: white;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.mini-bus-container {
+width: 100%;
+height: 100%;
+max-width: 400px;
+max-height: 400px;
+position: relative;
+transform: scale(0);
+transition: transform 1s ease;
+}
+.mini-bus-animation.active {
+transform: scale(1);
+}
+.impact-title {
+font-size: 2rem;
+color: white;
+margin-bottom: 30px;
+text-align: center;
+}
+.impact-calculation {
+background-color: rgba(255,255,255,0.1);
+padding: 20px;
+border-radius: 10px;
+margin-bottom: 30px;
+font-size: 1.2rem;
+line-height: 1.8;
+}
+.impact-highlight {
+color: var(--yellow);
+font-weight: bold;
+font-size: 1.5rem;
+}
+.stadium-illustration {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 10px;
+margin-top: 20px;
+}
+.stadium {
+width: 30px;
+height: 30px;
+background-color: var(--green);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+opacity: 0;
+transition: opacity 0.1s ease;
+}
+.active-stadium {
+opacity: 1;
+}
+.impact-footer {
+text-align: center;
+margin-top: 30px;
+}
+.continue-btn {
+background-color: var(--green);
+color: white;
+border: none;
+border-radius: 50px;
+padding: 15px 30px;
+font-size: 18px;
+cursor: pointer;
+transition: all 0.3s;
+}
+.continue-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+}
+/* 新增：皮古稅視覺插圖 */
+.pigou-visual {
+width: 100%;
+max-width: 600px;
+margin: 30px auto;
+position: relative;
+height: 300px;
+}
+.pigou-graph {
+width: 100%;
+height: 100%;
+position: relative;
+}
+.curve-label {
+position: absolute;
+font-size: 0.9rem;
+font-weight: bold;
+}
+.tax-animation {
+position: absolute;
+width: 40px;
+height: 40px;
+background-color: var(--green);
+border-radius: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+color: white;
+font-weight: bold;
+box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+animation: float 3s infinite ease-in-out;
+}
+@keyframes float {
+0% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+100% { transform: translateY(0px); }
+}
+.factory {
+position: absolute;
+bottom: 0;
+left: 10%;
+width: 80px;
+height: 80px;
+}
+.house {
+position: absolute;
+bottom: 0;
+right: 10%;
+width: 60px;
+height: 60px;
+}
+.tax-flow {
+position: absolute;
+top: 50%;
+left: 0;
+width: 100%;
+height: 3px;
+background: linear-gradient(90deg, transparent, var(--green), transparent);
+transform: translateY(-50%);
+animation: flow 3s infinite linear;
+}
+@keyframes flow {
+0% { background-position: -300px 0; }
+100% { background-position: 300px 0; }
+}
+.pollution-cloud {
+position: absolute;
+left: 10%;
+top: 20%;
+animation: fade 4s infinite alternate;
+}
+@keyframes fade {
+0% { opacity: 0.8; }
+100% { opacity: 0.2; }
+}
+/* 新增：發光地球效果 */
+.glowing-earth {
+animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+0% { filter: drop-shadow(0 0 3px rgba(39, 174, 96, 0.5)); }
+100% { filter: drop-shadow(0 0 15px rgba(39, 174, 96, 0.8)); }
+}
+/* 巴士互動提問窗口 */
+.bus-interaction {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.8);
+z-index: 1100;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px;
+box-sizing: border-box;
+}
+.interaction-card {
+background-color: white;
+border-radius: 12px;
+padding: 30px;
+max-width: 600px;
+width: 90%;
+box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+text-align: center;
+}
+.interaction-title {
+color: var(--blue);
+font-size: 1.8rem;
+margin-bottom: 20px;
+}
+.interaction-question {
+font-size: 1.4rem;
+color: var(--dark);
+margin-bottom: 30px;
+}
+.interaction-options {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 15px;
+margin-bottom: 20px;
+}
+.interaction-option {
+background-color: var(--light);
+padding: 15px 25px;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.3s;
+min-width: 200px;
+}
+.interaction-option:hover {
+background-color: var(--blue);
+color: white;
+transform: translateY(-3px);
+}
+.interaction-feedback {
+margin-top: 20px;
+padding: 15px;
+border-radius: 8px;
+background-color: rgba(39, 174, 96, 0.1);
+display: none;
+}
+.interaction-next {
+margin-top: 20px;
+display: inline-block;
+padding: 12px 30px;
+background-color: var(--green);
+color: white;
+border-radius: 30px;
+cursor: pointer;
+transition: all 0.3s;
+}
+.interaction-next:hover {
+transform: translateY(-3px);
+box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+/* Code2 的 CSS 規則 */
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.slide-optimized {
+width: 100%;
+max-width: 900px;
+margin: 0 auto;
+padding: 2.5rem;
+background-color: #fff;
+border-radius: 12px;
+box-shadow: var(--shadow);
+position: relative;
+}
+.slide-optimized::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 6px;
+background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+.slide-optimized h2 {
+font-size: 2.2rem;
+text-align: center;
+margin-bottom: 1.8rem;
+color: var(--primary-color);
+position: relative;
+padding-bottom: 0.8rem;
+animation: fadeIn 0.6s ease-out;
+}
+.slide-optimized h2::after {
+content: '';
+position: absolute;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 80px;
+height: 3px;
+background-color: var(--primary-color);
+}
+.slide-optimized .hk-status {
+display: flex;
+flex-direction: column;
+gap: 2rem;
+}
+.slide-optimized .main-purpose {
+font-size: 1.3rem;
+text-align: center;
+background: rgba(22, 160, 133, 0.1);
+padding: 1.2rem;
+border-radius: var(--border-radius);
+border-left: 4px solid var(--primary-color);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+animation: fadeIn 0.8s ease-out;
+}
+.slide-optimized .main-purpose span {
+font-weight: bold;
+color: var(--primary-color);
+}
+.slide-optimized .purposes {
+display: flex;
+flex-wrap: wrap;
+gap: 1.5rem;
+}
+.slide-optimized .purpose-item {
+flex: 1;
+min-width: 280px;
+background-color: #fff;
+border-radius: var(--border-radius);
+padding: 1.5rem;
+display: flex;
+align-items: flex-start;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+animation: fadeIn 1s ease-out forwards;
+}
+.slide-optimized .purpose-item:nth-child(1) {
+border-left: 4px solid var(--accent-red);
+animation-delay: 0.3s;
+}
+.slide-optimized .purpose-item:nth-child(2) {
+border-left: 4px solid var(--accent-green);
+animation-delay: 0.5s;
+}
+.slide-optimized .purpose-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+.slide-optimized .icon {
+font-size: 2rem;
+margin-right: 1rem;
+padding-top: 0.2rem;
+}
+.slide-optimized .purpose-content {
+font-size: 1.15rem;
+}
+.slide-optimized .purpose-content strong {
+color: var(--text-dark);
+display: block;
+margin-bottom: 0.3rem;
+}
+@media (max-width: 768px) {
+.slide-optimized {
+padding: 1.5rem;
+}
+.slide-optimized h2 {
+font-size: 1.8rem;
+margin-bottom: 1.3rem;
+}
+.slide-optimized .main-purpose {
+font-size: 1.1rem;
+}
+.slide-optimized .purpose-item {
+min-width: 100%;
+}
+}
+/* 響應式調整 */
+@media (max-width: 768px) {
+body { font-size: 16px; }
+.container { padding: 5px; }
+.slide { padding: 15px 10px; }
+h2 { font-size: 1.5rem; margin-bottom: 15px; }
+.icon { font-size: 24px; }
+.hk-status, .theory-box, .student-section, .compare-box, .mission-statement, .quote-container { 
+max-width: 100%; 
+padding: 15px;
+}
+.sad-earth { width: 120px; height: 120px; font-size: 100px; }
+.pigou-step { flex-direction: column; }
+.step-number { margin-bottom: 10px; }
+.pigou-diagram { height: 150px; max-width: 100%; }
+.social-cost, .private-cost { width: 120px; height: 120px; }
+.private-cost { height: 100px; }
+.pigou-tax { left: 70px; width: 30px; height: 20px; }
+.title-main { font-size: 1.8rem; }
+.title-bg { font-size: 4rem; }
+.fee-usage-grid { grid-template-columns: 1fr; }
+.student-title { font-size: 1.3rem; }
+.quote { font-size: 1.4rem; padding: 15px 30px; }
+.quote:before, .quote:after { font-size: 3rem; }
+.mission-title { font-size: 1.5rem; }
+.mission-text { font-size: 1.1rem; }
+.btn { padding: 10px 20px; font-size: 14px; }
+.start-btn { padding: 12px 30px; font-size: 18px; }
+.toc-item { padding: 15px; }
+.toc-title { font-size: 1.3rem; }
+.earth-container { max-width: 150px; }
+.impact-content { flex-direction: column; }
+.impact-title { font-size: 1.5rem; }
+.impact-calculation { font-size: 1rem; }
+.impact-highlight { font-size: 1.2rem; }
+.stadium { width: 20px; height: 20px; font-size: 10px; }
+.pigou-visual { height: 240px; }
+.interaction-title { font-size: 1.5rem; }
+.interaction-question { font-size: 1.2rem; }
+.interaction-option { min-width: 160px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<!-- Slide 0: 背景頁面 (文字置中) -->
+<div class="slide active" id="slide0" style="text-align: center;">
+<div class="title-container">
+<h1 class="title-main"><span class="restart-text" style="font-size: 1.3em;">重啟</span>垃圾徵費政策!</h1>
+<div class="title-bg">WASTE CHARGING</div>
+</div>
+<div class="hk-status">
+<p>垃圾徵費＝解決市場衰退的重要手段！</p>
+<p>跟我一起回憶商學院的理論，深入淺出，</p>
+<p>一起推動重啟！</p>
+</div>
+<div style="text-align: center;">
+<button class="start-btn" onclick="goToSlide(1)">開始探索</button>
+</div>
+</div>
+
+<!-- Slide 1: 目錄頁面 (無連結，方格變大，移除「🏠」按鈕) -->
+<div class="slide" id="slide1">
+<h2>簡報目錄</h2>
+<div class="toc">
+<div class="toc-item">
+<div class="toc-number">1</div>
+<div class="toc-title">香港垃圾問題現況</div>
+<div class="toc-desc">了解每日垃圾量與面臨的挑戰</div>
+</div>
+<div class="toc-item">
+<div class="toc-number">2</div>
+<div class="toc-title">垃圾徵費的目的</div>
+<div class="toc-desc">減少固體廢物和推動垃圾分類回收</div>
+</div>
+<div class="toc-item">
+<div class="toc-number">3</div>
+<div class="toc-title">垃圾處理的經濟成本</div>
+<div class="toc-desc">探討處理垃圾的真實成本與外部性</div>
+</div>
+<div class="toc-item">
+<div class="toc-number">4</div>
+<div class="toc-title">皮古稅理論應用</div>
+<div class="toc-desc">經濟學理論如何解決環境問題</div>
+</div>
+<div class="toc-item">
+<div class="toc-number">5</div>
+<div class="toc-title">不實施垃圾徵費的後果</div>
+<div class="toc-desc">堆填區飽和與環境危機</div>
+</div>
+<div class="toc-item">
+<div class="toc-number">6</div>
+<div class="toc-title">行動呼籲</div>
+<div class="toc-desc">你能做些什麼？</div>
+</div>
+</div>
+</div>
+
+<style>
+.toc {
+display: flex;
+flex-direction: column; /* 垂直排列 */
+align-items: center; /* 置中對齊 */
+gap: 15px; /* 每個項目之間的間距 */
+}
+.toc-item {
+text-align: center; /* 文字置中 */
+border: 1px solid #ccc; /* 邊框樣式 */
+padding: 20px; /* 內邊距 */
+width: 90%; /* 調整寬度 */
+max-width: 500px; /* 最大寬度 */
+height: auto; /* 高度自適應 */
+display: flex;
+flex-direction: column; /* 垂直排列內容 */
+justify-content: center; /* 置中內容 */
+border-radius: 10px; /* 圓角邊框 */
+background-color: #f9f9f9; /* 背景顏色 */
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+transition: transform 0.2s; /* 過渡效果 */
+}
+.toc-item:hover {
+transform: scale(1.05); /* 懸停時輕微放大 */
+}
+.toc-number {
+font-size: 28px; /* 調整字體大小 */
+font-weight: bold; /* 加粗 */
+color: #007BFF; /* 字體顏色 */
+}
+.toc-title {
+font-size: 20px; /* 調整字體大小 */
+margin: 5px 0; /* 上下邊距 */
+font-weight: 600; /* 加粗 */
+}
+.toc-desc {
+font-size: 16px; /* 調整字體大小 */
+color: #666; /* 文字顏色 */
+}
+</style>
+
+<!-- Slide 2: 香港垃圾問題現況 -->
+<div class="slide" id="slide2">
+<h2>香港垃圾問題現況</h2>
+<div class="two-column">
+<div class="column">
+<div id="trashBinContainer" class="trash-bin-container">
+<svg class="trash-bin-svg shake" viewBox="0 0 100 150" width="150" height="200">
+<rect x="20" y="40" width="60" height="110" rx="5" fill="#95a5a6" />
+<line x1="30" y1="60" x2="70" y2="60" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="2,2" />
+<line x1="30" y1="80" x2="70" y2="80" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="2,2" />
+<line x1="30" y1="100" x2="70" y2="100" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="2,2" />
+<line x1="30" y1="120" x2="70" y2="120" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="2,2" />
+<path class="lid-animation" d="M15 40 L85 40 L85 30 L15 30 Z" fill="#7f8c8d" />
+<rect x="35" y="20" width="30" height="5" rx="2" fill="#7f8c8d" />
+<path d="M35 20 Q35 10 50 10 Q65 10 65 20" stroke="#7f8c8d" fill="none" stroke-width="3" />
+</svg>
+</div>
+<div class="hk-status">
+<h3 style="text-align: center;">香港現況：</h3>
+<div class="statistic" style="text-align: center;">10,809 噸/日</div>
+<p>香港每日棄置都市固體廢物量</p>
+<p>🗑️ 我們不需要為丟棄垃圾付費</p>
+<p>💰 政府使用納稅人的錢處理垃圾</p>
+<p>📈 垃圾量持續增加，堆填區即將飽和</p>
+</div>
+</div>
+<div class="column">
+<div class="bus-container">
+<img src="https://i.postimg.cc/BZzjjQxc/Whats-App-Image-2025-03-09-at-10-48-07-PM.jpg" alt="雙層巴士" class="bus-img" id="busImg">
+<p style="text-align: center; font-weight: bold;">相當於裝滿 716 架雙層巴士的重量！</p>
+<p style="text-align: center; font-style: italic; color: var(--blue);">點擊巴士圖片，體驗震撼效果</p>
+</div>
+</div>
+</div>
+<div id="busOverlay" class="bus-overlay">
+<div class="bus-stack-container" id="busStackContainer"></div>
+<div class="height-marker"></div>
+<div class="bus-counter" id="busCounter">已堆疊: 0/716</div>
+<div class="bus-overlay-close" id="busOverlayClose">×</div>
+</div>
+
+<!-- 新增：巴士堆疊後的震撼視覺效果 -->
+<div id="busImpactSection" class="bus-impact-section">
+<div class="impact-content">
+<div class="impact-left">
+<div id="miniBusContainer" class="mini-bus-container">
+<!-- 這裡將由JavaScript填充小巴士動畫 -->
+</div>
+</div>
+<div class="impact-right">
+<h2 class="impact-title">垃圾量的震撼真相</h2>
+<div class="impact-calculation">
+<p>香港每日垃圾量：<span class="impact-highlight">10,809 噸</span></p>
+<p>相當於 <span class="impact-highlight">716</span> 輛雙層巴士的重量</p>
+<p>一輛雙層巴士平均載客量：<span class="impact-highlight">130</span> 人</p>
+<p>計算：<span class="impact-highlight">716 × 130 = 93,080</span> 人</p>
+<p>相當於 <span class="impact-highlight">26</span> 個滿座維多利亞公園足球場的人數！</p>
+</div>
+<div class="stadium-illustration" id="stadiumContainer">
+<!-- 這裡將由JavaScript填充足球場圖示 -->
+</div>
+<div class="impact-footer">
+<button id="continueBtn" class="continue-btn">繼續瀏覽</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- 新增：巴士互動提問窗口 -->
+<div id="busInteraction" class="bus-interaction">
+<div class="interaction-card">
+<h3 class="interaction-title">思考時間</h3>
+<p class="interaction-question">這麼多的垃圾每天產生，你認為最主要的原因是什麼？</p>
+<div class="interaction-options">
+<div class="interaction-option" data-option="1">消費習慣</div>
+<div class="interaction-option" data-option="2">過度包裝</div>
+<div class="interaction-option" data-option="3">缺乏回收意識</div>
+<div class="interaction-option" data-option="4">丟棄垃圾沒有成本</div>
+</div>
+<div id="interactionFeedback" class="interaction-feedback">
+所有選項都是有效的答案！但從經濟學角度來看，「丟棄垃圾沒有成本」是市場失靈的核心原因——當人們不用為製造垃圾付費時，就缺乏減少垃圾的動機。這正是垃圾徵費政策要解決的問題！
+</div>
+<div class="interaction-next" id="interactionNext">下一步</div>
+</div>
+</div>
+</div>
+
+<!-- Slide 3: 垃圾徵費的目的 (新增頁面，應用 Code2 效果) -->
+<div class="slide slide-optimized" id="slide3">
+<h2>垃圾徵費的目的</h2>
+<div class="hk-status">
+<p class="main-purpose">香港垃圾徵費個目的係「<span>減少固體廢物</span>」同「<span>推動垃圾分類回收</span>」。</p>
+<div class="purposes">
+<div class="purpose-item">
+<span class="icon">🗑️</span>
+<div class="purpose-content">
+<strong>減少固體廢物</strong>
+透過收費，鼓勵市民減少製造垃圾。
+</div>
+</div>
+<div class="purpose-item">
+<span class="icon">♻️</span>
+<div class="purpose-content">
+<strong>推動垃圾分類回收</strong>
+鼓勵市民分類垃圾，增加回收率。
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Slide 4: 垃圾處理的經濟成本 (原 Slide 3) -->
+<div class="slide" id="slide4">
+<h2>垃圾處理的經濟成本</h2>
+<div class="theory-box">
+<div class="theory-title">外部性理論</div>
+<p>「外部性」是指我們的行為影響其他人，但我們沒有為這些影響付費。製造垃圾時產生「負外部性」：</p>
+<div class="two-column">
+<div class="column">
+<div class="icon-text">
+<div class="icon">🏭</div>
+<div>處理垃圾消耗資源和能源</div>
+</div>
+<div class="icon-text">
+<div class="icon">🌫️</div>
+<div>垃圾處理過程產生污染</div>
+</div>
+</div>
+<div class="column">
+<div class="icon-text">
+<div class="icon">🏦</div>
+<div>政府承擔龐大財政負擔（每年約 25 億港元）</div>
+</div>
+<div class="icon-text">
+<div class="icon">🌎</div>
+<div>堆填區佔用寶貴土地（如屯門曾咀第二焚化爐、清水灣郊野公園部分土地）</div>
+</div>
+</div>
+</div>
+</div>
+<div class="compare-box">
+<div class="compare-item no-fee">
+<div class="item-title">現在</div>
+<div style="font-size: 50px; text-align: center;">🗑️ → 🏢</div>
+<p style="text-align: center;">我們扔垃圾不用付錢</p>
+<p style="text-align: center;">政府幫我們付錢</p>
+</div>
+<div class="compare-item with-fee">
+<div class="item-title">垃圾徵費後</div>
+<div style="font-size: 50px; text-align: center;">🗑️ → 💵 → 🏢</div>
+<p style="text-align: center;">我們要付錢才能扔垃圾</p>
+<p style="text-align: center;">扔越多，付越多</p>
+</div>
+</div>
+</div>
+
+<!-- Slide 5: 皮古稅理論應用與垃圾徵費解釋（原 Slide 4） -->
+<div class="slide" id="slide5">
+<h2>皮古稅理論與垃圾徵費：從理論到實踐</h2>
+<!-- 第一部分：基本理論 -->
+<div class="theory-box">
+<div class="theory-title">皮古稅是什麼？</div>
+<p>皮古稅是由經濟學家亞瑟·皮古提出的解決外部性方法：</p>
+<div class="icon-text">
+<div class="icon">👉</div>
+<div>對產生「負外部性」的行為徵稅</div>
+</div>
+<div class="icon-text">
+<div class="icon">👉</div>
+<div>讓產生問題的人支付解決問題的費用</div>
+</div>
+<div class="icon-text">
+<div class="icon">👉</div>
+<div>鼓勵大家減少有害行為</div>
+</div>
+</div>
+<!-- 新增：皮古稅視覺效果 -->
+<div class="pigou-visual">
+<div class="pigou-graph">
+<svg width="100%" height="100%" viewBox="0 0 600 300">
+<!-- 座標軸 -->
+<line x1="50" y1="250" x2="550" y2="250" stroke="#2c3e50" stroke-width="3" />
+<line x1="50" y1="50" x2="50" y2="250" stroke="#2c3e50" stroke-width="3" />
+<!-- 坐標軸標籤 -->
+<text x="300" y="299" text-anchor="middle" fill="#2c3e50" font-weight="bold">垃圾量</text>
+<text x="20" y="150" text-anchor="middle" fill="#2c3e50" font-weight="bold" transform="rotate(-90, 20, 150)">成本</text>
+<!-- 社會成本曲線 -->
+<path d="M50,250 Q150,150 250,100 T450,50" fill="none" stroke="#c0392b" stroke-width="3" stroke-dasharray="0" />
+<text x="450" y="50" text-anchor="start" fill="#c0392b" font-weight="bold">社會成本</text>
+<!-- 私人成本曲線 -->
+<path d="M50,250 Q150,200 250,170 T450,150" fill="none" stroke="#2980b9" stroke-width="3" />
+<text x="450" y="150" text-anchor="start" fill="#2980b9" font-weight="bold">私人成本</text>
+<!-- 徵費箭頭 (皮古稅) -->
+<line x1="250" y1="170" x2="250" y2="100" stroke="#27ae60" stroke-width="3" stroke-dasharray="5,5" />
+<polygon points="250,100 245,110 255,110" fill="#27ae60" />
+<text x="260" y="135" text-anchor="start" fill="#27ae60" font-weight="bold">皮古稅</text>
+<!-- 最佳垃圾量標記 -->
+<line x1="250" y1="250" x2="250" y2="255" stroke="#2c3e50" stroke-width="2" />
+<text x="250" y="270" text-anchor="middle" fill="#2c3e50" font-weight="bold">最佳垃圾量</text>
+<!-- 過量垃圾標記 -->
+<line x1="450" y1="250" x2="450" y2="255" stroke="#c0392b" stroke-width="2" />
+<text x="450" y="270" text-anchor="middle" fill="#c0392b" font-weight="bold">過量垃圾</text>
+<!-- 外部成本區域 -->
+<path d="M250,100 L250,170 L450,150 L450,50 Z" fill="#c0392b" fill-opacity="0.2" />
+</svg>
+<!-- 浮動稅元素 -->
+<div class="tax-animation" style="top: 40%; left: 40%;">
+稅
+</div>
+<!-- 工廠與居民 -->
+<div class="factory">
+<svg viewBox="0 0 100 100" width="100%" height="100%">
+<rect x="10" y="40" width="80" height="60" fill="#7f8c8d" />
+<rect x="20" y="60" width="20" height="40" fill="#34495e" />
+<rect x="60" y="60" width="20" height="40" fill="#34495e" />
+<rect x="30" y="20" width="10" height="20" fill="#7f8c8d" />
+<rect x="60" y="20" width="10" height="20" fill="#7f8c8d" />
+<polygon points="5,40 95,40 70,10 30,10" fill="#e74c3c" />
+</svg>
+</div>
+<div class="house">
+<svg viewBox="0 0 100 100" width="100%" height="100%">
+<rect x="20" y="50" width="60" height="50" fill="#3498db" />
+<polygon points="10,50 90,50 50,10" fill="#e74c3c" />
+<rect x="40" y="70" width="20" height="30" fill="#2c3e50" />
+<rect x="30" y="60" width="10" height="10" fill="#f1c40f" />
+<rect x="60" y="60" width="10" height="10" fill="#f1c40f" />
+</svg>
+</div>
+<div class="pollution-cloud">
+<svg width="60" height="40" viewBox="0 0 60 40">
+<path d="M10,30 Q0,25 5,15 Q10,5 20,10 Q25,0 35,5 Q45,0 50,10 Q60,5 55,15 Q60,25 50,30 Z" fill="#95a5a6" fill-opacity="0.8" />
+</svg>
+</div>
+<div class="tax-flow"></div>
+</div>
+</div>
+<!-- 第二部分：簡單理解 -->
+<div class="student-section">
+<div class="student-title">皮古稅與垃圾徵費：簡單理解</div>
+<div class="student-point">
+<strong>皮古稅：讓搗蛋鬼負責！</strong>
+<p>→ 如果有人做壞事讓大家受影響，就要罰他負責！</p>
+</div>
+<div class="student-example">
+<strong>例子：</strong>
+<p>班上有人亂丟垃圾，害全班被老師罵 → 老師要求「亂丟的人要打掃一周」！</p>
+<p>→ 這樣搗蛋鬼就會乖乖愛乾淨啦！</p>
+</div>
+</div>
+<!-- 第三部分：垃圾徵費具體應用 -->
+<div class="student-section">
+<div class="student-title">垃圾徵費：自己的垃圾自己付錢！</div>
+<div class="student-point">
+<strong>是什麼？</strong>
+<p>→ 扔垃圾要買「專屬垃圾袋」，像買玩具一樣要花自己的零用錢！</p>
+</div>
+<div class="student-example">
+<strong>實際案例：</strong>
+<p>→ 香港準備用「按垃圾量收費」：丟越多，付越多！</p>
+<p>→ 韓國實施後，垃圾量減少了37%，回收率達60%！</p>
+<p>→ 台灣實施後，家庭垃圾量減少了30%！</p>
+</div>
+</div>
+<!-- 第四部分：比較表格 -->
+<div class="student-section">
+<div class="student-title">皮古稅與垃圾徵費比較</div>
+<table class="comparison-table">
+<tr>
+<th>皮古稅</th>
+<th>垃圾徵費</th>
+</tr>
+<tr>
+<td>對「搗蛋行為」直接罰錢（如工廠排污）</td>
+<td>對「浪費行為」間接收費（如多丟垃圾多付錢）</td>
+</tr>
+<tr>
+<td>像老師罰搗蛋鬼打掃</td>
+<td>像媽媽要求你整理自己的玩具</td>
+</tr>
+<tr>
+<td>廣泛應用於各種污染控制</td>
+<td>專門針對垃圾處理問題</td>
+</tr>
+</table>
+</div>
+<div style="text-align: center; margin-top: 20px;">
+<p style="font-weight: bold; color: var(--green); font-size: 1.2rem;">垃圾徵費就是一種「皮古稅」的具體應用！</p>
+</div>
+</div>
+
+<!-- Slide 6: 不實施垃圾徵費的後果（原 Slide 5，新增兩點內容） -->
+<div class="slide" id="slide6">
+<h2>如果不實施垃圾徵費...</h2> 
+<div class="simulation-layout">
+<div class="simulation-col">
+<div class="earth-container">
+<svg id="earthSvg" class="earth-svg" viewBox="0 0 200 200">
+<!-- 地球 -->
+<circle cx="100" cy="100" r="80" fill="#2980b9" />
+<!-- 陸地 -->
+<path d="M50,80 Q70,60 90,70 T130,60 Q160,70 170,90 T160,120 Q140,130 120,120 T80,130 Q60,120 50,80" fill="#27ae60" />
+<path d="M30,100 Q40,110 60,105 T90,115 Q100,125 110,115 T130,105 Q140,95 130,85 T100,80 Q80,85 70,95 T30,100" fill="#27ae60" />
+<!-- 表情臉 - 初始為哭臉 -->
+<circle cx="80" cy="90" r="5" fill="#fff" class="eye" />
+<circle cx="120" cy="90" r="5" fill="#fff" class="eye" />
+<path id="earthFace" d="M70,140 Q100,120 130,140" fill="none" stroke="#fff" stroke-width="3" class="mouth" />
+<!-- 眼淚 -->
+<path id="tearLeft" d="M80,95 Q78,105 80,115" stroke="#fff" fill="none" stroke-width="2" />
+<circle id="tearDropLeft" cx="80" cy="115" r="2" fill="#fff" />
+<path id="tearRight" d="M120,95 Q122,105 120,115" stroke="#fff" fill="none" stroke-width="2" />
+<circle id="tearDropRight" cx="120" cy="115" r="2" fill="#fff" />
+</svg>
+</div>
+<div style="text-align: center; margin: 20px 0;">
+<a href="https://hkdecoman.com/article/57021" target="_blank" class="btn earth-link">瞬間看地球</a>
+</div>
+<div class="theory-box">
+<div class="theory-title">為什麼需要垃圾徵費？</div>
+<p>當我們不用為垃圾付費時，會發生「市場失靈」：</p>
+<div class="icon-text">
+<div class="icon">1️⃣</div>
+<div>個人成本比社會成本低，導致垃圾過量生產</div>
+</div>
+<div class="icon-text">
+<div class="icon">2️⃣</div>
+<div>缺乏經濟激勵減少垃圾，資源浪費</div>
+</div>
+<div class="icon-text">
+<div class="icon">3️⃣</div>
+<div>垃圾徵費讓製造者承擔真實成本，改變行為</div>
+</div>
+<div class="icon-text">
+<div class="icon">4️⃣</div>
+<div>垃圾徵費可以創造新的就業機會，例如在回收行業和垃圾處理設施中，使藍領工人上游</div>
+</div>
+<div class="icon-text">
+<div class="icon">5️⃣</div>
+<div>堆填區飽和年份：<br>新界西堆填區：2026年<br>新界東北堆填區：2032年<br>將軍澳堆填區：2037年</div>
+</div>
+</div>
+</div>
+<div class="simulation-col">
+<div class="waste-simulation">
+<p style="font-size: 20px; font-weight: bold; text-align: center;">模擬垃圾堆填區飽和情況</p>
+<div class="money-sides">
+<div class="waste-meter-container">
+<div class="waste-meter" id="wasteMeter"></div>
+</div>
+</div>
+<div class="waste-control">
+<button class="btn" id="generateWaste">開始模擬</button>
+<div class="trash-counter" id="trashCounter">垃圾使用率: 44%</div>
+<button class="btn" id="implementFee" disabled>實施垃圾徵費</button>
+<button class="btn" id="showFeeUsage" style="display: none;">徵費的用途</button>
+</div>
+</div>
+<div class="fee-usage-container" id="feeUsageContainer">
+<h3 style="text-align: center;">徵費的用途</h3>
+<div class="fee-usage-grid">
+<div class="usage-item">
+<div class="usage-icon">
+<svg width="40" height="40" viewBox="0 0 50 50">
+<path d="M44,16c0-8.8-7.2-16-16-16S12,7.2,12,16c0,6.1,3.4,11.4,8.5,14H4v16h42V30h-2.5C39.6,27.4,44,22.1,44,16z" fill="#2980b9"/>
+<path d="M22,30h6v16h-6V30z" fill="#3498db"/>
+<path d="M12,35h10v5H12V35z M28,35h10v5H28V35z M8,40h34v6H8V40z" fill="#2c3e50"/>
+<circle cx="28" cy="16" r="12" fill="#3498db"/>
+<rect x="24" y="8" width="8" height="16" rx="2" fill="#ecf0f1"/>
+<rect x="20" y="12" width="16" height="8" rx="2" fill="#ecf0f1"/>
+</svg>
+</div>
+<div class="usage-title">投資智能城市項目</div>
+</div>
+<div class="usage-item">
+<div class="usage-icon">
+<svg width="40" height="40" viewBox="0 0 50 50">
+<path d="M6,12h38a2,2,0,0,1,2,2V44a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2V14A2,2,0,0,1,6,12Z" fill="#3498db"/>
+<rect x="8" y="16" width="34" height="26" rx="1" fill="#ecf0f1"/>
+<path d="M25,4A15,15,0,0,0,10,19v-5H6v8a2,2,0,0,0,2,2H40a2,2,0,0,0,2-2V14H38v5A15,15,0,0,0,25,4Z" fill="#2c3e50"/>
+<path d="M25,8a8,8,0,0,1,8,8H17A8,8,0,0,1,25,8Z" fill="#e74c3c"/>
+<path d="M22,24h6v2h-6Z M28,28h6v2h-6Z M16,28h6v2h-6Z M22,32h6v2h-6Z M16,36h6v2h-6Z M28,36h6v2h-6Z" fill="#3498db"/>
+<path d="M36,18a1,1,0,0,1-1,1H15a1,1,0,0,1-1-1V14a1,1,0,0,1,1-1H35a1,1,0,0,1,1,1Z" fill="#f39c12"/>
+<path d="M21,15v2h2V15H25v2h2V15h2v2h2V15" stroke="#ffffff" stroke-width="0.5" fill="none"/>
+</svg>
+</div>
+<div class="usage-title">減低水費或電費</div>
+</div>
+<div class="usage-item">
+<div class="usage-icon">
+<svg width="40" height="40" viewBox="0 0 50 50">
+<circle cx="25" cy="25" r="20" fill="#3498db"/>
+<circle cx="25" cy="25" r="16" fill="#ecf0f1"/>
+<circle cx="25" cy="25" r="3" fill="#2c3e50"/>
+<path d="M25,10 L25,12 M25,38 L25,40 M40,25 L38,25 M12,25 L10,25 M35.4,14.6 L34,16 M16,34 L14.6,35.4 M35.4,35.4 L34,34 M16,16 L14.6,14.6" stroke="#2c3e50" stroke-width="2"/>
+<path d="M25,15 L25,25 L32,30" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/>
+<path d="M20,6 C20,6 25,8 30,6 L28,11 C28,11 25,12 22,11 Z" fill="#27ae60"/>
+<path d="M21,39 C21,39 25,37 29,39 L27,44 C27,44 25,43 23,44 Z" fill="#27ae60"/>
+<path d="M6,20 C6,20 8,25 6,30 L11,28 C11,28 12,25 11,22 Z" fill="#27ae60"/>
+<path d="M39,21 C39,21 37,25 39,29 L44,27 C44,27 43,25 44,23 Z" fill="#27ae60"/>
+</svg>
+</div>
+<div class="usage-title">資助公眾Wi-Fi</div>
+</div>
+<div class="usage-item">
+<div class="usage-icon">
+<svg width="40" height="40" viewBox="0 0 50 50">
+<circle cx="25" cy="25" r="20" fill="#f1c40f"/>
+<circle cx="25" cy="25" r="14" fill="#f39c12"/>
+<circle cx="25" cy="25" r="8" fill="#f1c40f"/>
+<path d="M25,5 L25,10 M25,40 L25,45 M5,25 L10,25 M40,25 L45,25 M10,10 L14,14 M36,36 L40,40 M10,40 L14,36 M36,14 L40,10" stroke="#e67e22" stroke-width="2"/>
+<path d="M18,5 L21,12 M32,5 L29,12 M5,18 L12,21 M5,32 L12,29 M45,18 L38,21 M45,32 L38,29 M18,45 L21,38 M32,45 L29,38" stroke="#e67e22" stroke-width="1.5"/>
+<circle cx="25" cy="25" r="4" fill="#ffffff"/>
+</svg>
+</div>
+<div class="usage-title">發展再生能源</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Slide 7: 行動呼籲（原 Slide 6） -->
+<div class="slide" id="slide7">
+<div class="quote-container">
+<div class="quote">
+你的選擇塑造未來。<br>
+一個使用經濟工具促進環保的香港，需要你的參與！
+</div>
+</div>
+<div class="mission-statement">
+<div class="mission-title">商學院精英的獨特影響力</div>
+<div class="mission-text">
+作為未來的<span class="highlight-word">商業領袖</span>，你們擁有從根本上改變企業運作方式的能力。<br>
+經濟理論不只是課本知識，而是解決現實問題的實用工具。<br><br>
+當你們在各自的領域發揮影響力時，垃圾徵費的理念將在社會各層面得到推廣。<br>
+從企業決策到個人行為，環保信念將如同種子般在全港遍地開花。<br><br>
+這就是為什麼我們今天來到這裡 ---- 與你們分享這些理念並建立聯繫，<br>
+因為你們手中握有<span class="highlight-word">改變未來</span>的關鍵。
+</div>
+</div>
+</div>
+
+<div class="nav-buttons">
+<button class="btn" id="prevSlide">上一頁</button>
+<div class="slide-counter" id="slideCounter">1/7</div>
+<button class="btn" id="nextSlide">下一頁</button>
+</div>
+</div>
+
+<script>
+// 幻燈片控制
+let currentSlide = 0;
+const totalSlides = 8; // 更新總幻燈片數量，因為新增了一頁
+function updateSlide() {
+for (let i = 0; i < totalSlides; i++) {
+document.getElementById(`slide${i}`).classList.remove('active');
+}
+document.getElementById(`slide${currentSlide}`).classList.add('active');
+document.getElementById('slideCounter').textContent = `${currentSlide + 1}/${totalSlides}`;
+}
+function goToSlide(slideNum) {
+currentSlide = slideNum;
+updateSlide();
+}
+document.getElementById('prevSlide').addEventListener('click', function() {
+if (currentSlide > 0) {
+currentSlide--;
+updateSlide();
+}
+});
+document.getElementById('nextSlide').addEventListener('click', function() {
+if (currentSlide < totalSlides - 1) {
+currentSlide++;
+updateSlide();
+}
+});
+document.addEventListener('keydown', function(event) {
+if (event.key === 'ArrowLeft' && currentSlide > 0) {
+currentSlide--;
+updateSlide();
+} else if (event.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+currentSlide++;
+updateSlide();
+}
+});
+// 垃圾桶掉落垃圾動畫
+function createFallingTrash() {
+const trashBinContainer = document.getElementById('trashBinContainer');
+if (!trashBinContainer) return;
+setInterval(() => {
+const trash = document.createElement('div');
+trash.className = 'falling-trash';
+trash.innerHTML = '🗑️';
+const xPos = Math.random() * 100 + 25;
+trash.style.left = `${xPos}px`;
+trashBinContainer.appendChild(trash);
+setTimeout(() => trash.remove(), 2000);
+}, 1000);
+}
+// 巴士堆疊特效 - 改進版
+const busImg = document.getElementById('busImg');
+const busOverlay = document.getElementById('busOverlay');
+const busStackContainer = document.getElementById('busStackContainer');
+const busCounter = document.getElementById('busCounter');
+const busOverlayClose = document.getElementById('busOverlayClose');
+const busImpactSection = document.getElementById('busImpactSection');
+const miniBusContainer = document.getElementById('miniBusContainer');
+const stadiumContainer = document.getElementById('stadiumContainer');
+const continueBtn = document.getElementById('continueBtn');
+const busInteraction = document.getElementById('busInteraction');
+const interactionFeedback = document.getElementById('interactionFeedback');
+const interactionNext = document.getElementById('interactionNext');
+
+const busSvg = `
+<svg class="bus-svg" viewBox="0 0 120 50" width="100%" height="100%">
+<rect x="5" y="10" width="110" height="35" rx="5" fill="#e74c3c"/>
+<rect x="10" y="15" width="100" height="20" fill="#ffffff" opacity="0.3"/>
+<rect x="10" y="38" width="20" height="7" rx="3" fill="#333333"/>
+<rect x="90" y="38" width="20" height="7" rx="3" fill="#333333"/>
+<text x="60" y="30" text-anchor="middle" font-size="14" fill="white" font-weight="bold">🚌</text>
+</svg>
+`;
+
+let stackedBuses = 0;
+let stackInterval;
+let stackRow = 0;
+const maxBusPerRow = 20;
+const totalBuses = 716;
+const stadiumCount = 26;
+
+function stackBus() {
+if (stackedBuses >= totalBuses) {
+clearInterval(stackInterval);
+// 動畫完成後顯示提問互動
+setTimeout(() => {
+busInteraction.style.display = "flex";
+}, 1000);
+return;
+}
+const bus = document.createElement('div');
+bus.className = 'stacked-bus';
+const column = stackedBuses % maxBusPerRow;
+if (column === 0 && stackedBuses > 0) stackRow++;
+bus.style.left = `${column * 5 + 2}%`;
+bus.style.bottom = `${stackRow * 25 + 20}px`;
+bus.style.width = `4.5%`;
+bus.style.height = `25px`;
+bus.style.transform = 'scale(0)';
+bus.innerHTML = busSvg;
+busStackContainer.appendChild(bus);
+setTimeout(() => bus.style.transform = 'scale(1)', 50);
+stackedBuses++;
+busCounter.textContent = `已堆疊: ${stackedBuses}/${totalBuses}`;
+if (stackedBuses % 100 === 0 && stackedBuses > 0) {
+const marker = document.createElement('div');
+marker.className = 'height-label';
+marker.style.bottom = `${stackRow * 25 + 20}px`;
+marker.textContent = `${stackedBuses} 輛`;
+busStackContainer.appendChild(marker);
+}
+}
+
+function showImpactVisualization() {
+// 顯示震撼效果視窗
+busImpactSection.style.display = 'flex';
+// 填充微型巴士動畫
+miniBusContainer.innerHTML = `
+<svg viewBox="0 0 400 400" width="100%" height="100%">
+<g transform="translate(200, 200) scale(0.8)">
+${Array.from({length: 20}, (_, i) => {
+const angle = (i * 18) * Math.PI / 180;
+const x = 150 * Math.cos(angle);
+const y = 150 * Math.sin(angle);
+return `
+<g transform="translate(${x}, ${y}) scale(0.3) rotate(${angle * 180 / Math.PI})">
+<rect x="-55" y="-17.5" width="110" height="35" rx="5" fill="#e74c3c"/>
+<rect x="-50" y="-12.5" width="100" height="20" fill="#ffffff" opacity="0.3"/>
+<rect x="-50" y="10.5" width="20" height="7" rx="3" fill="#333333"/>
+<rect x="30" y="10.5" width="20" height="7" rx="3" fill="#333333"/>
+</g>
+`;
+}).join('')}
+<text x="0" y="10" text-anchor="middle" font-size="30" fill="white">716 輛巴士</text>
+</g>
+</svg>
+`;
+// 填充足球場圖示容器
+stadiumContainer.innerHTML = '';
+for (let i = 0; i < stadiumCount; i++) {
+const stadium = document.createElement('div');
+stadium.className = 'stadium';
+stadium.innerHTML = '⚽';
+stadium.style.opacity = '0';
+stadiumContainer.appendChild(stadium);
+}
+// 動畫：先顯示小巴士
+setTimeout(() => {
+miniBusContainer.classList.add('mini-bus-animation');
+miniBusContainer.classList.add('active');
+// 然後逐個顯示足球場
+setTimeout(() => {
+const stadiums = document.querySelectorAll('.stadium');
+stadiums.forEach((stadium, index) => {
+setTimeout(() => {
+stadium.classList.add('active-stadium');
+}, index * 100);
+});
+}, 1000);
+}, 500);
+}
+
+// 設置巴士互動選項事件
+document.querySelectorAll('.interaction-option').forEach(option => {
+option.addEventListener('click', function() {
+// 顯示所有選項的共同反饋
+interactionFeedback.style.display = 'block';
+// 標記選擇的選項
+document.querySelectorAll('.interaction-option').forEach(opt => {
+opt.style.backgroundColor = '';
+opt.style.color = '';
+});
+this.style.backgroundColor = 'var(--blue)';
+this.style.color = 'white';
+});
+});
+
+// 互動下一步按鈕
+interactionNext.addEventListener('click', function() {
+busInteraction.style.display = 'none';
+showImpactVisualization();
+});
+
+if (busImg) {
+busImg.addEventListener('click', function() {
+busOverlay.style.display = 'flex';
+stackedBuses = 0;
+stackRow = 0;
+busStackContainer.innerHTML = '';
+busCounter.textContent = `已堆疊: 0/${totalBuses}`;
+const heightMarker = document.createElement('div');
+heightMarker.className = 'height-marker';
+busStackContainer.appendChild(heightMarker);
+stackInterval = setInterval(stackBus, 30);
+});
+}
+
+if (busOverlayClose) {
+busOverlayClose.addEventListener('click', function() {
+busOverlay.style.display = 'none';
+busImpactSection.style.display = 'none';
+busInteraction.style.display = 'none';
+clearInterval(stackInterval);
+});
+}
+
+if (continueBtn) {
+continueBtn.addEventListener('click', function() {
+busImpactSection.style.display = 'none';
+busOverlay.style.display = 'none';
+});
+}
+
+// 垃圾計量器與用途展示
+let wasteLevel = 44;
+const wasteMeter = document.getElementById('wasteMeter');
+const trashCounter = document.getElementById('trashCounter');
+const generateWasteBtn = document.getElementById('generateWaste');
+const implementFeeBtn = document.getElementById('implementFee');
+const showFeeUsageBtn = document.getElementById('showFeeUsage');
+const feeUsageContainer = document.getElementById('feeUsageContainer');
+let wasteInterval;
+let wasteSimulationRunning = false;
+function setupWasteSimulation() {
+if (!wasteMeter) return;
+wasteMeter.style.height = `${wasteLevel}%`;
+generateWasteBtn.addEventListener('click', function() {
+if (wasteSimulationRunning) {
+clearInterval(wasteInterval);
+this.textContent = '開始模擬';
+wasteSimulationRunning = false;
+return;
+}
+this.textContent = '停止模擬';
+wasteSimulationRunning = true;
+wasteInterval = setInterval(() => {
+if (wasteLevel < 100) {
+wasteLevel += 1;
+wasteMeter.style.height = `${wasteLevel}%`;
+trashCounter.textContent = `垃圾使用率: ${wasteLevel}%`;
+if (wasteLevel >= 80) {
+trashCounter.style.color = 'var(--red)';
+trashCounter.style.fontWeight = 'bold';
+wasteMeter.style.backgroundColor = 'var(--red)';
+}
+if (wasteLevel >= 70) {
+implementFeeBtn.disabled = false;
+implementFeeBtn.classList.add('pulse');
+}
+if (wasteLevel >= 100) {
+alert('堆填區已飽和！環境危機迫在眉睫！');
+clearInterval(wasteInterval);
+generateWasteBtn.disabled = true;
+wasteSimulationRunning = false;
+generateWasteBtn.textContent = '開始模擬';
+}
+}
+}, 200);
+});
+implementFeeBtn.addEventListener('click', function() {
+wasteLevel = Math.floor(wasteLevel * 0.6);
+trashCounter.textContent = `垃圾使用率: ${wasteLevel}%`;
+wasteMeter.style.height = `${wasteLevel}%`;
+trashCounter.style.color = 'inherit';
+trashCounter.style.fontWeight = 'normal';
+wasteMeter.style.backgroundColor = '';
+implementFeeBtn.disabled = true;
+implementFeeBtn.classList.remove('pulse');
+generateWasteBtn.disabled = false;
+clearInterval(wasteInterval);
+wasteSimulationRunning = false;
+generateWasteBtn.textContent = '開始模擬';
+alert('實施垃圾徵費成功！\n垃圾量減少了40%，環境壓力大幅緩解！\n節省下來的費用可以用於社會建設。');
+showFeeUsageBtn.style.display = 'block';
+});
+if (showFeeUsageBtn) {
+showFeeUsageBtn.addEventListener('click', function() {
+feeUsageContainer.style.display = 'block';
+});
+}
+}
+
+// 改進：地球表情互動與發光效果
+function setupEarthInteraction() {
+const earthSvg = document.getElementById('earthSvg');
+const earthFace = document.getElementById('earthFace');
+const tearLeft = document.getElementById('tearLeft');
+const tearRight = document.getElementById('tearRight');
+const tearDropLeft = document.getElementById('tearDropLeft');
+const tearDropRight = document.getElementById('tearDropRight');
+const viewEarthBtn = document.getElementById('viewEarthBtn');
+if (viewEarthBtn && earthSvg) {
+viewEarthBtn.addEventListener('click', function(e) {
+e.preventDefault();
+// 改變表情從哭臉到笑臉
+earthFace.setAttribute('d', 'M70,120 Q100,150 130,120');
+// 隱藏眼淚
+tearLeft.style.display = 'none';
+tearRight.style.display = 'none';
+tearDropLeft.style.display = 'none';
+tearDropRight.style.display = 'none';
+// 添加發光效果
+earthSvg.classList.add('glowing-earth');
+// 給出視覺反饋
+this.textContent = '地球在微笑！';
+this.style.backgroundColor = 'var(--green)';
+});
+}
+}
+
+// 初始化
+window.onload = function() {
+updateSlide();
+createFallingTrash();
+setupWasteSimulation();
+setupEarthInteraction();
+// 確保初始垃圾計量器正確顯示
+if (wasteMeter) {
+wasteMeter.style.height = `${wasteLevel}%`;
+}
+};
+
+// 處理視窗調整大小時的響應式布局
+window.addEventListener('resize', function() {
+// 可以在這裡添加任何需要在視窗調整大小時執行的代碼
+});
+</script>
+</body>
+</html>
