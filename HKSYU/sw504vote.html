@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社會工作宏觀實踐課題分析</title>
+    <style>
+        body {
+            font-family: Arial, "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        h2 {
+            font-size: 1.3rem;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+        }
+        
+        .mindmap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .root {
+            background: #3498db;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            position: relative;
+            margin-bottom: 20px;
+            z-index: 2;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .branches {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        .branch {
+            width: 100%;
+            margin: 8px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .branch:hover {
+            transform: translateY(-3px);
+        }
+        
+        .branch-title {
+            background: #2ecc71;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .branch:nth-child(2) .branch-title {
+            background: #e74c3c;
+        }
+        
+        .branch:nth-child(3) .branch-title {
+            background: #f39c12;
+        }
+        
+        .branch:nth-child(4) .branch-title {
+            background: #9b59b6;
+        }
+        
+        .branch:nth-child(5) .branch-title {
+            background: #1abc9c;
+        }
+        
+        .sub-branches {
+            padding: 10px;
+        }
+        
+        .sub-branch {
+            background: #f8f9fa;
+            padding: 6px 10px;
+            margin: 6px 0;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            border-left: 3px solid #3498db;
+        }
+        
+        .sub-branch.pros {
+            border-left-color: #2ecc71;
+        }
+        
+        .sub-branch.cons {
+            border-left-color: #e74c3c;
+        }
+        
+        .ppt-outline {
+            margin-top: 30px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .ppt-slide {
+            border: 1px solid #ddd;
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        
+        .ppt-title {
+            background: #34495e;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .ppt-content {
+            padding-left: 10px;
+        }
+        
+        .ppt-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+        
+        .ppt-content li {
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 8px 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 5px 5px 0 0;
+            margin-right: 3px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            flex: 0 0 auto;
+        }
+        
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            background: white;
+            margin-bottom: -1px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .content-box {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+            font-size: 0.9rem;
+        }
+        
+        .content-box ol, .content-box ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+        
+        .content-box li {
+            margin-bottom: 5px;
+        }
+        
+        /* 專為手機設計的優化 */
+        #tab-selector {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+                font-size: 14px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+            
+            .tabs {
+                display: none;
+            }
+            
+            #tab-selector {
+                display: block;
+            }
+            
+            .branch {
+                width: 100%;
+                margin: 8px 0;
+            }
+            
+            .ppt-slide {
+                padding: 10px;
+            }
+            
+            .ppt-content {
+                padding-left: 5px;
+            }
+            
+            .ppt-content ul {
+                padding-left: 15px;
+            }
+            
+            th, td {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>社會工作宏觀實踐課題分析</h1>
+        
+        <select id="tab-selector" onchange="selectTab(this.value)">
+            <option value="mindmap-tab">思維導圖分析</option>
+            <option value="sen-tab">SEN成年人</option>
+            <option value="career-tab">成年人生涯規劃</option>
+            <option value="medical-tab">跨境醫療</option>
+            <option value="eldercare-tab">跨境養老</option>
+            <option value="childcare-tab">普及托兒服務</option>
+            <option value="guidelines-tab">功課指南</option>
+        </select>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'mindmap-tab')">思維導圖分析</div>
+            <div class="tab" onclick="openTab(event, 'sen-tab')">SEN成年人</div>
+            <div class="tab" onclick="openTab(event, 'career-tab')">成年人生涯規劃</div>
+            <div class="tab" onclick="openTab(event, 'medical-tab')">跨境醫療</div>
+            <div class="tab" onclick="openTab(event, 'eldercare-tab')">跨境養老</div>
+            <div class="tab" onclick="openTab(event, 'childcare-tab')">普及托兒服務</div>
+            <div class="tab" onclick="openTab(event, 'guidelines-tab')">功課指南</div>
+        </div>
+
+        <div id="mindmap-tab" class="tab-content active">
+            <div class="mindmap">
+                <div class="root">香港社工參與社區可持續發展的策動方向</div>
+                <div class="branches">
+                    <div class="branch">
+                        <div class="branch-title">SEN成年人支援</div>
+                        <div class="sub-branches">
+                            <div class="sub-branch">生涯轉銜支援不足</div>
+                            <div class="sub-branch">家庭照顧者壓力大</div>
+                            <div class="sub-branch">就業機會有限</div>
+                            <div class="sub-branch pros">優勢：多元共融政策支持</div>
+                            <div class="sub-branch cons">挑戰：資源分配不均</div>
+                        </div>
+                    </div>
+                    
+                    <div class="branch">
+                        <div class="branch-title">成年人生涯規劃</div>
+                        <div class="sub-branches">
+                            <div class="sub-branch">終身學習需求增加</div>
+                            <div class="sub-branch">職業轉換與適應</div>
+                            <div class="sub-branch">退休準備與安排</div>
+                            <div class="sub-branch pros">優勢：人才發展政策</div>
+                            <div class="sub-branch cons">挑戰：老齡化社會壓力</div>
+                        </div>
+                    </div>
+                    
+                    <div class="branch">
+                        <div class="branch-title">跨境醫療挑戰</div>
+                        <div class="sub-branches">
+                            <div class="sub-branch">政策銜接問題</div>
+                            <div class="sub-branch">醫療服務質素保障</div>
+                            <div class="sub-branch">跨境醫療資訊共享</div>
+                            <div class="sub-branch pros">優勢：資源互補</div>
+                            <div class="sub-branch cons">挑戰：醫療體系差異</div>
+                        </div>
+                    </div>
+                    
+                    <div class="branch">
+                        <div class="branch-title">跨境養老支援</div>
+                        <div class="sub-branches">
+                            <div class="sub-branch">經濟與支付機制</div>
+                            <div class="sub-branch">服務標準與監管</div>
+                            <div class="sub-branch">長者社會連結維繫</div>
+                            <div class="sub-branch pros">優勢：成本效益高</div>
+                            <div class="sub-branch cons">挑戰：文化適應與歸屬感</div>
+                        </div>
+                    </div>
+                    
+                    <div class="branch">
+                        <div class="branch-title">普及托兒服務</div>
+                        <div class="sub-branches">
+                            <div class="sub-branch">服務供應不足</div>
+                            <div class="sub-branch">服務質素參差</div>
+                            <div class="sub-branch">家庭與工作平衡</div>
+                            <div class="sub-branch pros">優勢：促進女性就業</div>
+                            <div class="sub-branch cons">挑戰：資源投入巨大</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <h3>對五大主題的綜合分析</h3>
+                <p>根據課程要求和「孤單不再」計劃的啟發，以上五個主題都能與宏觀社會工作實踐相連結。從<strong>社區參與</strong>、<strong>跨界別合作</strong>、<strong>建立社會資本</strong>和<strong>互助網絡</strong>的角度，這些議題都需要系統性思考和集體行動。</p>
+                
+                <p>經分析，建議選擇<strong>「跨境養老的挑戰與機遇」</strong>作為小組報告主題，因為：</p>
+                <ol>
+                    <li>與香港現行政策高度相關（2025年推出為期三年「綜援」長者入住廣東省安老院的試驗計劃）</li>
+                    <li>涉及複雜的跨界別合作（政府、社福機構、醫療機構、民間組織等）</li>
+                    <li>可借鑒「孤單不再」計劃中的社區支援和互助網絡建立模式</li>
+                    <li>面臨明確的「隱藏人口」識別問題（如何確保跨境長者不被遺忘）</li>
+                    <li>具有明確的區域合作和全球背景（粵港澳大灣區發展、人口老齡化全球趨勢）</li>
+                </ol>
+            </div>
+
+            <table>
+                <tr>
+                    <th>主題</th>
+                    <th>與「孤單不再」計劃的相似點</th>
+                    <th>社工可策動的方向</th>
+                    <th>評分難易度</th>
+                </tr>
+                <tr>
+                    <td>SEN成年人支援</td>
+                    <td>支援隱藏人口、建立互助網絡</td>
+                    <td>社區融合計劃、雇主網絡建立</td>
+                    <td>★★★★☆</td>
+                </tr>
+                <tr>
+                    <td>成年人生涯規劃</td>
+                    <td>賦能服務使用者、社會資本建立</td>
+                    <td>社區支援中心、朋輩支援計劃</td>
+                    <td>★★★☆☆</td>
+                </tr>
+                <tr>
+                    <td>跨境醫療挑戰</td>
+                    <td>照顧者支援、跨界別合作</td>
+                    <td>一站式資訊平台、醫社合作</td>
+                    <td>★★★★☆</td>
+                </tr>
+                <tr>
+                    <td>跨境養老支援</td>
+                    <td>隱藏人口識別、互助網絡</td>
+                    <td>連結社區資源、推動政策改善</td>
+                    <td>★★★★★</td>
+                </tr>
+                <tr>
+                    <td>普及托兒服務</td>
+                    <td>社區參與、家庭支援</td>
+                    <td>社區托兒網絡、親職支援計劃</td>
+                    <td>★★★☆☆</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="sen-tab" class="tab-content">
+            <h2>SEN成年人支援：PPT報告大綱</h2>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第1頁：引言 - SEN成年人的困境</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>定義問題：21歲後SEN人士面臨的「福利懸崖」現象</li>
+                        <li>問題嚴重性：香港SEN成年人數據與現實困境</li>
+                        <li>全球視野：展示區域及全球面臨的類似挑戰</li>
+                        <li>提出報告架構：社會工作宏觀實踐視角分析</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第2頁：持份者分析與韋恩圖</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心持份者：SEN成年人及其家庭</li>
+                        <li>服務提供者：社福機構、培訓中心、庇護工場等</li>
+                        <li>政策制定者：勞工及福利局、社會福利署等</li>
+                        <li>社區支持者：雇主、鄰里網絡、志願者等</li>
+                        <li>韋恩圖展示：持份者間的相互關係與權責重疊</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第3頁：問題樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>根本問題：SEN成年人轉銜支援斷層</li>
+                        <li>直接原因：
+                            <ul>
+                                <li>支援服務年齡限制（多數服務停在21歲）</li>
+                                <li>就業機會有限與雇主信心不足</li>
+                                <li>社會融合與接納度不足</li>
+                            </ul>
+                        </li>
+                        <li>間接原因：
+                            <ul>
+                                <li>政策碎片化與缺乏連貫性</li>
+                                <li>資源分配不均</li>
+                                <li>缺乏具體的長期規劃</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第4頁：目標樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心目標：建立連貫的SEN成年人支援體系</li>
+                        <li>直接目標：
+                            <ul>
+                                <li>擴展服務至成年期並消除年齡斷層</li>
+                                <li>增加就業機會和支持性就業環境</li>
+                                <li>促進社區融合與接納</li>
+                            </ul>
+                        </li>
+                        <li>間接目標：
+                            <ul>
+                                <li>推動政策整合與連貫性</li>
+                                <li>優化資源分配效益</li>
+                                <li>制定長期規劃與評估機制</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第5頁：現有實踐回顧</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港現有實踐：
+                            <ul>
+                                <li>展能就業服務</li>
+                                <li>職業康復服務</li>
+                                <li>社會企業模式</li>
+                            </ul>
+                        </li>
+                        <li>國際範例：
+                            <ul>
+                                <li>澳洲NDIS（全國殘障保險計劃）</li>
+                                <li>英國的「個人預算」模式</li>
+                                <li>日本「支援性就業」網絡</li>
+                            </ul>
+                        </li>
+                        <li>與「孤單不再」計劃的相似性：識別隱藏人口、建立跨界別網絡</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第6頁：相關社會政策分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>現有政策框架：
+                            <ul>
+                                <li>《殘疾人權利公約》在香港的實施</li>
+                                <li>《香港康復計劃方案》</li>
+                                <li>《特殊教育需要學生升學及就業過渡指南》</li>
+                            </ul>
+                        </li>
+                        <li>政策缺口分析：
+                            <ul>
+                                <li>政策連貫性不足，重心仍在18歲以下群體</li>
+                                <li>跨部門協作機制有限</li>
+                                <li>成年SEN的社區參與缺乏支持</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第7頁：「全生命歷程」支援框架 - 建議方案</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社區參與策略：
+                            <ul>
+                                <li>建立「SEN大使」朋輩支援網絡</li>
+                                <li>社區教育與共融活動</li>
+                                <li>家庭互助小組</li>
+                            </ul>
+                        </li>
+                        <li>跨界別合作模式：
+                            <ul>
+                                <li>「SEN友善雇主」網絡</li>
+                                <li>醫療、社福、教育、就業的協作平台</li>
+                                <li>社區資源配對機制</li>
+                            </ul>
+                        </li>
+                        <li>社會資本建立：
+                            <ul>
+                                <li>SEN才能培訓與展示平台</li>
+                                <li>社區「互助銀行」</li>
+                                <li>長遠支持網絡維持</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第8頁：社工宏觀實踐角色與案例分享</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社會倡導角色：政策缺口倡議策略</li>
+                        <li>系統協調者：建立跨界別協作平台</li>
+                        <li>資源整合者：優化資源流向與使用效益</li>
+                        <li>社區組織者：動員社區支持網絡</li>
+                        <li>實務案例：「SEN生活導航員」計劃構想</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第9頁：可行性與永續性分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>資源需求評估</li>
+                        <li>政策配合度分析</li>
+                        <li>社區參與可行性</li>
+                        <li>長期永續策略：從「支持」到「賦能」</li>
+                        <li>成效指標制定與評估機制</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第10頁：總結與互動討論</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>主要發現與建議摘要</li>
+                        <li>與「孤單不再」計劃的連結與學習</li>
+                        <li>課堂互動：角色扮演活動（持份者觀點）</li>
+                        <li>反思問題拋出：如何在你的社區識別並支援隱藏的SEN成年人？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="career-tab" class="tab-content">
+            <h2>成年人生涯規劃：PPT報告大綱</h2>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第1頁：成年人生涯規劃的重要性與挑戰</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>背景：香港勞動市場變化與挑戰</li>
+                        <li>問題定義：22歲後成年人的生涯支援缺口</li>
+                        <li>全球趨勢：終身學習與多次職業轉換成為常態</li>
+                        <li>報告架構介紹：從社會工作宏觀實踐角度探討</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第2頁：持份者分析與韋恩圖</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心持份者：不同年齡段成年人群體</li>
+                        <li>服務提供者：ERB、VTC、大專院校、社區學院等</li>
+                        <li>政策制定者：勞工及福利局、創新科技及工業局等</li>
+                        <li>社區支持者：企業、社福機構、社區團體等</li>
+                        <li>韋恩圖：展示各持份者間的互動關係與影響</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第3頁：問題樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>根本問題：成年人生涯發展支援不足</li>
+                        <li>直接原因：
+                            <ul>
+                                <li>資源與服務多集中在年輕人與初入職者</li>
+                                <li>中年轉職支援不足</li>
+                                <li>退休準備教育與支援缺乏系統性</li>
+                            </ul>
+                        </li>
+                        <li>間接原因：
+                            <ul>
+                                <li>政策焦點偏重應急而非預防</li>
+                                <li>部門間協作不足</li>
+                                <li>社會對終身學習理念接受度尚低</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第4頁：目標樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心目標：建立全生命週期的生涯支援系統</li>
+                        <li>直接目標：
+                            <ul>
+                                <li>均衡各年齡段的生涯發展資源</li>
+                                <li>強化中年轉職支援網絡</li>
+                                <li>系統化的退休準備教育與支援</li>
+                            </ul>
+                        </li>
+                        <li>間接目標：
+                            <ul>
+                                <li>政策轉向預防性與發展性取向</li>
+                                <li>建立跨部門協作機制</li>
+                                <li>推廣終身學習文化</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第5頁：現有實踐回顧</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港現有實踐：
+                            <ul>
+                                <li>ERB課程與「人才發展計劃」</li>
+                                <li>「樂活一站」中高齡就業計劃</li>
+                                <li>「退休策劃」社區教育計劃</li>
+                            </ul>
+                        </li>
+                        <li>國際範例：
+                            <ul>
+                                <li>新加坡SkillsFuture終身學習計劃</li>
+                                <li>北歐「彈性安全」就業模式</li>
+                                <li>日本「人生100年計劃」</li>
+                            </ul>
+                        </li>
+                        <li>與「孤單不再」計劃的連結：建立互助網絡、社區參與和賦能</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第6頁：相關社會政策分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>現有政策框架：
+                            <ul>
+                                <li>「人力資源規劃委員會」策略</li>
+                                <li>持續進修基金政策</li>
+                                <li>退休保障政策</li>
+                            </ul>
+                        </li>
+                        <li>政策缺口分析：
+                            <ul>
+                                <li>缺乏整全的生涯發展政策架構</li>
+                                <li>支援服務碎片化</li>
+                                <li>政策著重經濟層面，忽略心理社會需求</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第7頁：「全齡生涯發展」框架 - 建議方案</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社區參與策略：
+                            <ul>
+                                <li>社區為本的「生涯支援站」</li>
+                                <li>「生涯夥伴」朋輩支援計劃</li>
+                                <li>跨代共學社區項目</li>
+                            </ul>
+                        </li>
+                        <li>跨界別合作模式：
+                            <ul>
+                                <li>「生涯發展聯盟」--企業、教育機構、社區組織合作平台</li>
+                                <li>「技能銀行」--專業技能交流平台</li>
+                                <li>區域性經濟轉型支援網絡</li>
+                            </ul>
+                        </li>
+                        <li>社會資本建立：
+                            <ul>
+                                <li>「人生規劃師」培訓與認證</li>
+                                <li>社區知識與經驗傳承平台</li>
+                                <li>跨齡互助網絡建立</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第8頁：社工宏觀實踐角色與案例分享</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>政策倡導者：推動整全生涯發展政策</li>
+                        <li>系統連結者：跨界別資源整合</li>
+                        <li>社區動員者：建立社區支持網絡</li>
+                        <li>能力建設者：賦能個人與社區</li>
+                        <li>實務案例：「生涯轉型支援網絡」構想</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第9頁：可行性與永續性分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>資源需求與可能來源</li>
+                        <li>政策協調與支持需求</li>
+                        <li>社區參與可行性</li>
+                        <li>長期永續策略：從專業服務到社區自主</li>
+                        <li>成效評估框架與指標</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第10頁：總結與互動討論</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>主要發現與建議摘要</li>
+                        <li>與「孤單不再」計劃的連結與學習</li>
+                        <li>課堂互動：「我的生涯規劃需求」小組討論</li>
+                        <li>反思問題：你認為香港社區如何更好地支援不同年齡段成年人的生涯發展？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="medical-tab" class="tab-content">
+            <h2>跨境醫療挑戰與機遇：PPT報告大綱</h2>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第1頁：跨境醫療的背景與趨勢</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港-大灣區的醫療融合背景</li>
+                        <li>問題定義：跨境醫療面臨的主要挑戰</li>
+                        <li>全球視角：國際跨境醫療發展趨勢</li>
+                        <li>報告架構介紹：從社會工作宏觀實踐角度探討</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第2頁：持份者分析與韋恩圖</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心持份者：
+                            <ul>
+                                <li>跨境患者及其家庭</li>
+                                <li>長期在內地生活的香港居民</li>
+                                <li>有慢性病需要的長者群體</li>
+                            </ul>
+                        </li>
+                        <li>服務提供者：兩地醫療機構、保險公司、社福機構等</li>
+                        <li>政策制定者：兩地衛生當局、醫療監管機構等</li>
+                        <li>社區支持者：患者組織、義工團體、社區組織等</li>
+                        <li>韋恩圖：展示各持份者間的權責與相互影響</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第3頁：問題樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>根本問題：跨境醫療服務銜接不足</li>
+                        <li>直接原因：
+                            <ul>
+                                <li>醫療記錄跨境共享困難</li>
+                                <li>醫保覆蓋範圍與理賠問題</li>
+                                <li>醫療標準與質素監管差異</li>
+                                <li>藥物供應與用藥連續性挑戰</li>
+                            </ul>
+                        </li>
+                        <li>間接原因：
+                            <ul>
+                                <li>兩地醫療體系差異</li>
+                                <li>政策協調機制不完善</li>
+                                <li>資訊不對稱與知識缺口</li>
+                                <li>跨境醫療社工角色不明確</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第4頁：目標樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心目標：建立無縫跨境醫療支援體系</li>
+                        <li>直接目標：
+                            <ul>
+                                <li>促進醫療記錄的安全共享</li>
+                                <li>擴展醫保覆蓋與簡化理賠流程</li>
+                                <li>協調醫療標準與質素保證</li>
+                                <li>確保藥物供應與治療連續性</li>
+                            </ul>
+                        </li>
+                        <li>間接目標：
+                            <ul>
+                                <li>增進兩地醫療體系互通與協作</li>
+                                <li>建立有效的政策協調機制</li>
+                                <li>提供全面的資訊與支援服務</li>
+                                <li>明確跨境醫療社工的角色與功能</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第5頁：現有實踐回顧</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港現有實踐：
+                            <ul>
+                                <li>「長者醫療券」大灣區試點計劃</li>
+                                <li>香港大學深圳醫院經驗</li>
+                                <li>NGO提供的跨境醫療支援服務</li>
+                            </ul>
+                        </li>
+                        <li>國際範例：
+                            <ul>
+                                <li>歐盟跨境醫療指令</li>
+                                <li>新加坡-馬來西亞醫療合作模式</li>
+                                <li>美加邊境醫療支援服務</li>
+                            </ul>
+                        </li>
+                        <li>與「孤單不再」計劃的連結：識別隱藏人口、建立互助網絡</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第6頁：相關社會政策分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>現有政策框架：
+                            <ul>
+                                <li>粵港澳大灣區醫療合作協議</li>
+                                <li>香港自願醫保計劃</li>
+                                <li>跨境電子健康記錄共享計劃</li>
+                            </ul>
+                        </li>
+                        <li>政策缺口分析：
+                            <ul>
+                                <li>醫療系統整合不足</li>
+                                <li>跨境醫療社會工作服務政策缺乏</li>
+                                <li>醫療資源分配不均</li>
+                                <li>長期護理連續性保障不足</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第7頁：「無縫跨境醫療支援」框架 - 建議方案</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社區參與策略：
+                            <ul>
+                                <li>「跨境患者互助網絡」建立</li>
+                                <li>社區健康大使培訓計劃</li>
+                                <li>患者家屬支援小組</li>
+                            </ul>
+                        </li>
+                        <li>跨界別合作模式：
+                            <ul>
+                                <li>醫社協作「一站通」服務平台</li>
+                                <li>跨境醫療協調中心設立</li>
+                                <li>遠程醫療與社工結合服務</li>
+                            </ul>
+                        </li>
+                        <li>社會資本建立：
+                            <ul>
+                                <li>跨境健康資訊網絡</li>
+                                <li>社區照顧經驗分享平台</li>
+                                <li>「醫療通者」培訓計劃</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第8頁：社工宏觀實踐角色與案例分享</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>跨境醫療協調者：連結兩地醫療資源</li>
+                        <li>醫療個案管理者：確保治療連續性</li>
+                        <li>健康資訊促進者：減少資訊不對稱</li>
+                        <li>政策倡導者：推動系統層面改變</li>
+                        <li>實務案例：「跨境醫療樞紐」服務模式構想</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第9頁：可行性與永續性分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>資源需求與潛在資金來源</li>
+                        <li>政策支持與協調需求</li>
+                        <li>技術與基礎設施挑戰</li>
+                        <li>長期永續策略：從試點到系統整合</li>
+                        <li>成效評估框架與指標</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第10頁：總結與互動討論</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>主要發現與建議摘要</li>
+                        <li>與「孤單不再」計劃的連結與學習</li>
+                        <li>課堂互動：「跨境醫療情境」角色扮演</li>
+                        <li>反思問題：香港社工如何在跨境醫療中發揮更積極的角色？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="eldercare-tab" class="tab-content">
+            <h2>跨境養老支援：PPT報告大綱</h2>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第1頁：跨境養老的背景與政策發展</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港人口老齡化與養老服務缺口</li>
+                        <li>2025年「綜援」長者入住廣東省安老院試驗計劃介紹</li>
+                        <li>大灣區發展背景與跨境養老趨勢</li>
+                        <li>養老服務全球化視角與挑戰</li>
+                        <li>報告架構：從社會工作宏觀實踐角度分析</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第2頁：持份者分析與韋恩圖</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心持份者：
+                            <ul>
+                                <li>參與計劃的綜援長者</li>
+                                <li>長者家屬與照顧者</li>
+                                <li>有跨境養老需求的非綜援長者</li>
+                            </ul>
+                        </li>
+                        <li>服務提供者：兩地安老院舍、醫療機構、社福機構</li>
+                        <li>政策制定者：勞工及福利局、社會福利署、廣東省民政廳等</li>
+                        <li>社區支持者：長者組織、社區組織、義工團體等</li>
+                        <li>韋恩圖：展示各持份者間的相互關係與責任共享</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第3頁：問題樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>根本問題：跨境養老面臨多重系統性挑戰</li>
+                        <li>直接問題：
+                            <ul>
+                                <li>服務標準與質素保證差異</li>
+                                <li>社會連結與歸屬感斷裂風險</li>
+                                <li>醫療與福利支持銜接不足</li>
+                                <li>監管與投訴機制不完善</li>
+                            </ul>
+                        </li>
+                        <li>間接問題：
+                            <ul>
+                                <li>兩地養老理念與文化差異</li>
+                                <li>政策協調機制不足</li>
+                                <li>跨境資訊流通不暢</li>
+                                <li>社工角色定位不明確</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第4頁：目標樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心目標：建立無縫、優質的跨境養老支援體系</li>
+                        <li>直接目標：
+                            <ul>
+                                <li>統一服務標準與質素監管</li>
+                                <li>保持與強化社會連結</li>
+                                <li>確保醫療與福利服務連續性</li>
+                                <li>建立有效的監督與回饋機制</li>
+                            </ul>
+                        </li>
+                        <li>間接目標：
+                            <ul>
+                                <li>增進兩地養老理念與實踐互融</li>
+                                <li>建立跨境養老政策協調平台</li>
+                                <li>促進資訊透明與流通</li>
+                                <li>明確跨境養老社工角色</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第5頁：現有實踐回顧</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港現有實踐：
+                            <ul>
+                                <li>「廣東計劃」與「福建計劃」經驗</li>
+                                <li>香港NGO在內地開辦的安老院舍</li>
+                                <li>社聯「跨境養老服務研究」成果</li>
+                            </ul>
+                        </li>
+                        <li>國際參考：
+                            <ul>
+                                <li>日本海外養老支援計劃</li>
+                                <li>德國-波蘭跨境養老合作</li>
+                                <li>美國-墨西哥退休社區發展</li>
+                            </ul>
+                        </li>
+                        <li>與「孤單不再」計劃的連結：隱藏人口識別、互助網絡建立</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第6頁：相關社會政策分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>現有政策框架：
+                            <ul>
+                                <li>2025年「綜援長者入住廣東省安老院試驗計劃」</li>
+                                <li>「廣東計劃」與「福建計劃」</li>
+                                <li>大灣區跨境養老政策協議</li>
+                            </ul>
+                        </li>
+                        <li>政策缺口分析：
+                            <ul>
+                                <li>服務標準與監管機制不統一</li>
+                                <li>跨境專業人員流動與認證問題</li>
+                                <li>社會參與與融合支援不足</li>
+                                <li>危機與緊急情況應對機制不完善</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第7頁：「跨境養老支援網絡」框架 - 建議方案</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社區參與策略：
+                            <ul>
+                                <li>「兩地一家親」長者連結計劃</li>
+                                <li>虛擬社區參與平台</li>
+                                <li>跨境家庭支援網絡</li>
+                            </ul>
+                        </li>
+                        <li>跨界別合作模式：
+                            <ul>
+                                <li>「養老服務協調中心」設立</li>
+                                <li>醫養結合跨境支援系統</li>
+                                <li>專業交流與培訓平台</li>
+                            </ul>
+                        </li>
+                        <li>社會資本建立：
+                            <ul>
+                                <li>「跨境養老大使」計劃</li>
+                                <li>長者互助網絡發展</li>
+                                <li>「虛擬鄰舍」計劃</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第8頁：社工宏觀實踐角色與案例分享</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>跨境養老協調者：連結兩地服務與資源</li>
+                        <li>服務質素監察者：確保服務標準</li>
+                        <li>長者權益倡導者：保障弱勢群體</li>
+                        <li>社區連結促進者：維繫社會聯繫</li>
+                        <li>實務案例：「跨境長者支援中心」服務模式構想</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第9頁：可行性與永續性分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>資源需求與分配建議</li>
+                        <li>政策協調與發展需求</li>
+                        <li>技術與基礎設施考量</li>
+                        <li>長期永續策略：擴展並優化試驗計劃</li>
+                        <li>成效評估框架與指標系統</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第10頁：總結與互動討論</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>主要發現與建議摘要</li>
+                        <li>與「孤單不再」計劃的連結與學習</li>
+                        <li>課堂互動：「跨境養老情境」角色扮演</li>
+                        <li>反思問題：香港社工如何在跨境養老服務中發揮更重要的作用？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="childcare-tab" class="tab-content">
+            <h2>普及托兒服務：PPT報告大綱</h2>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第1頁：普及托兒服務的重要性與現況</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港低生育率與家庭友善政策關連</li>
+                        <li>女性就業與托兒服務需求</li>
+                        <li>現有托兒服務供應與缺口</li>
+                        <li>全球視角：普及托兒服務的國際趨勢</li>
+                        <li>報告架構：從社會工作宏觀實踐角度分析</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第2頁：持份者分析與韋恩圖</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心持份者：
+                            <ul>
+                                <li>幼兒及其家庭</li>
+                                <li>全職工作父母</li>
+                                <li>單親家庭</li>
+                                <li>低收入家庭</li>
+                            </ul>
+                        </li>
+                        <li>服務提供者：托兒中心、幼稚園、社福機構等</li>
+                        <li>政策制定者：勞工及福利局、教育局、婦女事務委員會等</li>
+                        <li>社區支持者：社區組織、僱主、義工團體等</li>
+                        <li>韋恩圖：展示各持份者間的互動關係與影響</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第3頁：問題樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>根本問題：托兒服務不足與不普及</li>
+                        <li>直接問題：
+                            <ul>
+                                <li>托兒服務供應量不足</li>
+                                <li>服務質素參差不齊</li>
+                                <li>可負擔性問題</li>
+                                <li>服務時間與工作需求不匹配</li>
+                            </ul>
+                        </li>
+                        <li>間接問題：
+                            <ul>
+                                <li>托兒服務政策碎片化</li>
+                                <li>資源投入不足</li>
+                                <li>專業人員短缺</li>
+                                <li>家庭友善文化不足</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第4頁：目標樹分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>核心目標：建立優質、可負擔的普及托兒服務體系</li>
+                        <li>直接目標：
+                            <ul>
+                                <li>增加托兒服務供應</li>
+                                <li>提升服務質素與標準</li>
+                                <li>確保服務可負擔性</li>
+                                <li>提供靈活多樣的服務時間與方式</li>
+                            </ul>
+                        </li>
+                        <li>間接目標：
+                            <ul>
+                                <li>整合托兒服務政策框架</li>
+                                <li>增加資源投入</li>
+                                <li>培養與吸引專業人才</li>
+                                <li>促進家庭友善職場文化</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第5頁：現有實踐回顧</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>香港現有實踐：
+                            <ul>
+                                <li>資助幼兒中心服務</li>
+                                <li>「鄰里支援幼兒照顧計劃」</li>
+                                <li>「課餘託管」和「暫託」服務</li>
+                            </ul>
+                        </li>
+                        <li>國際參考：
+                            <ul>
+                                <li>北歐國家的普及托兒模式</li>
+                                <li>新加坡社區托兒網絡</li>
+                                <li>法國的多元托兒服務系統</li>
+                            </ul>
+                        </li>
+                        <li>與「孤單不再」計劃的連結：社區參與、互助網絡建立</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第6頁：相關社會政策分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>現有政策框架：
+                            <ul>
+                                <li>幼兒服務資助計劃</li>
+                                <li>幼兒照顧服務資助計劃</li>
+                                <li>家庭友善就業政策</li>
+                            </ul>
+                        </li>
+                        <li>政策缺口分析：
+                            <ul>
+                                <li>缺乏整全的托兒服務發展藍圖</li>
+                                <li>資源分配不均</li>
+                                <li>監管標準與質素保證機制不足</li>
+                                <li>家庭友善與工作平衡政策支持不足</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第7頁：「社區普及托兒網絡」框架 - 建議方案</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社區參與策略：
+                            <ul>
+                                <li>「社區托兒合作社」發展</li>
+                                <li>家長互助托兒網絡</li>
+                                <li>「隔代照顧支援計劃」</li>
+                            </ul>
+                        </li>
+                        <li>跨界別合作模式：
+                            <ul>
+                                <li>企業-社區托兒合作模式</li>
+                                <li>學校場地多用途計劃</li>
+                                <li>社福-醫療-教育協作平台</li>
+                            </ul>
+                        </li>
+                        <li>社會資本建立：
+                            <ul>
+                                <li>「托兒友善社區」認證</li>
+                                <li>社區保姆培訓與認證</li>
+                                <li>家庭資源共享平台</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第8頁：社工宏觀實踐角色與案例分享</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>社區動員者：發展社區托兒資源</li>
+                        <li>系統協調者：連結各界別資源</li>
+                        <li>能力建設者：培訓社區托兒人才</li>
+                        <li>政策倡導者：推動托兒政策改革</li>
+                        <li>實務案例：「社區一站式托兒支援中心」服務模式構想</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第9頁：可行性與永續性分析</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>資源需求與可能來源</li>
+                        <li>政策支持與發展建議</li>
+                        <li>社區參與可行性</li>
+                        <li>長期永續策略：從專業服務到社區自主</li>
+                        <li>成效評估框架與指標</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ppt-slide">
+                <div class="ppt-title">第10頁：總結與互動討論</div>
+                <div class="ppt-content">
+                    <ul>
+                        <li>主要發現與建議摘要</li>
+                        <li>與「孤單不再」計劃的連結與學習</li>
+                        <li>課堂互動：「理想托兒社區」設計活動</li>
+                        <li>反思問題：如何動員社區資源建立更普及的托兒支援網絡？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="guidelines-tab" class="tab-content">
+            <h2>功課指南：完成45分鐘小組報告</h2>
+            
+            <div class="content-box">
+                <h3>報告架構建議</h3>
+                <p>依據課程要求，建議選擇<strong>「跨境養老支援」</strong>作為最終報告主題，原因如下：</p>
+                <ol>
+                    <li>與香港2025年推出的政策直接相關，具有時效性和實際意義</li>
+                    <li>涉及多個複雜的社會工作實踐面向：服務連續性、跨境合作、隱藏人口識別</li>
+                    <li>與「孤單不再」計劃的策略有明顯連結點</li>
+                    <li>符合可持續發展與區域合作視角</li>
+                    <li>具有豐富的社會政策分析空間</li>
+                </ol>
+            </div>
+            
+            <div class="content-box">
+                <h3>45分鐘報告時間分配</h3>
+                <table>
+                    <tr>
+                        <th>環節</th>
+                        <th>內容</th>
+                        <th>時間</th>
+                    </tr>
+                    <tr>
+                        <td>引言</td>
+                        <td>議題背景、重要性與報告架構</td>
+                        <td>5分鐘</td>
+                    </tr>
+                    <tr>
+                        <td>持份者分析</td>
+                        <td>韋恩圖展示與互動</td>
+                        <td>7分鐘</td>
+                    </tr>
+                    <tr>
+                        <td>問題與目標樹</td>
+                        <td>系統思考分析演示</td>
+                        <td>8分鐘</td>
+                    </tr>
+                    <tr>
+                        <td>現有實踐與政策</td>
+                        <td>案例分析與政策評估</td>
+                        <td>8分鐘</td>
+                    </tr>
+                    <tr>
+                        <td>建議方案</td>
+                        <td>跨境養老支援框架與策略</td>
+                        <td>10分鐘</td>
+                    </tr>
+                    <tr>
+                        <td>互動環節</td>
+                        <td>角色扮演或小組討論</td>
+                        <td>5分鐘</td>
+                    </tr>
+                    <tr>
+                        <td>總結反思</td>
+                        <td>報告總結與討論問題</td>
+                        <td>2分鐘</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="content-box">
+                <h3>創新呈現方式建議</h3>
+                <ol>
+                    <li><strong>情境劇 + PowerPoint</strong>：以短劇開場，呈現跨境養老面臨的實際困境，然後轉入分析部分</li>
+                    <li><strong>模擬個案研討</strong>：設計一個虛擬但真實的跨境養老個案，貫穿整個報告</li>
+                    <li><strong>互動地圖</strong>：使用大灣區地圖，標示關鍵服務點和互動關係</li>
+                    <li><strong>角色扮演</strong>：小組成員分別扮演不同持份者，展示多元視角</li>
+                    <li><strong>互動討論活動</strong>：設計簡短的課堂投票或討論環節，增加同學參與</li>
+                </ol>
+            </div>
+            
+            <div class="content-box">
+                <h3>準備建議</h3>
+                <ol>
+                    <li><strong>資料收集</strong>：
+                        <ul>
+                            <li>收集2025年「綜援長者入住廣東省安老院試驗計劃」的最新詳情</li>
+                            <li>查閱「廣東計劃」與「福建計劃」的評估報告</li>
+                            <li>訪問或收集跨境養老服務使用者的實際經驗</li>
+                            <li>整理香港與內地養老服務標準的差異</li>
+                        </ul>
+                    </li>
+                    <li><strong>理論連結</strong>：
+                        <ul>
+                            <li>系統思考理論應用</li>
+                            <li>社會資本理論</li>
+                            <li>社區發展與組織理論</li>
+                            <li>跨文化社會工作實踐理論</li>
+                        </ul>
+                    </li>
+                    <li><strong>視覺輔助</strong>：
+                        <ul>
+                            <li>製作清晰的韋恩圖</li>
+                            <li>設計直觀的問題樹與目標樹</li>
+                            <li>使用資訊圖表呈現複雜數據</li>
+                            <li>準備簡短的視頻片段（如有）</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+            
+            <div class="content-box">
+                <h3>滿足課程要求的核心元素</h3>
+                <ol>
+                    <li><strong>明確界定區域和全球社會問題</strong>：跨境養老作為區域合作與全球人口老齡化應對策略</li>
+                    <li><strong>持份者分析</strong>：全面分析各主要持份者的需求與關係</li>
+                    <li><strong>韋恩圖</strong>：直觀展示系統中的相互關係與觀點</li>
+                    <li><strong>問題樹和目標樹</strong>：應用系統思考中有關界限的理論</li>
+                    <li><strong>現有實踐檢視</strong>：分析「孤單不再」計劃的啟示以及其他相關案例</li>
+                    <li><strong>社會政策考量</strong>：深入分析跨境養老相關政策</li>
+                    <li><strong>以社區為本的策略</strong>：提出具體的社區參與和跨界別合作方案</li>
+                    <li><strong>社會資本建立</strong>：強調互助網絡的重要性</li>
+                    <li><strong>創新匯報形式</strong>：結合多元表達方式增強參與性</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+            
+            // 同步下拉選單
+            document.getElementById('tab-selector').value = tabName;
+        }
+        
+        function selectTab(tabName) {
+            var tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            tablinks = document.getElementsByClassName("tab");
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            
+            // 找到對應的tab按鈕並設為active
+            for (var i = 0; i < tablinks.length; i++) {
+                if (tablinks[i].getAttribute("onclick").includes(tabName)) {
+                    tablinks[i].className += " active";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
