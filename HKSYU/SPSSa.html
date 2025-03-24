@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPSS Learning Guide</title>
+    <style>
+        /* Color Palette - Pantone 2025 Inspired */
+        :root {
+            --primary: #3F4D71;      /* Pantone Awakening Calm Blue */
+            --secondary: #F6AE2D;    /* Pantone Awakening Yellow */
+            --tertiary: #E0E4EF;     /* Light Blue Gray */
+            --highlight: #CD4B33;    /* Pantone Vitality Red */
+            --success: #5FAD56;      /* Green */
+            --background: #F7F9FC;   /* Off-White Background */
+            --text: #292F36;         /* Dark Blue-Gray Text */
+            --light-text: #6A6A6A;   /* Medium Gray Text */
+            --border: #D8DEE9;       /* Light Border Color */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            max-width: 50px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        h1 {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 1.5rem;
+        }
+        
+        nav {
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 62px;
+            z-index: 99;
+        }
+        
+        nav button {
+            background-color: transparent;
+            border: none;
+            color: var(--primary);
+            padding: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        nav button:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 15%;
+            width: 70%;
+            height: 3px;
+            background-color: var(--secondary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        nav button:hover {
+            color: var(--highlight);
+        }
+        
+        nav button.active {
+            color: var(--primary);
+        }
+        
+        nav button.active:after {
+            transform: scaleX(1);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .module-header {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--primary);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .module-subtitle {
+            color: var(--light-text);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .content-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: var(--tertiary);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .topic-description {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        
+        .dataset-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #EDF2F7;
+            color: var(--primary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 0.2rem 0;
+            border: 1px solid var(--border);
+        }
+        
+        .dataset-tag svg {
+            margin-right: 5px;
+        }
+        
+        .procedure-accordion {
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .procedure-header {
+            background-color: white;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 1rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.3s;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .procedure-header:hover {
+            background-color: #F5F7FA;
+        }
+        
+        .procedure-icon {
+            transition: transform 0.3s;
+        }
+        
+        .procedure-header.active .procedure-icon {
+            transform: rotate(180deg);
+        }
+        
+        .procedure-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: #FAFBFC;
+        }
+        
+        .steps-container {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .steps-heading {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .steps-heading svg {
+            margin-right: 8px;
+        }
+        
+        .steps-list {
+            list-style-position: inside;
+            padding-left: 0.5rem;
+        }
+        
+        .steps-list li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.8rem;
+        }
+        
+        .steps-list li:before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .example-box {
+            background-color: #F0F4FF;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .note-box {
+            background-color: rgba(95, 173, 86, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .assignment-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .assignment-header {
+            background-color: rgba(246, 174, 45, 0.1);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #F6E9C6;
+        }
+        
+        .assignment-title {
+            color: #96640D;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .assignment-title svg {
+            margin-right: 10px;
+        }
+        
+        .marks {
+            color: var(--highlight);
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        
+        .assignment-body {
+            padding: 1.5rem;
+        }
+        
+        .assignment-question {
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-header {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .question-body {
+            padding-left: 1.5rem;
+        }
+        
+        .question-body p, .question-body ol {
+            margin-bottom: 0.5rem;
+        }
+        
+        .steps-accordion {
+            margin-top: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .steps-accordion-header {
+            background-color: #F5F7FA;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 1rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.3s;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .steps-accordion-header:hover {
+            background-color: #EDF2F7;
+        }
+        
+        .steps-accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .steps-accordion-body {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .checkpoint {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 4px;
+            background-color: #F9F9F9;
+            border: 1px solid #EAEAEA;
+        }
+        
+        .checkpoint-icon {
+            margin-right: 10px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        
+        .checkpoint-content {
+            flex-grow: 1;
+        }
+
+        .checkpoint-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--primary);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.8rem;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+            }
+            
+            .logo {
+                max-width: 40px;
+            }
+            
+            nav {
+                top: 55px;
+            }
+            
+            nav button {
+                padding: 0.8rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .card-header, .assignment-header {
+                padding: 0.8rem 1rem;
+            }
+            
+            .card-body, .assignment-body, .steps-container, .steps-accordion-body {
+                padding: 1rem;
+            }
+            
+            .steps-list li {
+                padding-left: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path fill="#F6AE2D" d="M446.7 98.6l-67.6 318.8c-5 28.8-15.7 38.5-33.5 38.5-8.4 0-18.5-2.1-27.5-6.3l-76.1-28.5l-38.8 33.6c-4.2 3.6-7.8 6.8-16.3 6.8c-10.5 0-9.4-3.9-14.1-14.9l-32.2-106l-68.1-21.2c-14.9-4.7-15.2-14.9-.4-22.2L424.9 76.4c12.1-6.3 24.1 2.6 21.8 22.2z" opacity="0.9"/>
+            <path fill="#3F4D71" d="M391.9 121.7l-225.6 138c-3.7 2.3-1.5 8 2.7 7.2l56.4-10.2c4.3-.8 7.4 4.1 4.6 7.4l-93.8 107.4c-2.9 3.3-8.1.8-7.2-3.4l25.1-119.6c.9-4.2-3.9-7.1-7.3-4.4l-45.5 37.4c-3.4 2.8-8.5-.3-7.5-4.8l32.6-158.9c1-4.5 7.2-5.4 9.5-1.5l40.9 76.4c1.4 2.5 4.9 2.7 6.5.4l168.3-237.6c3.4-4.8 11-2.1 10.3 3.6z"/>
+        </svg>
+        <h1>SPSS Learning Guide</h1>
+    </header>
+
+    <nav id="main-nav">
+        <button class="nav-btn active" data-target="overview">Overview</button>
+        <button class="nav-btn" data-target="spss1">SPSS1</button>
+        <button class="nav-btn" data-target="spss2">SPSS2</button>
+        <button class="nav-btn" data-target="datasets">Datasets</button>
+    </nav>
+
+    <main>
+        <!-- Overview Section -->
+        <section id="overview" class="section active">
+            <div class="module-header">
+                <h2>Course Overview</h2>
+                <p class="module-subtitle">Your complete guide to SPSS statistical analysis</p>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Course Structure</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">This interactive guide focuses on the first two SPSS modules:</p>
+                    
+                    <div class="checkpoint">
+                        <div class="checkpoint-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="checkpoint-content">
+                            <div class="checkpoint-title">SPSS1: Descriptive Statistics & Scaling</div>
+                            <p>Learn to calculate basic descriptive statistics, create visualizations, and analyze scale reliability and factor structure.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="checkpoint">
+                        <div class="checkpoint-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="checkpoint-content">
+                            <div class="checkpoint-title">SPSS2: Statistical Tests & Correlations</div>
+                            <p>Master t-tests, ANOVA, Chi-Square tests, and correlation analysis to examine relationships between variables.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">How to Use This Guide</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Follow these steps to navigate through the SPSS learning materials:</p>
+                    
+                    <ol class="steps-list" style="counter-reset: step-counter;">
+                        <li>Click on <strong>SPSS1</strong> or <strong>SPSS2</strong> in the navigation bar to access each module</li>
+                        <li>Expand procedure accordions to see detailed SPSS steps</li>
+                        <li>Review assignment instructions with clear mark allocations</li>
+                        <li>Check the <strong>Datasets</strong> section to identify which files to use</li>
+                        <li>Use the interactive elements to find exactly what you need</li>
+                    </ol>
+                    
+                    <div class="note-box">
+                        <p><strong>Tip:</strong> All step-by-step guides include file references with your renamed dataset titles for easy identification.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPSS1 Section -->
+        <section id="spss1" class="section">
+            <div class="module-header">
+                <h2>SPSS1: Descriptive Statistics & Scaling</h2>
+                <p class="module-subtitle">Master the fundamentals of data exploration and scale analysis</p>
+            </div>
+
+            <!-- Descriptive Statistics Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Descriptive Statistics</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Learn to calculate and interpret basic descriptive statistics including frequency, central tendency, and measures of dispersion.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: gss2002-sample2.sav
+                    </div>
+                    
+                    <!-- Frequency Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Frequency, Mean, Median and Mode
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gss2002-sample2.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Frequencies</strong></li>
+                                    <li>Select variables: Age of respondents, How often attends religious services, RS religious preference</li>
+                                    <li>Click <strong>Statistics</strong> button</li>
+                                    <li>Check: Mean, Median, Mode</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Min, Max, Mean, SD Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Min, Max, Mean, Standard Deviation
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gss2002-sample2.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Descriptives</strong></li>
+                                    <li>Select variables: age, highest year of school completed, hours per day watching tv</li>
+                                    <li>Click <strong>Options</strong> button</li>
+                                    <li>Check: Mean, Std. deviation, Minimum, Maximum</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="note-box">
+                                    <p><strong>Key Insight:</strong> A larger standard deviation (SD) implies behaviors are more diverse in the sample.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Percentiles Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Percentile Values and Quartiles
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gss2002-sample2.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Frequencies</strong></li>
+                                    <li>Select variable: age</li>
+                                    <li>Click <strong>Statistics</strong> button</li>
+                                    <li>Check: Quartiles, Percentiles</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Visualizations Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Charts and Visualizations</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Create and interpret various charts to visually display and analyze your data.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: gssnet.sav
+                    </div>
+                    
+                    <!-- Histograms Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Histograms for Age and Education
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Graphs</strong> → <strong>Legacy Dialogs</strong> → <strong>Histogram</strong></li>
+                                    <li>Select variable: Age</li>
+                                    <li>Check "Display normal curve"</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Repeat the process for Education (Highest year of school completed)</li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Interpreting Distribution Shape</div>
+                                    <ul>
+                                        <li><strong>Skewed right (positive skew):</strong> When mean > median, data has a tail extending to the right</li>
+                                        <li><strong>Skewed left (negative skew):</strong> When mean < median, data has a tail extending to the left</li>
+                                        <li><strong>Outlier caution:</strong> When extreme values exist, mean may not be the best measure of central tendency</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bar & Pie Charts Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Bar and Pie Charts
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps for Bar Chart:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Graphs</strong> → <strong>Legacy Dialogs</strong> → <strong>Bar</strong></li>
+                                    <li>Select <strong>Simple</strong> and <strong>Summaries for groups of cases</strong></li>
+                                    <li>Click <strong>Define</strong></li>
+                                    <li>Select Age category for Category Axis</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Double-click on chart to edit</li>
+                                    <li>Click <strong>Elements</strong> → <strong>Show Data Labels</strong></li>
+                                </ol>
+                                
+                                <h4 class="steps-heading" style="margin-top: 1rem;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps for Pie Chart:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Click <strong>Graphs</strong> → <strong>Legacy Dialogs</strong> → <strong>Pie</strong></li>
+                                    <li>Select <strong>Summaries for groups of cases</strong></li>
+                                    <li>Click <strong>Define</strong></li>
+                                    <li>Select Age category as Defining Variable</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Double-click on chart to edit</li>
+                                    <li>Click <strong>Chart</strong> → <strong>Elements</strong> → <strong>Show Data Labels</strong></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comparing Groups Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Comparing Groups with Bar Charts
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps for 2-Variable Comparison:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>Means</strong></li>
+                                    <li>Select <strong>Highest year of school completed (educ)</strong> as Dependent List</li>
+                                    <li>Select <strong>Internet usage category (netcat)</strong> as Independent List</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>For Bar Chart representation:</li>
+                                    <li>Click <strong>Graphs</strong> → <strong>Legacy Dialogs</strong> → <strong>Bar</strong></li>
+                                    <li>Select <strong>Simple</strong> and <strong>Other statistic</strong></li>
+                                    <li>Click <strong>Define</strong></li>
+                                    <li>Select <strong>internet usage category (netcat)</strong> for Category Axis</li>
+                                    <li>Select <strong>highest year of school completed (educ)</strong> for Bars Represent</li>
+                                    <li>Click <strong>OK</strong></li>
+                                </ol>
+                                
+                                <h4 class="steps-heading" style="margin-top: 1rem;">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps for 3-Variable Comparison:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Click <strong>Graphs</strong> → <strong>Legacy Dialogs</strong> → <strong>Bar</strong></li>
+                                    <li>Select <strong>Clustered</strong> and <strong>Other statistic</strong></li>
+                                    <li>Click <strong>Define</strong></li>
+                                    <li>Select <strong>Degree (ndegree)</strong> for Category Axis</li>
+                                    <li>Select <strong>Age category (agecat)</strong> for Define Clusters by</li>
+                                    <li>Select <strong>Hours on internet per week (nethrs)</strong> for Bars Represent</li>
+                                    <li>Click <strong>OK</strong></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scaling Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Scaling: Reliability & Factor Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Learn to assess scale reliability and perform factor analysis to determine underlying dimensions in your data.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: spss 1314 data.sav
+                    </div>
+                    
+                    <!-- Reliability Analysis Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Reliability Analysis
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps for Reliability Analysis:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>spss 1314 data.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Scale</strong> → <strong>Reliability Analysis</strong></li>
+                                    <li>Select all self-esteem variables (self-esteem 1 to self-esteem 10)</li>
+                                    <li>Ensure Model is set to "Alpha"</li>
+                                    <li>Click <strong>Statistics</strong></li>
+                                    <li>Check "Item", "Scale", and "Scale if item deleted"</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Handling Reverse-Coded Items</div>
+                                    <ol class="steps-list" style="counter-reset: step-counter;">
+                                        <li>Click <strong>Transform</strong> → <strong>Recode into Different Variables</strong></li>
+                                        <li>Select the reverse-coded items</li>
+                                        <li>Click <strong>Old and New Values</strong></li>
+                                        <li>Enter each value pair (e.g., 0→3, 1→2, 2→1, 3→0)</li>
+                                        <li>Click <strong>Add</strong> for each pair</li>
+                                        <li>Provide output variable names</li>
+                                        <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                        <li>Rerun Reliability Analysis with recoded items</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="note-box">
+                                    <p><strong>Interpreting Cronbach's Alpha:</strong></p>
+                                    <ul>
+                                        <li>0.7 is acceptable reliability</li>
+                                        <li>0.8 is good reliability</li>
+                                        <li>0.9 is very good reliability</li>
+                                        <li>0.6 may be acceptable in exploratory research</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Factor Analysis Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Factor Analysis
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps for Factor Analysis:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>spss 1314 data.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Dimension Reduction</strong> → <strong>Factor</strong></li>
+                                    <li>Select social network variables (social network1 to social network 10)</li>
+                                    <li>Click <strong>Descriptives</strong></li>
+                                    <li>Check: Univariate, Initial solution, Coefficients</li>
+                                    <li>Click <strong>Continue</strong></li>
+                                    <li>Click <strong>Extraction</strong></li>
+                                    <li>Ensure Method is "Principal components"</li>
+                                    <li>Check: Unrotated factor solution, Scree plot</li>
+                                    <li>Select "Correlation matrix"</li>
+                                    <li>Select "Eigenvalues over 1"</li>
+                                    <li>Click <strong>Continue</strong></li>
+                                    <li>Click <strong>Rotation</strong></li>
+                                    <li>Select "Varimax"</li>
+                                    <li>Check "Rotated solution"</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Key Factor Analysis Requirements</div>
+                                    <ul>
+                                        <li><strong>Variables:</strong> Must be inter-related with correlations r > 0.3</li>
+                                        <li><strong>Sample size:</strong> Should be more than 100</li>
+                                        <li><strong>Factor loadings:</strong> Look for values > 0.5</li>
+                                        <li><strong>Eigenvalues:</strong> Consider factors with eigenvalues > 1</li>
+                                        <li><strong>Variance explained:</strong> Solution should explain > 60% of cumulative variance</li>
+                                        <li><strong>Scree plot:</strong> Look for the point where the curve flattens</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SPSS1 Assignment -->
+            <div class="assignment-card">
+                <div class="assignment-header">
+                    <h3 class="assignment-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76z" stroke="#96640D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 8L2 22" stroke="#96640D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.5 15H9" stroke="#96640D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        SPSS Exercise One
+                        <span class="marks">(Total: 50 marks)</span>
+                    </h3>
+                </div>
+                <div class="assignment-body">
+                    <p>Use the dataset <strong>attitudes towards people with ID data file</strong> to answer the following questions:</p>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">1. Religious Background Analysis <span class="marks">(10 marks)</span></div>
+                        <div class="question-body">
+                            <ol>
+                                <li>Make a table about the distribution of religious background (variable Q13, religion) in Word format</li>
+                                <li>Use one paragraph to describe the distribution of religious background</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">2. Age Distribution Analysis <span class="marks">(10 marks)</span></div>
+                        <div class="question-body">
+                            <ol>
+                                <li>Write one paragraph to describe the distribution of age (variable Q11)</li>
+                                <li>Consider which measure of central tendency should be used</li>
+                                <li>Explain why this statistic better summarizes the data values</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">3. Education Analysis <span class="marks">(10 marks)</span></div>
+                        <div class="question-body">
+                            <ol>
+                                <li>State the distribution of educational attainment (variable Q12)</li>
+                                <li>Write a paragraph comparing and describing the differences in age among different education levels</li>
+                                <li>Add appropriate table(s) or chart(s) to help your description</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">4. Empathy Scale Analysis <span class="marks">(20 marks)</span></div>
+                        <div class="question-body">
+                            <ol>
+                                <li>Describe the Empathy variable (report mean, SD, min/max scores)</li>
+                                <li>Interpret the reliability test results</li>
+                                <li>Write a paragraph describing the results</li>
+                                <li><strong>Note:</strong> Remember to recode reversed items (1, 6, 8, and 9)</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="steps-accordion">
+                        <button class="steps-accordion-header">
+                            Detailed Steps for Exercise One
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="steps-accordion-content">
+                            <div class="steps-accordion-body">
+                                <div class="dataset-tag" style="margin-bottom: 10px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                                    </svg>
+                                    Required Dataset: attitudes towards people with ID.sav
+                                </div>
+                                
+                                <h4 style="margin-bottom: 10px;">Steps for Question 1 (Religious Background):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open SPSS and load <strong>attitudes towards people with ID.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Frequencies</strong></li>
+                                    <li>Select variable Q13 (religion)</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Copy the frequency table to Word</li>
+                                    <li>Write a paragraph describing the religious distribution</li>
+                                </ol>
+                                
+                                <h4 style="margin: 15px 0 10px;">Steps for Question 2 (Age Distribution):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Frequencies</strong></li>
+                                    <li>Select variable Q11 (age)</li>
+                                    <li>Click <strong>Statistics</strong> → check Mean, Median, Mode, Std. deviation</li>
+                                    <li>Click <strong>Graphs</strong> → select Histogram → check Show normal curve</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Examine the descriptive statistics and histogram</li>
+                                    <li>Determine which measure of central tendency best represents the data</li>
+                                    <li>Write your analysis paragraph explaining your choice</li>
+                                </ol>
+                                
+                                <h4 style="margin: 15px 0 10px;">Steps for Question 3 (Education Analysis):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Frequencies</strong></li>
+                                    <li>Select variable Q12 (education)</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>Means</strong></li>
+                                    <li>Add age (Q11) as Dependent List</li>
+                                    <li>Add education (Q12) as Independent List</li>
+                                    <li>Click <strong>Options</strong> → select Mean, Std. deviation, Min, Max</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Create appropriate chart:</li>
+                                    <li>Click <strong>Graphs</strong> → <strong>Legacy Dialogs</strong> → <strong>Bar</strong></li>
+                                    <li>Select Simple and Other statistic</li>
+                                    <li>Click <strong>Define</strong></li>
+                                    <li>Select education (Q12) for Category Axis</li>
+                                    <li>Select age (Q11) for Bars Represent</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Write your paragraph comparing age across education levels</li>
+                                </ol>
+                                
+                                <h4 style="margin: 15px 0 10px;">Steps for Question 4 (Empathy Scale):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>First, recode the reversed items:</li>
+                                    <li>Click <strong>Transform</strong> → <strong>Recode into Different Variables</strong></li>
+                                    <li>Select empathy1, empathy6, empathy8, empathy9 (reversed items)</li>
+                                    <li>Click <strong>Old and New Values</strong></li>
+                                    <li>Recode values: (0→4, 1→3, 2→2, 3→1, 4→0)</li>
+                                    <li>Provide output names (e.g., emp1r, emp6r, emp8r, emp9r)</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Run reliability analysis:</li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Scale</strong> → <strong>Reliability Analysis</strong></li>
+                                    <li>Add the recoded items and all other empathy items</li>
+                                    <li>Click <strong>Statistics</strong> → check Scale if item deleted</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Compute empathy scale mean:</li>
+                                    <li>Click <strong>Transform</strong> → <strong>Compute Variable</strong></li>
+                                    <li>Target Variable: empathy_mean</li>
+                                    <li>Numeric Expression: MEAN(empathy2, empathy3, empathy4, empathy5, empathy7, empathy10, emp1r, emp6r, emp8r, emp9r)</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Get descriptives for the scale:</li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Descriptives</strong></li>
+                                    <li>Add empathy_mean</li>
+                                    <li>Click <strong>Options</strong> → check Mean, Std. deviation, Min, Max</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Write your analysis paragraph interpreting both the scale reliability and descriptive statistics</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPSS2 Section -->
+        <section id="spss2" class="section">
+            <div class="module-header">
+                <h2>SPSS2: Statistical Tests & Correlations</h2>
+                <p class="module-subtitle">Master advanced statistical techniques to analyze relationships between variables</p>
+            </div>
+
+            <!-- Independent t-test Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Independent Samples t-test</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Test for significant differences between two independent groups on a continuous outcome variable.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: gssnet.sav
+                    </div>
+                    
+                    <!-- T-test Procedure Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            t-test Procedure
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>Independent-Samples T Test</strong></li>
+                                    <li>Select dependent variable (continuous outcome measure)</li>
+                                    <li>Select grouping variable (categorical with 2 groups)</li>
+                                    <li>Click <strong>Define Groups</strong></li>
+                                    <li>Enter the codes for the two groups (e.g., 1 for male, 2 for female)</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example 1: Gender Differences in TV Watching</div>
+                                    <ul>
+                                        <li><strong>Dependent variable:</strong> tvhours (HOURS PER DAY WATCHING TV)</li>
+                                        <li><strong>Grouping variable:</strong> sex (RESPONDENTS SEX)</li>
+                                        <li><strong>Group values:</strong> 1 = male, 2 = female</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example 2: Internet Users vs. Non-users</div>
+                                    <ul>
+                                        <li><strong>Dependent variable:</strong> tvhours (HOURS PER DAY WATCHING TV)</li>
+                                        <li><strong>Grouping variable:</strong> usenet (USE INTERNET)</li>
+                                        <li><strong>Group values:</strong> 0 = non-users, 1 = users</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="note-box">
+                                    <p><strong>Interpreting Output:</strong></p>
+                                    <ul>
+                                        <li>Check Levene's Test for Equality of Variances (Sig. value)</li>
+                                        <li>If Sig. > 0.05: use "Equal variances assumed" row</li>
+                                        <li>If Sig. ≤ 0.05: use "Equal variances not assumed" row</li>
+                                        <li>Check t-test significance (Sig. 2-tailed)</li>
+                                        <li>If Sig. ≤ 0.05: significant difference exists between groups</li>
+                                        <li>If Sig. > 0.05: no significant difference between groups</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- One-Way ANOVA Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">One-Way ANOVA</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Test for significant differences among three or more independent groups on a continuous outcome variable.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: gssnet.sav
+                    </div>
+                    
+                    <!-- ANOVA Procedure Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            ANOVA Procedure
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>One-Way ANOVA</strong></li>
+                                    <li>Select dependent variable (continuous outcome measure)</li>
+                                    <li>Select factor variable (categorical with 3+ groups)</li>
+                                    <li>Click <strong>Options</strong></li>
+                                    <li>Check "Descriptive" statistics</li>
+                                    <li>Check "Homogeneity of variance test"</li>
+                                    <li>Check "Means plot" if desired</li>
+                                    <li>Click <strong>Continue</strong></li>
+                                    <li>Click <strong>Post Hoc</strong></li>
+                                    <li>Check "Tukey" test</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example 1: Working Hours and Age Categories</div>
+                                    <ul>
+                                        <li><strong>Dependent Variable:</strong> Number of hours worked last week (nethrs)</li>
+                                        <li><strong>Factor Variable:</strong> age category (agecat)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example 2: Working Hours and Marital Status</div>
+                                    <ul>
+                                        <li><strong>Dependent Variable:</strong> Number of hours worked last week (nethrs)</li>
+                                        <li><strong>Factor Variable:</strong> marital status (marital)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="note-box">
+                                    <p><strong>Interpreting Output:</strong></p>
+                                    <ul>
+                                        <li>Check ANOVA table for Sig. value</li>
+                                        <li>If Sig. ≤ 0.05: significant differences exist among groups</li>
+                                        <li>If significant, examine Tukey post hoc tests to identify which specific groups differ</li>
+                                        <li>Significant differences in Tukey output are marked with an asterisk (*)</li>
+                                        <li>Examine "Mean Difference" column to understand direction and magnitude of differences</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chi-Square Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Chi-Square and Crosstabs</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Test for associations between categorical variables using crosstabulation and chi-square analysis.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: gssnet.sav
+                    </div>
+                    
+                    <!-- Crosstabs Procedure Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Crosstabs Procedure
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Descriptive Statistics</strong> → <strong>Crosstabs</strong></li>
+                                    <li>Select row variable (typically dependent)</li>
+                                    <li>Select column variable (typically independent)</li>
+                                    <li>Click <strong>Statistics</strong></li>
+                                    <li>Check "Chi-square" for the basic test</li>
+                                    <li>For nominal variables: check "Phi and Cramer's V" and/or "Lambda"</li>
+                                    <li>For ordinal variables: check "Gamma"</li>
+                                    <li>Click <strong>Continue</strong></li>
+                                    <li>Click <strong>Cells</strong></li>
+                                    <li>Check "Observed" counts</li>
+                                    <li>Check "Column percentages" (most common)</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example 1: Marital Status and Age Categories</div>
+                                    <ul>
+                                        <li><strong>Row variable (dependent):</strong> marital status (marital)</li>
+                                        <li><strong>Column variable (independent):</strong> age category (agecat)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example 2: Happiness of Marriage and Age Categories</div>
+                                    <ul>
+                                        <li><strong>Row variable (dependent):</strong> Happiness of Marriage (hapmar)</li>
+                                        <li><strong>Column variable (independent):</strong> age category (agecat)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="note-box">
+                                    <p><strong>Interpreting Output:</strong></p>
+                                    <ul>
+                                        <li><strong>Chi-Square Tests:</strong> Check Pearson Chi-Square Sig. value</li>
+                                        <li>If Sig. ≤ 0.05: significant association exists between variables</li>
+                                        <li><strong>Effect Size Guidelines:</strong></li>
+                                        <li>Phi/Cramer's V:
+                                            <ul>
+                                                <li>0.00-0.10: Weak association</li>
+                                                <li>0.11-0.30: Moderate association</li>
+                                                <li>> 0.30: Strong association</li>
+                                            </ul>
+                                        </li>
+                                        <li>Gamma:
+                                            <ul>
+                                                <li>< 0.30: Weak association</li>
+                                                <li>0.31-0.60: Moderate association</li>
+                                                <li>> 0.60: Strong association</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Correlation Topic -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Correlation</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Measure the strength and direction of relationships between continuous variables.</p>
+                    
+                    <div class="dataset-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                        </svg>
+                        Primary Dataset: gssnet.sav
+                    </div>
+                    
+                    <!-- Correlation Procedure Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            Correlation Procedure
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <h4 class="steps-heading">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 12H20M4 8H20M4 16H12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    SPSS Steps:
+                                </h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open dataset: <strong>gssnet.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Correlate</strong> → <strong>Bivariate</strong></li>
+                                    <li>Select variables to correlate (continuous variables)</li>
+                                    <li>Ensure "Pearson" is checked for continuous variables</li>
+                                    <li>Check "Two-tailed" test of significance (unless you have a directional hypothesis)</li>
+                                    <li>Check "Flag significant correlations"</li>
+                                    <li>Click <strong>OK</strong></li>
+                                </ol>
+                                
+                                <div class="example-box">
+                                    <div class="example-title">Example: Education, Work Hours & Income Correlations</div>
+                                    <p>Variables to correlate:</p>
+                                    <ul>
+                                        <li>Highest year of school completed (educ)</li>
+                                        <li>Number of hours work last week (hrs1)</li>
+                                        <li>Respondent's income for last year (rincome)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="note-box">
+                                    <p><strong>Interpreting Pearson's Correlation Coefficient (r):</strong></p>
+                                    <ul>
+                                        <li><strong>Strength guidelines:</strong>
+                                            <ul>
+                                                <li>0.00-0.10: Negligible correlation</li>
+                                                <li>0.11-0.30: Weak correlation</li>
+                                                <li>0.31-0.50: Moderate correlation</li>
+                                                <li>0.51-0.70: Strong correlation</li>
+                                                <li>0.71-1.00: Very strong correlation</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Direction:</strong>
+                                            <ul>
+                                                <li>Positive r: Variables increase together</li>
+                                                <li>Negative r: As one increases, the other decreases</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Statistical significance:</strong> Check Sig. (2-tailed) value
+                                            <ul>
+                                                <li>If Sig. ≤ 0.05: Correlation is statistically significant</li>
+                                                <li>If Sig. > 0.05: Correlation is not statistically significant</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SPSS2 Assignment -->
+            <div class="assignment-card">
+                <div class="assignment-header">
+                    <h3 class="assignment-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76z" stroke="#96640D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 8L2 22" stroke="#96640D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.5 15H9" stroke="#96640D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        SPSS Exercise Two
+                        <span class="marks">(Total: 80 marks)</span>
+                    </h3>
+                </div>
+                <div class="assignment-body">
+                    <p>Use the dataset <strong>attitudes towards people with ID data file</strong> to answer the following questions:</p>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">1. Gender & Education Analysis <span class="marks">(20 marks)</span></div>
+                        <div class="question-body">
+                            <p>Test the hypothesis that males have higher education attainment than females. Report your findings with interpretation.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">2. Gender & Empathy Analysis <span class="marks">(30 marks)</span></div>
+                        <div class="question-body">
+                            <p>Test the hypothesis that males and females have different levels of Empathy. Report your findings with interpretation.</p>
+                            <p><strong>Note:</strong> Compute a total score for empathy before running any test. Remember to recode reversed items (1, 6, 8, and 9).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="assignment-question">
+                        <div class="question-header">3. Education & Empathy Relationship <span class="marks">(30 marks)</span></div>
+                        <div class="question-body">
+                            <p>Test the relationship between education and Empathy. Is the relationship significant? State the pattern of the relationship.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="steps-accordion">
+                        <button class="steps-accordion-header">
+                            Detailed Steps for Exercise Two
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="steps-accordion-content">
+                            <div class="steps-accordion-body">
+                                <div class="dataset-tag" style="margin-bottom: 10px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19 5V19H5V5H19ZM21 3H3V21H21V3ZM17 17H7V16H17V17ZM17 15H7V14H17V15ZM17 13H7V12H17V13ZM17 11H7V10H17V11ZM17 9H7V8H17V9Z" fill="currentColor"/>
+                                    </svg>
+                                    Required Dataset: attitudes towards people with ID.sav
+                                </div>
+                                
+                                <h4 style="margin-bottom: 10px;">Steps for Question 1 (Gender & Education):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Open SPSS and load <strong>attitudes towards people with ID.sav</strong></li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>Independent-Samples T Test</strong></li>
+                                    <li>Select education (Q12) as the Test Variable</li>
+                                    <li>Select gender as the Grouping Variable</li>
+                                    <li>Click <strong>Define Groups</strong></li>
+                                    <li>Enter group codes (e.g., 1 = male, 2 = female)</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>In your report, include:</li>
+                                    <li>Group statistics (mean education for males and females)</li>
+                                    <li>T-test results (t-value, df, significance)</li>
+                                    <li>Whether you used equal variances assumed or not (based on Levene's test)</li>
+                                    <li>A clear statement of whether the hypothesis is supported</li>
+                                    <li>Interpretation of the practical significance of the finding</li>
+                                </ol>
+                                
+                                <h4 style="margin: 15px 0 10px;">Steps for Question 2 (Gender & Empathy):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>First, recode the reversed empathy items:</li>
+                                    <li>Click <strong>Transform</strong> → <strong>Recode into Different Variables</strong></li>
+                                    <li>Select empathy1, empathy6, empathy8, empathy9 (reversed items)</li>
+                                    <li>Click <strong>Old and New Values</strong></li>
+                                    <li>Recode values: (0→4, 1→3, 2→2, 3→1, 4→0)</li>
+                                    <li>Provide output names (e.g., emp1r, emp6r, emp8r, emp9r)</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Next, compute the total empathy score:</li>
+                                    <li>Click <strong>Transform</strong> → <strong>Compute Variable</strong></li>
+                                    <li>Target Variable: totalempathy</li>
+                                    <li>Numeric Expression: MEAN(empathy2, empathy3, empathy4, empathy5, empathy7, empathy10, emp1r, emp6r, emp8r, emp9r) * 10</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>Run the t-test:</li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>Independent-Samples T Test</strong></li>
+                                    <li>Select totalempathy as the Test Variable</li>
+                                    <li>Select gender as the Grouping Variable</li>
+                                    <li>Click <strong>Define Groups</strong></li>
+                                    <li>Enter group codes (e.g., 1 = male, 2 = female)</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>In your report, include:</li>
+                                    <li>Brief explanation of the recoding and scale computation</li>
+                                    <li>Group statistics (mean empathy for males and females)</li>
+                                    <li>T-test results (t-value, df, significance)</li>
+                                    <li>Whether you used equal variances assumed or not (based on Levene's test)</li>
+                                    <li>A clear statement of whether the hypothesis is supported</li>
+                                    <li>Interpretation of the differences in empathy by gender</li>
+                                </ol>
+                                
+                                <h4 style="margin: 15px 0 10px;">Steps for Question 3 (Education & Empathy):</h4>
+                                <ol class="steps-list" style="counter-reset: step-counter;">
+                                    <li>Method A - Using One-Way ANOVA:</li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Compare Means</strong> → <strong>One-Way ANOVA</strong></li>
+                                    <li>Select totalempathy as the Dependent Variable</li>
+                                    <li>Select education (Q12) as the Factor</li>
+                                    <li>Click <strong>Options</strong></li>
+                                    <li>Check "Descriptive statistics", "Homogeneity of variance test", and "Means plot"</li>
+                                    <li>Click <strong>Continue</strong></li>
+                                    <li>Click <strong>Post Hoc</strong></li>
+                                    <li>Select "Tukey" test</li>
+                                    <li>Click <strong>Continue</strong>, then <strong>OK</strong></li>
+                                    <li>Method B - Using Correlation:</li>
+                                    <li>Click <strong>Analyze</strong> → <strong>Correlate</strong> → <strong>Bivariate</strong></li>
+                                    <li>Select totalempathy and education (Q12)</li>
+                                    <li>Ensure "Pearson" is checked</li>
+                                    <li>Click <strong>OK</strong></li>
+                                    <li>In your report, include:</li>
+                                    <li>Statistics showing the relationship (means by education group or correlation coefficient)</li>
+                                    <li>Significance of the relationship</li>
+                                    <li>A clear description of the pattern (e.g., "higher education is associated with higher empathy")</li>
+                                    <li>Discussion of the practical implications of this relationship</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Datasets Section -->
+        <section id="datasets" class="section">
+            <div class="module-header">
+                <h2>Datasets Reference</h2>
+                <p class="module-subtitle">Quick guide to all datasets used in the course</p>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Dataset Files Overview</h3>
+                </div>
+                <div class="card-body">
+                    <p class="topic-description">Below is a list of all datasets required for the SPSS exercises with their filenames and brief descriptions:</p>
+                    
+                    <div class="example-box">
+                        <div class="example-title">Primary Data Files</div>
+                        <ol style="margin-bottom: 0;">
+                            <li><strong>gss2002-sample2.sav</strong> - General Social Survey data from 2002 with basic demographic variables</li>
+                            <li><strong>gssnet.sav</strong> - GSS data including internet usage variables</li>
+                            <li><strong>spss 1314 data.sav</strong> - Dataset containing self-esteem and social network scales</li>
+                            <li><strong>attitudes towards people with ID.sav</strong> - Survey data on attitudes toward people with intellectual disabilities</li>
+                            <li><strong>330dataset.sav</strong> - Online mindfulness program evaluation with pre-post measures</li>
+                            <li><strong>elderly health workshop.sav</strong> - Health workshop data with control and experimental groups</li>
+                            <li><strong>youth programe.sav</strong> - Youth program evaluation with multiple time points</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="example-box">
+                        <div class="example-title">Related Documentation Files</div>
+                        <ol style="margin-bottom: 0;">
+                            <li><strong>attitudes towards people with ID questionniare.docx</strong> - Survey instrument for ID dataset</li>
+                            <li><strong>elderly health workshop questionnaire.pdf</strong> - Survey instrument for workshop dataset</li>
+                            <li><strong>questionnaire spss 1314 data.docx</strong> - Survey instrument for self-esteem data</li>
+                            <li><strong>Youth Programme Questionnaire.docx</strong> - Survey instrument for youth program</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h3 class="card-title">Dataset Usage by Module</h3>
+                </div>
+                <div class="card-body">
+                    <!-- SPSS1 Datasets Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            SPSS1 Required Datasets
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background-color: #F5F7FA; border-bottom: 1px solid #E0E4EF;">
+                                            <th style="padding: 10px; text-align: left; border-right: 1px solid #E0E4EF;">Topic</th>
+                                            <th style="padding: 10px; text-align: left;">Dataset</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Basic Descriptive Statistics</td>
+                                            <td style="padding: 10px;"><strong>gss2002-sample2.sav</strong></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Charts and Visualizations</td>
+                                            <td style="padding: 10px;"><strong>gssnet.sav</strong></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Reliability and Factor Analysis</td>
+                                            <td style="padding: 10px;"><strong>spss 1314 data.sav</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Exercise One</td>
+                                            <td style="padding: 10px;"><strong>attitudes towards people with ID.sav</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SPSS2 Datasets Accordion -->
+                    <div class="procedure-accordion">
+                        <button class="procedure-header">
+                            SPSS2 Required Datasets
+                            <span class="procedure-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 9L12 16L5 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                        <div class="procedure-content">
+                            <div class="steps-container">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background-color: #F5F7FA; border-bottom: 1px solid #E0E4EF;">
+                                            <th style="padding: 10px; text-align: left; border-right: 1px solid #E0E4EF;">Topic</th>
+                                            <th style="padding: 10px; text-align: left;">Dataset</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">t-test Procedures</td>
+                                            <td style="padding: 10px;"><strong>gssnet.sav</strong></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">ANOVA Procedures</td>
+                                            <td style="padding: 10px;"><strong>gssnet.sav</strong></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Chi-Square & Crosstabs</td>
+                                            <td style="padding: 10px;"><strong>gssnet.sav</strong></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #E0E4EF;">
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Correlation</td>
+                                            <td style="padding: 10px;"><strong>gssnet.sav</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; border-right: 1px solid #E0E4EF;">Exercise Two</td>
+                                            <td style="padding: 10px;"><strong>attitudes towards people with ID.sav</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons and sections
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                
+                // Scroll to top of new section
+                window.scrollTo(0, 0);
+            });
+        });
+        
+        // Procedure accordion functionality
+        document.querySelectorAll('.procedure-header').forEach(accordion => {
+            accordion.addEventListener('click', function() {
+                // Toggle active class
+                this.classList.toggle('active');
+                
+                // Get the panel element
+                const panel = this.nextElementSibling;
+                
+                // Toggle panel visibility
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        });
+        
+        // Steps accordion functionality
+        document.querySelectorAll('.steps-accordion-header').forEach(accordion => {
+            accordion.addEventListener('click', function() {
+                // Toggle active class
+                this.classList.toggle('active');
+                
+                // Get the panel element
+                const panel = this.nextElementSibling;
+                
+                // Toggle panel visibility
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

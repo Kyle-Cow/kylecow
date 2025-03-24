@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPSS Course Navigator</title>
+    <style>
+        :root {
+            --primary: #33658A;
+            --secondary: #F6AE2D;
+            --tertiary: #F1F2EB;
+            --text: #2F4858;
+            --background: #F8F9FA;
+            --highlight: #F26419;
+            --success: #5FAD56;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            background-color: var(--tertiary);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            position: sticky;
+            top: 56px;
+            z-index: 99;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        nav button {
+            background-color: transparent;
+            border: none;
+            color: var(--text);
+            padding: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        nav button:hover, nav button.active {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .section {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--tertiary);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            color: var(--text);
+            margin: 1rem 0 0.5rem;
+        }
+        
+        .topic {
+            background-color: rgba(51, 101, 138, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .assignment {
+            background-color: rgba(246, 174, 45, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+            position: relative;
+        }
+        
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dataset-tag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0 4px 0 4px;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+        
+        .steps {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .steps h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .steps ol, .steps ul {
+            padding-left: 1.5rem;
+        }
+        
+        .steps li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .dataset {
+            display: inline-block;
+            background-color: var(--highlight);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin: 0.2rem;
+            font-weight: bold;
+        }
+        
+        .marks {
+            color: var(--highlight);
+            font-weight: bold;
+        }
+        
+        .accordion {
+            background-color: var(--tertiary);
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.8rem 1rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.3s;
+            border-radius: 4px;
+            font-weight: bold;
+            position: relative;
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .accordion:hover {
+            background-color: #e8e9e3;
+        }
+        
+        .accordion-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .accordion.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        
+        .panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .panel-content {
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+        }
+        
+        .note {
+            background-color: rgba(95, 173, 86, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .quick-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .quick-nav-btn {
+            background-color: var(--tertiary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .quick-nav-btn:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .step-list {
+            counter-reset: step;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .step-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .step-list li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.8rem;
+        }
+        
+        .step-highlight {
+            background-color: rgba(242, 100, 25, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+        }
+        
+        .spss-command {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .progress-container {
+            background-color: var(--tertiary);
+            border-radius: 8px;
+            padding: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ccc;
+            z-index: 1;
+        }
+        
+        .progress-step {
+            background: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #ccc;
+            transition: all 0.3s;
+        }
+        
+        .progress-step.active {
+            border-color: var(--success);
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .progress-step-label {
+            position: absolute;
+            top: 35px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            transform: translateX(-50%);
+            left: 50%;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            nav {
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                top: 0;
+            }
+            
+            header {
+                position: static;
+            }
+            
+            nav button {
+                flex: 0 0 auto;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .accordion, .panel-content {
+                padding: 0.8rem;
+            }
+            
+            .assignment-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dataset-tag {
+                position: static;
+                margin-top: 0.5rem;
+            }
+            
+            .progress-steps {
+                overflow-x: auto;
+                padding-bottom: 1.5rem;
+            }
+            
+            .progress-step {
+                margin: 0 1.5rem;
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SPSS Course Navigator</h1>
+    </header>
+    
+    <nav id="main-nav">
+        <button class="nav-btn" data-target="spss3a">SPSS3A</button>
+        <button class="nav-btn active" data-target="spss3b">SPSS3B</button>
+    </nav>
+
+    <main>
+        <!-- SPSS3A Section -->
+        <section id="spss3a" class="section">
+            <h2>SPSS3A: Advanced Analysis Techniques</h2>
+            
+            <div class="quick-nav">
+                <button class="quick-nav-btn" data-scroll-to="crosstabs">Crosstabs with Control</button>
+                <button class="quick-nav-btn" data-scroll-to="ancova">ANCOVA</button>
+                <button class="quick-nav-btn" data-scroll-to="regression">Regression</button>
+                <button class="quick-nav-btn" data-scroll-to="assignment3a">Assignment (40 marks)</button>
+            </div>
+            
+            <div class="topic" id="crosstabs">
+                <h3>Crosstabs with Control Variables</h3>
+                <p>Analyze relationships between variables while controlling for a third variable to determine if relationships are genuine or influenced by another factor.</p>
+                
+                <button class="accordion">
+                    <span>Crosstabs with Layer Procedure</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: gss2002-sample2.sav (File #6)</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Crosstabs</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Layer</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Statistics</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open dataset: <span class="dataset">gss2002-sample2.sav</span></li>
+                                <li>Navigate to <span class="spss-command">Analyze → Descriptive Statistics → Crosstabs</span></li>
+                                <li>Select your <span class="step-highlight">dependent variable</span> and add it to the <strong>Row(s)</strong> box</li>
+                                <li>Select your <span class="step-highlight">independent variable</span> and add it to the <strong>Column(s)</strong> box</li>
+                                <li>Select your <span class="step-highlight">control variable</span> and add it to <strong>Layer 1 of 1</strong></li>
+                                <li>Click <span class="spss-command">Statistics</span> and select appropriate measures:
+                                    <ul>
+                                        <li>Chi-square to test for significance</li>
+                                        <li>For nominal variables: Phi and Cramer's V</li>
+                                        <li>For ordinal variables: Gamma</li>
+                                    </ul>
+                                </li>
+                                <li>Click <span class="spss-command">Cells</span> and select:
+                                    <ul>
+                                        <li>Observed counts</li>
+                                        <li>Column percentages (typically most useful)</li>
+                                    </ul>
+                                </li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Example: Spanking Analysis</h4>
+                            <p>For this example:</p>
+                            <ul>
+                                <li><strong>Dependent variable:</strong> Favor Spanking to Discipline Child</li>
+                                <li><strong>Independent variable:</strong> Subjective Class Identification</li>
+                                <li><strong>Control variable:</strong> cage (in Layer)</li>
+                            </ul>
+                            <p>This analysis helps determine if class-based differences in attitudes toward spanking are consistent across age groups or if age influences this relationship.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic" id="ancova">
+                <h3>Analysis of Covariance (ANCOVA)</h3>
+                <p>Examine the effect of categorical variables on a continuous outcome while controlling for other variables, combining elements of ANOVA and regression.</p>
+                
+                <button class="accordion">
+                    <span>ANCOVA Procedure</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: gss2002-sample2.sav (File #6)</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Univariate</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Variables</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Options</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open dataset: <span class="dataset">gss2002-sample2.sav</span></li>
+                                <li>Navigate to <span class="spss-command">Analyze → General Linear Model → Univariate</span></li>
+                                <li>Select your <span class="step-highlight">continuous dependent variable</span> and add it to the <strong>Dependent Variable</strong> box</li>
+                                <li>Select your <span class="step-highlight">categorical independent variables</span> and add them to the <strong>Fixed Factor(s)</strong> box</li>
+                                <li>Select your <span class="step-highlight">continuous control variables</span> and add them to the <strong>Covariate(s)</strong> box</li>
+                                <li>Click <span class="spss-command">Options</span>
+                                    <ul>
+                                        <li>Check "Descriptive statistics"</li>
+                                        <li>Check "Estimates of effect size"</li>
+                                        <li>Check "Parameter estimates" if needed</li>
+                                    </ul>
+                                </li>
+                                <li>Click <span class="spss-command">Continue</span></li>
+                                <li>Click <span class="spss-command">Plots</span>
+                                    <ul>
+                                        <li>Select a categorical variable for <strong>Horizontal axis</strong></li>
+                                        <li>Select another categorical variable for <strong>Separate lines</strong> (if you have more than one)</li>
+                                        <li>Click <span class="spss-command">Add</span></li>
+                                    </ul>
+                                </li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Example: Work Hours Analysis</h4>
+                            <p>For this example:</p>
+                            <ul>
+                                <li><strong>Dependent variable:</strong> Number of Hours Worked Last Week (hrs1)</li>
+                                <li><strong>Fixed factors:</strong> Marital Status (marital), Respondents' sex (sex)</li>
+                                <li><strong>Covariate:</strong> Age of respondent (Age)</li>
+                            </ul>
+                            <p>This analysis examines how marital status and gender affect work hours while controlling for age differences, giving a clearer picture of these relationships.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic" id="regression">
+                <h3>Linear Regression</h3>
+                <p>Predict a continuous outcome from one or more predictor variables, quantifying the strength and direction of relationships.</p>
+                
+                <button class="accordion">
+                    <span>Regression Procedure</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: gss2002-sample2.sav (File #6)</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Regression</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Variables</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Statistics</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open dataset: <span class="dataset">gss2002-sample2.sav</span></li>
+                                <li>Navigate to <span class="spss-command">Analyze → Regression → Linear</span></li>
+                                <li>Select your <span class="step-highlight">continuous dependent variable</span> and add it to the <strong>Dependent</strong> box</li>
+                                <li>Select your <span class="step-highlight">independent variable(s)</span> and add them to the <strong>Independent(s)</strong> box
+                                    <ul>
+                                        <li>Can include both continuous and categorical variables (dummy-coded)</li>
+                                    </ul>
+                                </li>
+                                <li>Click <span class="spss-command">Statistics</span>
+                                    <ul>
+                                        <li>Check "Estimates" for regression coefficients</li>
+                                        <li>Check "Model fit" (R, R², adjusted R²)</li>
+                                        <li>Check "Descriptives" for correlations</li>
+                                        <li>Check "Part and partial correlations" if needed</li>
+                                    </ul>
+                                </li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Example: Social Class and Education</h4>
+                            <p>For this example:</p>
+                            <ul>
+                                <li><strong>Dependent variable:</strong> prestg80 (RS respondents' occupational prestige score)</li>
+                                <li><strong>Independent variables:</strong> 
+                                    <ul>
+                                        <li>educ (highest year of school completed)</li>
+                                        <li>papres80 (father's occupational prestige score)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <p>This analysis examines how parental social class and one's own education influence occupational prestige.</p>
+                            <p><strong>Key statistics to interpret:</strong></p>
+                            <ul>
+                                <li><strong>R²/Adjusted R²:</strong> Proportion of variance explained (0.23 means 23% of variance is explained)</li>
+                                <li><strong>B coefficients:</strong> Unstandardized effect sizes</li>
+                                <li><strong>Beta coefficients:</strong> Standardized effect sizes (comparable across variables)</li>
+                                <li><strong>Significance:</strong> p-values for each predictor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assignment" id="assignment3a">
+                <div class="dataset-tag">Dataset: attitudes towards people with ID.sav (File #3)</div>
+                <h3>SPSS Exercise 3A <span class="marks">(Total: 40 marks)</span></h3>
+                <p>Use the dataset <span class="dataset">attitudes towards people with ID.sav</span> to answer the following questions:</p>
+                
+                <div class="assignment-header">
+                    <h4>1. Prosocial Behavior Analysis <span class="marks">(15 marks)</span></h4>
+                </div>
+                <p>Using the Prosocial Behavior (total score of prosocial1 to prosocial16) as a dependent variable, examine its relationship with education and sex. Run an appropriate test and write up your conclusions.</p>
+                
+                <button class="accordion">
+                    <span>Detailed Steps for Question 1</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open <span class="dataset">attitudes towards people with ID.sav</span></li>
+                                <li>First, compute the total Prosocial score:
+                                    <ul>
+                                        <li>Navigate to <span class="spss-command">Transform → Compute Variable</span></li>
+                                        <li>Enter "totalprosocial" as the <strong>Target Variable</strong></li>
+                                        <li>For <strong>Numeric Expression</strong>, use either:
+                                            <ul>
+                                                <li>Sum: <code>prosocial1 + prosocial2 + ... + prosocial16</code></li>
+                                                <li>Or Mean: <code>MEAN(prosocial1, prosocial2, ... prosocial16) * 16</code></li>
+                                            </ul>
+                                        </li>
+                                        <li>Click <span class="spss-command">OK</span></li>
+                                    </ul>
+                                </li>
+                                <li>For analysis using factorial ANOVA (recommended):
+                                    <ul>
+                                        <li>Navigate to <span class="spss-command">Analyze → General Linear Model → Univariate</span></li>
+                                        <li>Select "totalprosocial" as <strong>Dependent Variable</strong></li>
+                                        <li>Add sex and education (Q12) as <strong>Fixed Factors</strong></li>
+                                        <li>Click <span class="spss-command">Options</span></li>
+                                        <li>Check "Descriptive statistics" and "Estimates of effect size"</li>
+                                        <li>Under Display Means for, select sex, education, and sex*education</li>
+                                        <li>Click <span class="spss-command">Continue</span></li>
+                                        <li>Click <span class="spss-command">Plots</span></li>
+                                        <li>Add education to Horizontal axis, sex to Separate lines</li>
+                                        <li>Click <span class="spss-command">Add</span>, then <span class="spss-command">Continue</span></li>
+                                        <li>Click <span class="spss-command">OK</span></li>
+                                    </ul>
+                                </li>
+                                <li>Your write-up should include:
+                                    <ul>
+                                        <li>Descriptive statistics for each group</li>
+                                        <li>Main effect of sex (F-value, significance, effect size)</li>
+                                        <li>Main effect of education (F-value, significance, effect size)</li>
+                                        <li>Interaction effect (if significant)</li>
+                                        <li>Interpretation of what the results mean practically</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="assignment-header">
+                    <h4>2. Regression Analysis <span class="marks">(25 marks)</span></h4>
+                </div>
+                <p>Use regression to test the relationship between education, sex, and age to see whether the effects of education and sex differ from the above. Recode sex into a dummy variable with male=1 and female=0. What is the implication of the results after comparison? Write up your conclusions.</p>
+                
+                <button class="accordion">
+                    <span>Detailed Steps for Question 2</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Recode sex into a dummy variable:
+                                    <ul>
+                                        <li>Navigate to <span class="spss-command">Transform → Recode into Different Variables</span></li>
+                                        <li>Select the sex variable</li>
+                                        <li>Enter "sexdummy" as the <strong>Output Variable Name</strong> and add a label like "Sex (Male=1, Female=0)"</li>
+                                        <li>Click <span class="spss-command">Change</span></li>
+                                        <li>Click <span class="spss-command">Old and New Values</span></li>
+                                        <li>For <strong>Old value</strong>, enter 1 (male); for <strong>New value</strong>, enter 1</li>
+                                        <li>Click <span class="spss-command">Add</span></li>
+                                        <li>For <strong>Old value</strong>, enter 2 (female); for <strong>New value</strong>, enter 0</li>
+                                        <li>Click <span class="spss-command">Add</span></li>
+                                        <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span></li>
+                                    </ul>
+                                </li>
+                                <li>Run the regression analysis:
+                                    <ul>
+                                        <li>Navigate to <span class="spss-command">Analyze → Regression → Linear</span></li>
+                                        <li>Select "totalprosocial" as the <strong>Dependent</strong> variable</li>
+                                        <li>Add education (Q12), sexdummy, and age (Q11) as <strong>Independent</strong> variables</li>
+                                        <li>Click <span class="spss-command">Statistics</span></li>
+                                        <li>Check "Estimates", "Model fit", "Descriptives", and "Part and partial correlations"</li>
+                                        <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span></li>
+                                    </ul>
+                                </li>
+                                <li>Your write-up should include:
+                                    <ul>
+                                        <li>Overall model summary (R², adjusted R², F-value, significance)</li>
+                                        <li>For each predictor: B coefficient, Beta coefficient, t-value, significance</li>
+                                        <li>Interpretation of each coefficient (e.g., "For every additional year of education, prosocial behavior score increases by X points")</li>
+                                        <li>Comparison with ANOVA results from Question 1:
+                                            <ul>
+                                                <li>Are the same variables significant in both analyses?</li>
+                                                <li>How does adding age as a predictor change the results?</li>
+                                                <li>Which approach provides more useful information and why?</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SPSS3B Section -->
+        <section id="spss3b" class="section active">
+            <h2>SPSS3B: Experimental Design Analysis</h2>
+            
+            <div class="quick-nav">
+                <button class="quick-nav-btn" data-scroll-to="group-differences">Group Differences</button>
+                <button class="quick-nav-btn" data-scroll-to="pre-post">Pre-Post Tests</button>
+                <button class="quick-nav-btn" data-scroll-to="advanced-designs">Advanced Designs</button>
+                <button class="quick-nav-btn" data-scroll-to="assignment3b">Assignment (80 marks)</button>
+            </div>
+            
+            <div class="topic" id="group-differences">
+                <h3>Testing Differences Between Groups</h3>
+                <p>Compare control and experimental groups to determine if an intervention had a significant effect.</p>
+                
+                <button class="accordion">
+                    <span>Independent Samples t-test for Experiments</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: Any experimental dataset with groups</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">t-test</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Variables</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Groups</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open your experimental dataset</li>
+                                <li>Navigate to <span class="spss-command">Analyze → Compare Means → Independent-Samples T Test</span></li>
+                                <li>Select your <span class="step-highlight">dependent variable</span> (continuous outcome measure) and add it to the <strong>Test Variable(s)</strong> box</li>
+                                <li>Select your <span class="step-highlight">grouping variable</span> (control/experimental) and add it to the <strong>Grouping Variable</strong> box</li>
+                                <li>Click <span class="spss-command">Define Groups</span> and enter the codes for your groups (e.g., 0 for control, 1 for experimental)</li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Important t-test Output Elements:</h4>
+                            <ul>
+                                <li><strong>Group Statistics table:</strong> Shows mean, standard deviation, and sample size for each group</li>
+                                <li><strong>Levene's Test:</strong> Tests equality of variances (if sig < .05, use "Equal variances not assumed" row)</li>
+                                <li><strong>Significance (2-tailed):</strong> If < .05, the groups differ significantly</li>
+                                <li><strong>Mean Difference:</strong> Actual difference between group means</li>
+                            </ul>
+                            <p>Example use: Testing if participants in control vs. experimental groups differ in age or other characteristics at baseline to verify group equivalence.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="accordion">
+                    <span>Chi-Square for Categorical Differences</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: Any experimental dataset with groups</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Crosstabs</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Variables</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Statistics</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open your experimental dataset</li>
+                                <li>Navigate to <span class="spss-command">Analyze → Descriptive Statistics → Crosstabs</span></li>
+                                <li>Select your <span class="step-highlight">categorical variable</span> (e.g., gender, education level) and add it to the <strong>Row(s)</strong> box</li>
+                                <li>Select your <span class="step-highlight">group variable</span> (control/experimental) and add it to the <strong>Column(s)</strong> box</li>
+                                <li>Click <span class="spss-command">Statistics</span> and check "Chi-square"</li>
+                                <li>Click <span class="spss-command">Continue</span></li>
+                                <li>Click <span class="spss-command">Cells</span> and check "Observed" and "Column percentages"</li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Important Chi-Square Output Elements:</h4>
+                            <ul>
+                                <li><strong>Crosstabulation table:</strong> Shows distribution of categories across groups</li>
+                                <li><strong>Pearson Chi-Square:</strong> If sig < .05, the distributions differ significantly between groups</li>
+                            </ul>
+                            <p>Example use: Testing if the proportion of males vs. females is balanced between control and experimental groups.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic" id="pre-post">
+                <h3>Pre-Post Test Design</h3>
+                <p>Analyze changes within the same subjects before and after an intervention or treatment.</p>
+                
+                <button class="accordion">
+                    <span>Paired Samples t-test</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: youth programme.sav (File #10)</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Paired t-test</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Variable Pairs</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Options</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open dataset: <span class="dataset">youth programme.sav</span></li>
+                                <li>Navigate to <span class="spss-command">Analyze → Compare Means → Paired-Samples T Test</span></li>
+                                <li>Select the <span class="step-highlight">pair of variables</span> (pre-test and post-test measures of the same construct)</li>
+                                <li>Click <span class="spss-command">Add</span> to add the pair to the analysis</li>
+                                <li>Add additional pairs for other outcome measures if needed</li>
+                                <li>Click <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Important Paired t-test Output Elements:</h4>
+                            <ul>
+                                <li><strong>Paired Samples Statistics:</strong> Shows mean, standard deviation for each measure</li>
+                                <li><strong>Paired Samples Correlations:</strong> Shows correlation between pre and post measures</li>
+                                <li><strong>Paired Samples Test:</strong>
+                                    <ul>
+                                        <li>Mean Difference: Average change from pre to post</li>
+                                        <li>t-value and Significance: If sig < .05, change is statistically significant</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <p>Example use: Testing if social competency scores improved significantly after participants completed the youth program.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="topic" id="advanced-designs">
+                <h3>Advanced Evaluation Designs</h3>
+                <p>Analyze more complex experimental designs with multiple measurement points or both between- and within-subject factors.</p>
+                
+                <button class="accordion">
+                    <span>Repeated Measures (Panel Design)</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: youth programme.sav (File #10)</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Repeated Measures</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Define Factor</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Options</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open dataset: <span class="dataset">youth programme.sav</span></li>
+                                <li>Navigate to <span class="spss-command">Analyze → General Linear Model → Repeated Measures</span></li>
+                                <li>In the <strong>Within-Subject Factor Name</strong> field, enter a name for your factor (e.g., "time")</li>
+                                <li>In the <strong>Number of Levels</strong> field, enter the number of time points (e.g., 3 for baseline, post-test 1, post-test 2)</li>
+                                <li>Click <span class="spss-command">Add</span>, then <span class="spss-command">Define</span></li>
+                                <li>Move the variables for each time point into the <strong>Within-Subjects Variables</strong> box in chronological order</li>
+                                <li>Click <span class="spss-command">Options</span></li>
+                                <li>Check "Descriptive statistics" and "Estimates of effect size"</li>
+                                <li>Under <strong>Display Means for</strong>, select your time factor</li>
+                                <li>Check "Compare main effects" and select the time factor</li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Important Repeated Measures Output Elements:</h4>
+                            <ul>
+                                <li><strong>Mauchly's Test:</strong> Tests sphericity assumption; if significant, use corrected tests (Greenhouse-Geisser or Huynh-Feldt)</li>
+                                <li><strong>Tests of Within-Subjects Effects:</strong> Tests if there are significant changes over time</li>
+                                <li><strong>Pairwise Comparisons:</strong> Shows which specific time points differ significantly</li>
+                                <li><strong>Profile Plot:</strong> Visual representation of changes over time</li>
+                            </ul>
+                            <p>Example use: Examining if social competency improvements are maintained at follow-up or if there is a pattern of improvement over three time points.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="accordion">
+                    <span>Mixed Design (Between and Within Subjects)</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="dataset">Required dataset: elderly health workshop.sav (File #4)</div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-steps">
+                                <div class="progress-step active">
+                                    1
+                                    <span class="progress-step-label">Open</span>
+                                </div>
+                                <div class="progress-step">
+                                    2
+                                    <span class="progress-step-label">Repeated Measures</span>
+                                </div>
+                                <div class="progress-step">
+                                    3
+                                    <span class="progress-step-label">Define Factors</span>
+                                </div>
+                                <div class="progress-step">
+                                    4
+                                    <span class="progress-step-label">Options & Plots</span>
+                                </div>
+                                <div class="progress-step">
+                                    5
+                                    <span class="progress-step-label">Execute</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="steps">
+                            <h4>SPSS Steps:</h4>
+                            <ol class="step-list">
+                                <li>Open dataset: <span class="dataset">elderly health workshop.sav</span></li>
+                                <li>Navigate to <span class="spss-command">Analyze → General Linear Model → Repeated Measures</span></li>
+                                <li>In the <strong>Within-Subject Factor Name</strong> field, enter a name for your time factor (e.g., "time")</li>
+                                <li>In the <strong>Number of Levels</strong> field, enter the number of time points (e.g., 2 for pre-test and post-test)</li>
+                                <li>Click <span class="spss-command">Add</span>, then <span class="spss-command">Define</span></li>
+                                <li>Move the variables for each time point into the <strong>Within-Subjects Variables</strong> box in chronological order</li>
+                                <li>Move the group variable (control/experimental) into the <strong>Between-Subjects Factor(s)</strong> box</li>
+                                <li>Click <span class="spss-command">Options</span></li>
+                                <li>Check "Descriptive statistics" and "Estimates of effect size"</li>
+                                <li>Under <strong>Display Means for</strong>, select:
+                                    <ul>
+                                        <li>Your time factor</li>
+                                        <li>Your group factor</li>
+                                        <li>The interaction (time*group)</li>
+                                    </ul>
+                                </li>
+                                <li>Check "Compare main effects" for both factors</li>
+                                <li>Click <span class="spss-command">Continue</span></li>
+                                <li>Click <span class="spss-command">Plots</span></li>
+                                <li>Add time to <strong>Horizontal Axis</strong>, group to <strong>Separate Lines</strong></li>
+                                <li>Click <span class="spss-command">Add</span></li>
+                                <li>Click <span class="spss-command">Continue</span>, then <span class="spss-command">OK</span> to run the analysis</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="note">
+                            <h4>Important Mixed Design Output Elements:</h4>
+                            <ul>
+                                <li><strong>Tests of Within-Subjects Effects:</strong> Tests time effect and time*group interaction</li>
+                                <li><strong>Tests of Between-Subjects Effects:</strong> Tests overall group differences</li>
+                                <li><strong>Profile Plot:</strong> Shows pattern of change for each group over time</li>
+                            </ul>
+                            <p>Example use: Testing if life satisfaction increases more for the experimental group than the control group after the elderly health workshop.</p>
+                            <p><strong>The key finding to look for:</strong> The time*group interaction. If significant, it means the groups changed differently over time, typically indicating the intervention had an effect.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="assignment" id="assignment3b">
+                <div class="dataset-tag">Dataset: 330dataset.sav (File #1)</div>
+                <h3>SPSS Exercise 3B <span class="marks">(Total: 80 marks)</span></h3>
+                <p>Use the dataset <span class="dataset">330dataset.sav</span> for this exercise:</p>
+                
+                <p>The dataset comes from an evaluation of an online mindfulness programme for overseas students. Participants in the experimental group joined the 8-session 330 programme, while participants in the control group did not. You need to run appropriate statistical tests to examine the programme's effectiveness in improving mindfulness, stress, and homesickness for the participants.</p>
+                
+                <button class="accordion">
+                    <span>Comprehensive Analysis Plan</span>
+                    <span class="accordion-icon">▼</span>
+                </button>
+                <div class="panel">
+                    <div class="panel-content">
+                        <div class="steps">
+                            <h4>Analysis Strategy:</h4>
+                            <p>This comprehensive assignment requires a systematic approach to properly evaluate the intervention. Follow these steps in order:</p>
+                            
+                            <ol class="step-list">
+                                <li><strong>Step 1: Check baseline equivalence</strong>
+                                    <ul>
+                                        <li>Purpose: Verify that control and experimental groups were similar at the start</li>
+                                        <li>Method: Independent samples t-tests comparing pre-test scores</li>
+                                        <li>Variables to compare: Pre-test scores for mindfulness, stress, homesickness</li>
+                                        <li>SPSS path: <span class="spss-command">Analyze → Compare Means → Independent-Samples T Test</span></li>
+                                    </ul>
+                                </li>
+                                
+                                <li><strong>Step 2: Check demographic equivalence</strong>
+                                    <ul>
+                                        <li>Purpose: Verify that groups are balanced in terms of demographics</li>
+                                        <li>Method: Chi-square tests for categorical variables</li>
+                                        <li>Variables to compare: Gender, age groups, etc.</li>
+                                        <li>SPSS path: <span class="spss-command">Analyze → Descriptive Statistics → Crosstabs</span></li>
+                                    </ul>
+                                </li>
+                                
+                                <li><strong>Step 3: Examine within-group changes</strong>
+                                    <ul>
+                                        <li>Purpose: Analyze pre-post changes separately for each group</li>
+                                        <li>Method: Paired samples t-tests, split by group</li>
+                                        <li>SPSS path: 
+                                            <ol>
+                                                <li><span class="spss-command">Data → Split File</span>, select "Organize output by groups", choose group variable</li>
+                                                <li><span class="spss-command">Analyze → Compare Means → Paired-Samples T Test</span></li>
+                                                <li>Create pairs for pre-post scores of mindfulness, stress, homesickness</li>
+                                            </ol>
+                                        </li>
+                                    </ul>
+                                </li>
+                                
+                                <li><strong>Step 4: Main analysis (key component)</strong>
+                                    <ul>
+                                        <li>Purpose: Test if the intervention led to different outcomes than the control condition</li>
+                                        <li>Method: Mixed ANOVA (repeated measures with between-subjects factor)</li>
+                                        <li>SPSS path: <span class="spss-command">Analyze → General Linear Model → Repeated Measures</span></li>
+                                        <li>Design:
+                                            <ul>
+                                                <li>Within-subjects factor: time (2 levels: pre and post)</li>
+                                                <li>Between-subjects factor: group (control vs. experimental)</li>
+                                                <li>Run separate analyses for each outcome (mindfulness, stress, homesickness)</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            
+                            <h4>Step-by-Step SPSS Instructions for Main Analysis:</h4>
+                            <ol>
+                                <li>Open dataset: <span class="dataset">330dataset.sav</span></li>
+                                
+                                <li>Ensure your split file is turned off:
+                                    <ul>
+                                        <li>Navigate to <span class="spss-command">Data → Split File</span></li>
+                                        <li>Select "Analyze all cases, do not create groups"</li>
+                                        <li>Click <span class="spss-command">OK</span></li>
+                                    </ul>
+                                </li>
+                                
+                                <li>For each outcome (run these analyses separately):
+                                    <ul>
+                                        <li>Navigate to <span class="spss-command">Analyze → General Linear Model → Repeated Measures</span></li>
+                                        <li>Enter "time" as <strong>Within-Subject Factor Name</strong></li>
+                                        <li>Enter "2" as <strong>Number of Levels</strong></li>
+                                        <li>Click <span class="spss-command">Add</span>, then <span class="spss-command">Define</span></li>
+                                        <li>Move pre and post variables for the outcome to <strong>Within-Subjects Variables</strong> (e.g., mindfulness_pre and mindfulness_post)</li>
+                                        <li>Move group variable to <strong>Between-Subjects Factor(s)</strong></li>
+                                        <li>Click <span class="spss-command">Options</span></li>
+                                        <li>Check "Descriptive statistics" and "Estimates of effect size"</li>
+                                        <li>Under <strong>Display Means for</strong>, select time, group, and time*group</li>
+                                        <li>Check "Compare main effects" for both factors</li>
+                                        <li>Click <span class="spss-command">Continue</span></li>
+                                        <li>Click <span class="spss-command">Plots</span></li>
+                                        <li>Add time to <strong>Horizontal Axis</strong>, group to <strong>Separate Lines</strong></li>
+                                        <li>Click <span class="spss-command">Add</span>, then <span class="spss-command">Continue</span></li>
+                                        <li>Click <span class="spss-command">OK</span></li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            
+                            <h4>Writing Your Report (Key Elements to Include):</h4>
+                            <ol>
+                                <li><strong>Introduction</strong>
+                                    <ul>
+                                        <li>Brief description of the 330 programme</li>
+                                        <li>Purpose of the analysis</li>
+                                        <li>Variables being examined (mindfulness, stress, homesickness)</li>
+                                    </ul>
+                                </li>
+                                
+                                <li><strong>Methods</strong>
+                                    <ul>
+                                        <li>Description of sample (total N, group sizes)</li>
+                                        <li>Brief explanation of statistical tests used and why</li>
+                                    </ul>
+                                </li>
+                                
+                                <li><strong>Results</strong>
+                                    <ul>
+                                        <li>Baseline comparisons (t-tests, demographics)</li>
+                                        <li>For each outcome (mindfulness, stress, homesickness):
+                                            <ul>
+                                                <li>Descriptive statistics (means, SDs) for both groups at both time points</li>
+                                                <li>Main effect of time (F-value, p-value, effect size)</li>
+                                                <li>Main effect of group (F-value, p-value, effect size)</li>
+                                                <li>Time × Group interaction (F-value, p-value, effect size) - this is the critical test!</li>
+                                                <li>Include or reference the profile plot showing the pattern of change</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                
+                                <li><strong>Discussion</strong>
+                                    <ul>
+                                        <li>Summary of key findings</li>
+                                        <li>Interpretation of what the results mean practically</li>
+                                        <li>Assessment of program effectiveness for each outcome</li>
+                                        <li>Limitations of the analysis</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons and sections
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                
+                // Scroll to top of new section
+                window.scrollTo(0, 0);
+            });
+        });
+        
+        // Accordion functionality
+        document.querySelectorAll('.accordion').forEach(accordion => {
+            accordion.addEventListener('click', function() {
+                // Toggle active class
+                this.classList.toggle('active');
+                
+                // Get the panel element
+                const panel = this.nextElementSibling;
+                
+                // Toggle panel visibility
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        });
+        
+        // Quick navigation scrolling
+        document.querySelectorAll('.quick-nav-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-scroll-to');
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    const yOffset = -70; // Adjust for fixed header/nav
+                    const y = targetElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }
+            });
+        });
+        
+        // Progress step animation on accordion open
+        document.querySelectorAll('.accordion').forEach(accordion => {
+            accordion.addEventListener('click', function() {
+                // If accordion is becoming active
+                if (!this.classList.contains('active')) {
+                    return;
+                }
+                
+                // Find progress steps in this accordion panel
+                const panel = this.nextElementSibling;
+                const progressSteps = panel.querySelectorAll('.progress-step');
+                if (progressSteps.length === 0) return;
+                
+                // Animate steps sequentially
+                progressSteps.forEach((step, index) => {
+                    setTimeout(() => {
+                        step.classList.add('active');
+                    }, 300 * index);
+                });
+                
+                // Reset on accordion close
+                accordion.addEventListener('click', function resetSteps() {
+                    if (this.classList.contains('active')) return;
+                    
+                    progressSteps.forEach((step, index) => {
+                        if (index === 0) return; // Keep first step active
+                        step.classList.remove('active');
+                    });
+                    
+                    // Remove this listener to prevent duplication
+                    accordion.removeEventListener('click', resetSteps);
+                }, {once: true});
+            });
+        });
+    </script>
+</body>
+</html>
