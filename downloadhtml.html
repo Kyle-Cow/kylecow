@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能HTML轉換器 - 增強版</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #27ae60;
+            --warning-color: #e74c3c;
+            --light-bg: #f5f6fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--light-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .converter-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .converter-section:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .editor-preview {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        @media (min-width: 768px) {
+            .editor-preview {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .preview-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .preview-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            display: flex;
+            gap: 5px;
+        }
+
+        .preview-btn {
+            background: rgba(44, 62, 80, 0.7);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .preview-btn:hover {
+            background: rgba(44, 62, 80, 0.9);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            background: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        button.success-btn {
+            background: var(--accent-color);
+        }
+
+        button.success-btn:hover {
+            background: #219653;
+        }
+
+        input[type="file"], 
+        input[type="text"],
+        select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 400px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="file"]:focus, 
+        input[type="text"]:focus,
+        select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        .modification-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .smart-edit-section {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr auto;
+            margin-bottom: 15px;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filename-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px;
+        }
+
+        .fullscreen-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        .fullscreen-preview iframe {
+            width: 100%;
+            height: calc(100% - 60px);
+            border: none;
+        }
+
+        .fullscreen-controls {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+        }
+
+        .element-navigator {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .element-item {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s ease;
+        }
+
+        .element-item:hover {
+            background: #f0f0f0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background: #eee;
+            border-radius: 6px 6px 0 0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+        }
+
+        .tab.active {
+            background: white;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .modification-history {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .history-item {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-action {
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 智能HTML轉換器 - 增強版</h1>
+
+        <!-- 文件上傳區 -->
+        <div class="converter-section">
+            <h2>1. 文件上傳</h2>
+            <div class="controls">
+                <input type="file" id="fileUpload" accept=".txt,.html,.htm">
+                <button onclick="document.getElementById('fileUpload').click()">
+                    <span>📂</span> 選擇文件
+                </button>
+                <button onclick="showTemplates()">
+                    <span>📋</span> 使用模板
+                </button>
+            </div>
+        </div>
+
+        <!-- 編輯預覽區 -->
+        <div class="converter-section">
+            <h2>2. 編輯與預覽</h2>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(this, 'editorTab')">代碼編輯</div>
+                <div class="tab" onclick="switchTab(this, 'elementTab')">元素瀏覽</div>
+            </div>
+
+            <div class="tab-content active" id="editorTab">
+                <div class="editor-preview">
+                    <div>
+                        <h3><span>💻</span> 代碼編輯器</h3>
+                        <textarea id="htmlInput" placeholder="在此輸入或粘貼HTML代碼..."></textarea>
+                    </div>
+                    <div>
+                        <h3><span>👁️</span> 實時預覽</h3>
+                        <div class="preview-container">
+                            <iframe class="preview-frame" id="previewFrame"></iframe>
+                            <div class="preview-controls">
+                                <button class="preview-btn" onclick="toggleFullscreen()">
+                                    <span>🔍</span> 全螢幕
+                                </button>
+                                <button class="preview-btn" onclick="refreshPreview()">
+                                    <span>🔄</span> 重整
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="elementTab">
+                <h3><span>🧩</span> 元素瀏覽器</h3>
+                <p>點擊元素即可在編輯器中高亮顯示對應代碼</p>
+                <div class="element-navigator" id="elementNavigator">
+                    <!-- 元素將在這裡動態生成 -->
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="updatePreview()">
+                    <span>🔄</span> 更新預覽
+                </button>
+                <button onclick="showModificationPanel()">
+                    <span>💡</span> 智能修改建議
+                </button>
+                <button onclick="validateHTML()">
+                    <span>✅</span> 驗證HTML
+                </button>
+                <button onclick="formatHTML()">
+                    <span>🔧</span> 格式化代碼
+                </button>
+            </div>
+
+            <div class="status-bar" id="statusBar">準備就緒。</div>
+        </div>
+
+        <!-- 智能修改面板 -->
+        <div class="modification-panel" id="modificationPanel" style="display:none;">
+            <h3><span>🧠</span> 智能修改建議 
+                <div class="tooltip">ℹ️
+                    <span class="tooltip-text">選擇預設模式或手動輸入要查找的內容，然後輸入替換內容</span>
+                </div>
+            </h3>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchModTab(this, 'quickMod')">快速修改</div>
+                <div class="tab" onclick="switchModTab(this, 'advancedMod')">進階修改</div>
+                <div class="tab" onclick="switchModTab(this, 'historyMod')">修改歷史</div>
+            </div>
+            
+            <div class="tab-content active" id="quickMod">
+                <div class="smart-edit-section">
+                    <select id="commonActions" onchange="handleCommonAction(this.value)">
+                        <option value="">選擇快速修改操作...</option>
+                        <option value="title">修改頁面標題</option>
+                        <option value="meta">修改頁面描述</option>
+                        <option value="h1">修改主標題</option>
+                        <option value="css">增加自定義CSS</option>
+                        <option value="responsive">增加響應式設計meta標籤</option>
+                        <option value="favicon">添加favicon圖標</option>
+                        <option value="footer">添加頁腳</option>
+                    </select>
+                    <button onclick="applyQuickModification()">應用修改</button>
+                </div>
+                <div id="quickModContent" style="display:none;">
+                    <!-- 動態生成的表單將在這裡顯示 -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="advancedMod">
+                <div class="smart-edit-section">
+                    <input type="text" id="searchPattern" placeholder="輸入要查找的內容（支持正則表達式）">
+                    <select id="commonPatterns" onchange="fillSearchPattern(this.value)">
+                        <option value="">常用模式...</option>
+                        <option value="<title>.*?</title>">頁面標題</option>
+                        <option value="<meta name=\"description\".*?>">頁面描述</option>
+                        <option value="<h1>.*?</h1>">主標題</option>
+                        <option value="<link.*?rel=\"stylesheet\".*?>">CSS鏈接</option>
+                        <option value="<div class=\".*?\">">DIV與特定類</option>
+                        <option value="<img.*?src=\".*?\".*?>">圖片標籤</option>
+                    </select>
+                </div>
+                <div class="smart-edit-section">
+                    <input type="text" id="replaceContent" placeholder="輸入替換內容...">
+                    <button onclick="applyModification()">應用修改</button>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="historyMod">
+                <h4>修改歷史記錄</h4>
+                <div class="modification-history" id="modificationHistory">
+                    <!-- 歷史記錄將在這裡動態生成 -->
+                    <div class="history-item">尚無修改記錄</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 輸出設置 -->
+        <div class="converter-section">
+            <h2>3. 輸出設置</h2>
+            <div class="controls">
+                <input type="text" id="customName" 
+                       class="filename-input"
+                       placeholder="自定義文件名（默認：converted.html）">
+                <button class="success-btn" onclick="downloadFile()">
+                    <span>💾</span> 保存文件
+                </button>
+                <button onclick="copyToClipboard()">
+                    <span>📋</span> 複製到剪貼板
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全螢幕預覽模式 -->
+    <div class="fullscreen-preview" id="fullscreenPreview">
+        <div class="fullscreen-controls">
+            <button onclick="exitFullscreen()" class="preview-btn">
+                <span>❌</span> 退出全螢幕
+            </button>
+        </div>
+        <iframe id="fullscreenFrame"></iframe>
+    </div>
+
+    <script>
+        let modificationHistory = [];
+        let autoSaveInterval;
+        let lastSavedContent = '';
+
+        // 初始化
+        window.onload = function() {
+            updatePreview();
+            setAutoSave();
+        };
+
+        // 自動保存功能
+        function setAutoSave() {
+            autoSaveInterval = setInterval(function() {
+                const currentContent = document.getElementById('htmlInput').value;
+                if (currentContent !== lastSavedContent) {
+                    localStorage.setItem('htmlConverterContent', currentContent);
+                    lastSavedContent = currentContent;
+                    updateStatus('自動保存完成...');
+                }
+            }, 30000); // 每30秒自動保存一次
+            
+            // 嘗試恢復上次編輯
+            const savedContent = localStorage.getItem('htmlConverterContent');
+            if (savedContent) {
+                document.getElementById('htmlInput').value = savedContent;
+                updatePreview();
+                updateStatus('已恢復上次編輯的內容');
+            }
+        }
+
+        // 文件上傳處理
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('htmlInput').value = e.target.result;
+                updatePreview();
+                autoSetFilename(file.name);
+                updateElementNavigator();
+                updateStatus(`已載入文件: ${file.name}`);
+            };
+            reader.readAsText(file);
+        });
+
+        // 實時預覽更新
+        function updatePreview() {
+            const content = document.getElementById('htmlInput').value;
+            const previewFrame = document.getElementById('previewFrame');
+            previewFrame.srcdoc = sanitizeContent(content);
+            setTimeout(updateElementNavigator, 1000); // 等待iframe載入後更新元素導航
+            updateStatus('預覽已更新');
+        }
+
+        // 刷新預覽
+        function refreshPreview() {
+            const previewFrame = document.getElementById('previewFrame');
+            previewFrame.srcdoc = previewFrame.srcdoc;
+            updateStatus('預覽已重整');
+        }
+
+        // 安全過濾
+        function sanitizeContent(content) {
+            return content
+                .replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gi, '<!-- 腳本被移除以確保安全 -->')
+                .replace(/ on\w+="[^"]*"/gi, '');
+        }
+
+        // 自動設置文件名
+        function autoSetFilename(originalName) {
+            const cleanName = originalName.replace(/\.[^/.]+$/, "");
+            document.getElementById('customName').value = cleanName || 'converted';
+        }
+
+        // 更新狀態欄
+        function updateStatus(message) {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            setTimeout(() => {
+                statusBar.textContent = '準備就緒。';
+            }, 3000);
+        }
+
+        // 切換選項卡
+        function switchTab(tabElement, tabId) {
+            // 隱藏所有選項卡
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 顯示選中的選項卡
+            tabElement.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // 切換修改選項卡
+        function switchModTab(tabElement, tabId) {
+            // 隱藏所有修改選項卡
+            document.querySelectorAll('#modificationPanel .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('#modificationPanel .tab-content').forEach(content => {
+                content.classList.remove('active');
+                content.style.display = 'none';
+            });
+            
+            // 顯示選中的修改選項卡
+            tabElement.classList.add('active');
+            document.getElementById(tabId).style.display = 'block';
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // 全螢幕預覽
+        function toggleFullscreen() {
+            const fullscreenPreview = document.getElementById('fullscreenPreview');
+            const fullscreenFrame = document.getElementById('fullscreenFrame');
+            const content = document.getElementById('htmlInput').value;
+            
+            fullscreenFrame.srcdoc = sanitizeContent(content);
+            fullscreenPreview.style.display = 'block';
+            updateStatus('已切換至全螢幕預覽模式');
+        }
+
+        // 退出全螢幕
+        function exitFullscreen() {
+            document.getElementById('fullscreenPreview').style.display = 'none';
+            updateStatus('已退出全螢幕預覽');
+        }
+
+        // 智能修改面板
+        function showModificationPanel() {
+            document.getElementById('modificationPanel').style.display = 'block';
+            updateStatus('智能修改面板已開啟');
+        }
+
+        // 填充搜索模式
+        function fillSearchPattern(value) {
+            if (value) document.getElementById('searchPattern').value = value;
+        }
+
+        // 處理常用修改
+        function handleCommonAction(action) {
+            const quickModContent = document.getElementById('quickModContent');
+            
+            if (!action) {
+                quickModContent.style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            
+            switch(action) {
+                case 'title':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <label for="newTitle">新頁面標題:</label>
+                            <input type="text" id="newTitle" style="width:100%;margin-top:5px;" placeholder="輸入新的頁面標題">
+                        </div>
+                    `;
+                    break;
+                case 'meta':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <label for="newDescription">新頁面描述:</label>
+                            <input type="text" id="newDescription" style="width:100%;margin-top:5px;" placeholder="輸入新的頁面描述">
+                        </div>
+                    `;
+                    break;
+                case 'h1':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <label for="newHeading">新主標題:</label>
+                            <input type="text" id="newHeading" style="width:100%;margin-top:5px;" placeholder="輸入新的主標題">
+                        </div>
+                    `;
+                    break;
+                case 'css':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <label for="customCSS">自定義CSS:</label>
+                            <textarea id="customCSS" style="width:100%;height:100px;margin-top:5px;" placeholder="輸入自定義CSS樣式"></textarea>
+                        </div>
+                    `;
+                    break;
+                case 'responsive':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <p>將添加以下響應式設計meta標籤:</p>
+                            <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code>
+                        </div>
+                    `;
+                    break;
+                case 'favicon':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <label for="faviconURL">Favicon URL:</label>
+                            <input type="text" id="faviconURL" style="width:100%;margin-top:5px;" placeholder="輸入favicon的URL">
+                        </div>
+                    `;
+                    break;
+                case 'footer':
+                    html = `
+                        <div style="margin-top:15px;">
+                            <label for="footerContent">頁腳內容:</label>
+                            <textarea id="footerContent" style="width:100%;height:80px;margin-top:5px;" placeholder="輸入頁腳內容"></textarea>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            quickModContent.innerHTML = html;
+            quickModContent.style.display = 'block';
+        }
+
+        // 應用快速修改
+        function applyQuickModification() {
+            const action = document.getElementById('commonActions').value;
+            if (!action) {
+                alert('請選擇一個修改操作');
+                return;
+            }
+            
+            const editor = document.getElementById('htmlInput');
+            let content = editor.value;
+            let modification = '';
+            let description = '';
+            
+            switch(action) {
+                case 'title':
+                    const newTitle = document.getElementById('newTitle').value;
+                    if (!newTitle) {
+                        alert('請輸入新的頁面標題');
+                        return;
+                    }
+                    
+                    if (content.includes('<title>')) {
+                        content = content.replace(/<title>.*?<\/title>/i, `<title>${newTitle}</title>`);
+                    } else if (content.includes('<head>')) {
+                        content = content.replace(/<head>/i, `<head>\n  <title>${newTitle}</title>`);
+                    } else {
+                        alert('無法找到適合插入標題的位置，請確保HTML包含head標籤');
+                        return;
+                    }
+                    
+                    modification = `<title>${newTitle}</title>`;
+                    description = `更新頁面標題為: ${newTitle}`;
+                    break;
+                    
+                case 'meta':
+                    const newDescription = document.getElementById('newDescription').value;
+                    if (!newDescription) {
+                        alert('請輸入新的頁面描述');
+                        return;
+                    }
+                    
+                    const metaTag = `<meta name="description" content="${newDescription}">`;
+                    
+                    if (content.includes('<meta name="description"')) {
+                        content = content.replace(/<meta name="description".*?>/i, metaTag);
+                    } else if (content.includes('<head>')) {
+                        content = content.replace(/<head>/i, `<head>\n  ${metaTag}`);
+                    } else {
+                        alert('無法找到適合插入描述的位置，請確保HTML包含head標籤');
+                        return;
+                    }
+                    
+                    modification = metaTag;
+                    description = `更新頁面描述`;
+                    break;
+                    
+                case 'h1':
+                    const newHeading = document.getElementById('newHeading').value;
+                    if (!newHeading) {
+                        alert('請輸入新的主標題');
+                        return;
+                    }
+                    
+                    if (content.includes('<h1>')) {
+                        content = content.replace(/<h1>.*?<\/h1>/i, `<h1>${newHeading}</h1>`);
+                    } else if (content.includes('<body>')) {
+                        content = content.replace(/<body>/i, `<body>\n  <h1>${newHeading}</h1>`);
+                    } else {
+                        alert('無法找到適合插入標題的位置，請確保HTML結構正確');
+                        return;
+                    }
+                    
+                    modification = `<h1>${newHeading}</h1>`;
+                    description = `更新主標題為: ${newHeading}`;
+                    break;
+                    
+                case 'css':
+                    const customCSS = document.getElementById('customCSS').value;
+                    if (!customCSS) {
+                        alert('請輸入自定義CSS樣式');
+                        return;
+                    }
+                    
+                    const styleTag = `<style>\n${customCSS}\n</style>`;
+                    
+                    if (content.includes('</head>')) {
+                        content = content.replace(/<\/head>/i, `  ${styleTag}\n</head>`);
+                    } else {
+                        alert('無法找到適合插入CSS的位置，請確保HTML包含head標籤');
+                        return;
+                    }
+                    
+                    modification = styleTag;
+                    description = '添加自定義CSS樣式';
+                    break;
+                    
+                case 'responsive':
+                    const viewportMeta = '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+                    
+                    if (content.includes('name="viewport"')) {
+                        alert('頁面已包含viewport設置');
+                        return;
+                    }
+                    
+                    if (content.includes('<head>')) {
+                        content = content.replace(/<head>/i, `<head>\n  ${viewportMeta}`);
+                    } else {
+                        alert('無法找到適合插入meta標籤的位置，請確保HTML包含head標籤');
+                        return;
+                    }
+                    
+                    modification = viewportMeta;
+                    description = '添加響應式設計meta標籤';
+                    break;
+                    
+                case 'favicon':
+                    const faviconURL = document.getElementById('faviconURL').value;
+                    if (!faviconURL) {
+                        alert('請輸入favicon的URL');
+                        return;
+                    }
+                    
+                    const faviconLink = `<link rel="icon" href="${faviconURL}">`;
+                    
+                    if (content.includes('</head>')) {
+                        content = content.replace(/<\/head>/i, `  ${faviconLink}\n</head>`);
+                    } else {
+                        alert('無法找到適合插入favicon的位置，請確保HTML包含head標籤');
+                        return;
+                    }
+                    
+                    modification = faviconLink;
+                    description = '添加favicon圖標';
+                    break;
+                    
+                case 'footer':
+                    const footerContent = document.getElementById('footerContent').value;
+                    if (!footerContent) {
+                        alert('請輸入頁腳內容');
+                        return;
+                    }
+                    
+                    const footerHtml = `<footer style="margin-top: 20px; padding: 10px; border-top: 1px solid #eee; text-align: center;">\n  ${footerContent}\n</footer>`;
+                    
+                    if (content.includes('</body>')) {
+                        content = content.replace(/<\/body>/i, `${footerHtml}\n</body>`);
+                    } else {
+                        alert('無法找到適合插入頁腳的位置，請確保HTML包含body標籤');
+                        return;
+                    }
+                    
+                    modification = footerHtml;
+                    description = '添加頁腳內容';
+                    break;
+            }
+            
+            editor.value = content;
+            updatePreview();
+            addToHistory(description, modification);
+            updateStatus(`已成功${description}`);
+        }
+
+        // 進階修改功能
+        function applyModification() {
+            const search = document.getElementById('searchPattern').value;
+            const replace = document.getElementById('replaceContent').value;
+            const editor = document.getElementById('htmlInput');
+            
+            if (!search) {
+                alert('請輸入要查找的內容！');
+                return;
+            }
+
+            try {
+                const regex = new RegExp(search, 'gi');
+                const matches = editor.value.match(regex);
+                
+                if (!matches) {
+                    if (confirm('未找到匹配內容，是否在文件末尾添加新內容？')) {
+                        editor.value += `\n${replace}`;
+                        addToHistory('添加新內容', replace);
+                    }
+                    return;
+                }
+
+                if (confirm(`找到 ${matches.length} 處匹配，是否全部替換？`)) {
+                    const oldContent = editor.value;
+                    editor.value = editor.value.replace(regex, replace);
+                    updatePreview();
+                    addToHistory(`替換 ${matches.length} 處內容`, `${search} → ${replace}`);
+                }
+            } catch (e) {
+                alert('正則表達式錯誤：' + e.message);
+            }
+        }
+
+        // 添加修改歷史
+        function addToHistory(action, details) {
+            const timestamp = new Date().toLocaleTimeString();
+            modificationHistory.unshift({
+                action: action,
+                details: details,
+                timestamp: timestamp
+            });
+            
+            // 限制歷史記錄數量
+            if (modificationHistory.length > 20) {
+                modificationHistory.pop();
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        // 更新歷史顯示
+        function updateHistoryDisplay() {
+            const historyContainer = document.getElementById('modificationHistory');
+            
+            if (modificationHistory.length === 0) {
+                historyContainer.innerHTML = '<div class="history-item">尚無修改記錄</div>';
+                return;
+            }
+            
+            let html = '';
+            modificationHistory.forEach((item, index) => {
+                html += `
+                    <div class="history-item">
+                        <span>${item.timestamp}: ${item.action}</span>
+                        <span class="history-action" onclick="revertChange(${index})">撤銷</span>
+                    </div>
+                `;
+            });
+            
+            historyContainer.innerHTML = html;
+        }
+
+        // 撤銷修改（簡單實現，實際上需要保存每次修改的完整內容才能準確撤銷）
+        function revertChange(index) {
+            if (confirm('確定要撤銷此修改嗎？\n注意：這是一個簡化的撤銷功能，可能無法準確恢復。')) {
+                modificationHistory.splice(index, 1);
+                updateHistoryDisplay();
+                updateStatus('已嘗試撤銷修改');
+            }
+        }
+
+        // 更新元素導航器
+        function updateElementNavigator() {
+            const previewFrame = document.getElementById('previewFrame');
+            const elementNavigator = document.getElementById('elementNavigator');
+            
+            if (!previewFrame.contentWindow.document.body) {
+                elementNavigator.innerHTML = '<div class="element-item">預覽尚未載入</div>';
+                return;
+            }
+            
+            try {
+                const elements = [];
+                
+                // 收集重要元素
+                const headings = Array.from(previewFrame.contentWindow.document.querySelectorAll('h1, h2, h3'));
+                const divs = Array.from(previewFrame.contentWindow.document.querySelectorAll('div[class], div[id]'));
+                const links = Array.from(previewFrame.contentWindow.document.querySelectorAll('a[href]'));
+                const images = Array.from(previewFrame.contentWindow.document.querySelectorAll('img'));
+                
+                headings.forEach(el => elements.push({
+                    type: el.tagName.toLowerCase(),
+                    content: el.textContent.trim().substring(0, 30),
+                    selector: getElementSelector(el)
+                }));
+                
+                divs.slice(0, 10).forEach(el => elements.push({
+                    type: 'div',
+                    content: (el.className || el.id || '').substring(0, 30),
+                    selector: getElementSelector(el)
+                }));
+                
+                links.slice(0, 5).forEach(el => elements.push({
+                    type: 'a',
+                    content: el.textContent.trim().substring(0, 30) || el.href,
+                    selector: getElementSelector(el)
+                }));
+                
+                images.slice(0, 5).forEach(el => elements.push({
+                    type: 'img',
+                    content: el.alt || el.src.split('/').pop(),
+                    selector: getElementSelector(el)
+                }));
+                
+                // 生成元素列表
+                let html = '';
+                elements.forEach(el => {
+                    html += `
+                        <div class="element-item" onclick="highlightElement('${el.selector}')">
+                            &lt;${el.type}&gt; ${el.content || '[無內容]'}
+                        </div>
+                    `;
+                });
+                
+                elementNavigator.innerHTML = html || '<div class="element-item">未找到元素</div>';
+            } catch (e) {
+                elementNavigator.innerHTML = `<div class="element-item">載入元素時出錯: ${e.message}</div>`;
+            }
+        }
+
+        // 獲取元素選擇器
+        function getElementSelector(el) {
+            // 簡單實現，實際應用中應該有更複雜的算法來確定唯一選擇器
+            if (el.id) return `#${el.id}`;
+            if (el.className) return `.${el.className.split(' ')[0]}`;
+            
+            let selector = el.tagName.toLowerCase();
+            if (el.textContent && el.textContent.trim()) {
+                selector += `:contains("${el.textContent.trim().substring(0, 20)}")`;
+            }
+            
+            return selector;
+        }
+
+        // 高亮元素對應的代碼
+        function highlightElement(selector) {
+            const editor = document.getElementById('htmlInput');
+            const content = editor.value;
+            
+            // 簡單實現，實際上需要更複雜的解析來準確定位
+            let searchPattern;
+            
+            if (selector.startsWith('#')) {
+                searchPattern = `id="${selector.substring(1)}"`;
+            } else if (selector.startsWith('.')) {
+                searchPattern = `class="[^"]*${selector.substring(1)}[^"]*"`;
+            } else if (selector.includes(':contains(')) {
+                const parts = selector.split(':contains("');
+                const tag = parts[0];
+                const text = parts[1].replace('")', '');
+                searchPattern = `<${tag}[^>]*>[^<]*${text}`;
+            } else {
+                searchPattern = `<${selector}[^>]*>`;
+            }
+            
+            try {
+                const regex = new RegExp(searchPattern, 'i');
+                const match = regex.exec(content);
+                
+                if (match) {
+                    editor.focus();
+                    editor.setSelectionRange(match.index, match.index + match[0].length);
+                    
+                    // 滾動到選中位置
+                    const lineHeight = 16; // 估計的行高
+                    const linesBeforeMatch = content.substr(0, match.index).split('\n').length - 1;
+                    editor.scrollTop = linesBeforeMatch * lineHeight;
+                    
+                    updateStatus(`已找到並選中元素 ${selector}`);
+                } else {
+                    updateStatus(`無法找到元素 ${selector} 對應的代碼`);
+                }
+            } catch (e) {
+                updateStatus(`查找元素時出錯: ${e.message}`);
+            }
+        }
+
+        // 驗證HTML
+        function validateHTML() {
+            const content = document.getElementById('htmlInput').value;
+            if (!content.trim()) {
+                updateStatus('沒有內容可供驗證');
+                return;
+            }
+            
+            // 簡單檢查
+            const errors = [];
+            
+            // 檢查基本結構
+            if (!content.includes('<!DOCTYPE')) {
+                errors.push('缺少DOCTYPE聲明');
+            }
+            
+            if (!content.includes('<html>') && !content.includes('<html ')) {
+                errors.push('缺少HTML標籤');
+            }
+            
+            if (!content.includes('<head>')) {
+                errors.push('缺少HEAD標籤');
+            }
+            
+            if (!content.includes('<body>')) {
+                errors.push('缺少BODY標籤');
+            }
+            
+            // 檢查標籤平衡
+            const openTags = content.match(/<[a-z][a-z0-9]*(?:\s[^>]*)?>/gi) || [];
+            const closeTags = content.match(/<\/[a-z][a-z0-9]*>/gi) || [];
+            
+            if (openTags.length - closeTags.length !== 0) {
+                errors.push('標籤數量不平衡，可能有未閉合的標籤');
+            }
+            
+            // 顯示結果
+            if (errors.length === 0) {
+                alert('HTML驗證成功！沒有發現明顯錯誤。');
+                updateStatus('HTML驗證通過');
+            } else {
+                alert(`HTML驗證發現 ${errors.length} 個問題:\n\n${errors.join('\n')}`);
+                updateStatus(`驗證發現 ${errors.length} 個問題`);
+            }
+        }
+
+        // 格式化HTML
+        function formatHTML() {
+            const content = document.getElementById('htmlInput').value;
+            if (!content.trim()) {
+                updateStatus('沒有內容可供格式化');
+                return;
+            }
+            
+            try {
+                // 簡單格式化
+                let formatted = '';
+                let indent = 0;
+                let newLine = true;
+                
+                // 特殊處理字符
+                const specialChars = ['<', '>', '\n'];
+                let inTag = false;
+                let inComment = false;
+                let inPreTag = false;
+                
+                for (let i = 0; i < content.length; i++) {
+                    const char = content[i];
+                    
+                    // 處理註釋
+                    if (i < content.length - 3 && content.substring(i, i + 4) === '<!--') {
+                        inComment = true;
+                        formatted += '<!--';
+                        i += 3;
+                        continue;
+                    }
+                    
+                    if (inComment && i < content.length - 2 && content.substring(i, i + 3) === '-->') {
+                        inComment = false;
+                        formatted += '-->';
+                        i += 2;
+                        formatted += '\n' + ' '.repeat(indent);
+                        continue;
+                    }
+                    
+                    if (inComment) {
+                        formatted += char;
+                        continue;
+                    }
+                    
+                    // 處理pre標籤
+                    if (i < content.length - 4 && content.substring(i, i + 5).toLowerCase() === '<pre>') {
+                        inPreTag = true;
+                    }
+                    
+                    if (inPreTag && i < content.length - 5 && content.substring(i, i + 6).toLowerCase() === '</pre>') {
+                        inPreTag = false;
+                    }
+                    
+                    if (inPreTag) {
+                        formatted += char;
+                        continue;
+                    }
+                    
+                    // 處理標籤
+                    if (char === '<' && !inTag) {
+                        inTag = true;
+                        
+                        // 處理閉合標籤縮進
+                        if (i < content.length - 1 && content[i + 1] === '/') {
+                            indent -= 2;
+                            if (indent < 0) indent = 0;
+                        }
+                        
+                        if (newLine) {
+                            formatted += ' '.repeat(indent);
+                            newLine = false;
+                        }
+                        
+                        formatted += '<';
+                    } else if (char === '>' && inTag) {
+                        inTag = false;
+                        formatted += '>';
+                        
+                        // 處理自閉合標籤不增加縮進
+                        if (i > 0 && content[i - 1] === '/') {
+                            // 不增加縮進
+                        } 
+                        // 處理開始標籤增加縮進
+                        else if (i > 0 && content[i - 1] !== '/') {
+                            // 找到標籤名
+                            let j = i - 1;
+                            while (j >= 0 && content[j] !== '<') j--;
+                            
+                            if (j >= 0) {
+                                const tagContent = content.substring(j, i + 1);
+                                // 排除自閉合標籤和無內容標籤
+                                if (!tagContent.match(/<(meta|link|img|br|hr|input|source)(\s|>)/i)) {
+                                    indent += 2;
+                                }
+                            }
+                        }
+                        
+                        formatted += '\n';
+                        newLine = true;
+                    } else {
+                        if (newLine && !inTag && char !== '\n') {
+                            formatted += ' '.repeat(indent);
+                            newLine = false;
+                        }
+                        
+                        if (char === '\n') {
+                            if (!inTag) newLine = true;
+                            // 忽略原文件中的換行，除非在標籤外
+                            if (!inTag) formatted += '\n';
+                        } else {
+                            formatted += char;
+                        }
+                    }
+                }
+                
+                document.getElementById('htmlInput').value = formatted;
+                updatePreview();
+                addToHistory('格式化HTML', '代碼已格式化');
+                updateStatus('HTML代碼已格式化');
+            } catch (e) {
+                alert('格式化過程中出錯: ' + e.message);
+                updateStatus('格式化失敗');
+            }
+        }
+
+        // 文件下載處理
+        function downloadFile() {
+            const content = document.getElementById('htmlInput').value;
+            const customName = document.getElementById('customName').value;
+            const filename = `${customName.replace(/[^a-zA-Z0-9\u4e00-\u9fa5\-_]/g, '_')}.html`;
+
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            updateStatus(`已下載文件: ${filename}`);
+        }
+
+        // 複製到剪貼板
+        function copyToClipboard() {
+            const content = document.getElementById('htmlInput').value;
+            navigator.clipboard.writeText(content)
+                .then(() => {
+                    updateStatus('已複製到剪貼板');
+                })
+                .catch(err => {
+                    alert('複製失敗: ' + err);
+                    updateStatus('複製失敗');
+                });
+        }
+
+        // 使用模板
+        function showTemplates() {
+            const templates = [
+                {
+                    name: '基本HTML5模板',
+                    code: `<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的網頁</title>
+    <style>
+        body {
+            font-family: '微軟正黑體', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>網頁標題</h1>
+        </header>
+        <main>
+            <p>這是一個基本的HTML5模板。</p>
+        </main>
+        <footer>
+            <p>&copy; 2025 我的網站</p>
+        </footer>
+    </div>
+</body>
+</html>`
+                },
+                {
+                    name: '簡單文章頁面',
+                    code: `<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章標題</title>
+    <style>
+        body {
+            font-family: '微軟正黑體', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            color: #333;
+        }
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+        }
+        .meta {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="article-container">
+        <h1>文章標題</h1>
+        <div class="meta">
+            作者：作者名稱 | 發布日期：2025年3月24日
+        </div>
+        <article>
+            <p>這是文章的第一段。你可以在這裡寫入內容。</p>
+            <p>這是文章的第二段。繼續寫入更多內容。</p>
+            <h2>小標題</h2>
+            <p>這是小標題下的內容。</p>
+        </article>
+    </div>
+</body>
+</html>`
+                }
+            ];
+            
+            const templateNames = templates.map(t => t.name);
+            const selectedTemplate = prompt(`請選擇一個模板:\n${templateNames.map((name, index) => `${index + 1}. ${name}`).join('\n')}\n\n輸入編號:`);
+            
+            if (selectedTemplate && !isNaN(selectedTemplate) && selectedTemplate <= templates.length) {
+                const index = parseInt(selectedTemplate) - 1;
+                document.getElementById('htmlInput').value = templates[index].code;
+                updatePreview();
+                document.getElementById('customName').value = templates[index].name.replace(/[^a-zA-Z0-9\u4e00-\u9fa5\-_]/g, '_');
+                updateStatus(`已載入模板: ${templates[index].name}`);
+            }
+        }
+
+        // 初始化代碼監聽器
+        document.getElementById('htmlInput').addEventListener('input', () => {
+            clearTimeout(window.previewTimeout);
+            window.previewTimeout = setTimeout(updatePreview, 500);
+        });
+    </script>
+</body>
+</html>
