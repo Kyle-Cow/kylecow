@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數碼轉型下的成人生涯規劃服務缺口 - 分而治之小組報告</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2B3A67; /* Pantone 2024/2025 色調 */
+            --secondary-color: #5F7ADB;
+            --accent-color: #FF7A5A;
+            --light-color: #F8F9FA;
+            --dark-color: #2c3e50;
+            --transition-speed: 0.4s;
+            --success-color: #3DD598;
+            --warning-color: #FFB13D;
+            --info-color: #2AC3FF;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Noto Sans TC', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.8em;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 2.6rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.6rem;
+            color: var(--secondary-color);
+        }
+        
+        h4 {
+            font-size: 1.3rem;
+        }
+        
+        p {
+            margin-bottom: 1.2em;
+        }
+        
+        ul {
+            margin-bottom: 1.2em;
+            padding-left: 1.5em;
+        }
+        
+        li {
+            margin-bottom: 0.5em;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .presentation {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100vh;
+            background-color: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease-in-out;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+        
+        .slide-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .transition-slide {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .transition-slide h2 {
+            color: white;
+            font-size: 2.8rem;
+            margin-bottom: 0.5em;
+        }
+        
+        .transition-slide p {
+            font-size: 1.4rem;
+            max-width: 700px;
+        }
+        
+        .highlight-box {
+            background-color: rgba(95, 122, 219, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .data-box {
+            background-color: rgba(61, 213, 152, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .quote-box {
+            background-color: rgba(255, 122, 90, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-style: italic;
+        }
+        
+        .sdg-box {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(255, 177, 61, 0.1);
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .sdg-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-right: 20px;
+            color: var(--warning-color);
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .sdg-content {
+            flex: 1;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .nav-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .nav-button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .progress-bar-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background-color: rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease-in-out;
+        }
+        
+        .system-diagram {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stakeholder-map {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stakeholder-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stakeholder-box h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .multi-model {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .model-box {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .model-box h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .age-group {
+            background-color: white;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .age-group h4 {
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .age-group h4:before {
+            content: "";
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+        
+        .discussion-section {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(95, 122, 219, 0.1);
+            border-radius: 8px;
+        }
+        
+        .discussion-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .quote-author {
+            text-align: right;
+            font-style: normal;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .case-study {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            background-color: white;
+        }
+        
+        .case-study h4 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            opacity: 0.7;
+        }
+        
+        .notes-button {
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.3s;
+        }
+        
+        .notes-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .notes-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: right 0.3s ease-in-out;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .notes-panel.active {
+            right: 0;
+        }
+        
+        .close-notes {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .slide-indicator {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.2);
+            margin: 0 3px;
+            transition: all 0.3s;
+        }
+        
+        .indicator-dot.active {
+            background-color: var(--secondary-color);
+            transform: scale(1.3);
+        }
+        
+        .speaker-note {
+            background-color: #f8f9fa;
+            border-left: 3px solid var(--accent-color);
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .speaker-info {
+            background-color: #e9f3ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .speaker-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .timeline {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 5px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .timeline-item {
+            display: inline-block;
+            padding: 5px 15px;
+            margin: 0 5px;
+            border-radius: 15px;
+            background-color: #e9f3ff;
+            font-size: 0.8rem;
+        }
+        
+        .icon-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .feature-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+            text-align: center;
+        }
+        
+        .feature-icon i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .svg-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            h3 {
+                font-size: 1.2rem;
+            }
+            
+            .stakeholder-map {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide {
+                padding: 20px 15px;
+            }
+            
+            .multi-model {
+                flex-direction: column;
+            }
+            
+            .notes-panel {
+                width: 280px;
+                right: -280px;
+            }
+            
+            .navigation {
+                bottom: 10px;
+            }
+            
+            .nav-button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .slide-indicator {
+                bottom: 45px;
+            }
+            
+            .timeline {
+                flex-wrap: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="slide-indicator" id="slideIndicator">
+            <!-- 將動態生成 -->
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn"><i class="fas fa-arrow-left"></i> 上一頁</button>
+            <button class="nav-button" id="nextBtn">下一頁 <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div class="notes-panel" id="notesPanel">
+            <button class="close-notes" id="closeNotes"><i class="fas fa-times"></i></button>
+            <h3>講稿內容</h3>
+            <div id="currentNotes"></div>
+        </div>
+        
+        <!-- 封面頁 - 阿牛負責 -->
+        <div class="slide active" id="slide1">
+            <div class="slide-content">
+                <div class="slide-number">1 / 27</div>
+                <button class="notes-button" data-slide="1"><i class="fas fa-microphone"></i></button>
+                
+                <h1>數碼轉型下的成人生涯規劃服務缺口</h1>
+                <h3>「分而治之」小組報告</h3>
+                <p>《可持續發展與社會工作宏觀實踐》(SW504)</p>
+                
+                <div class="speaker-info">
+                    <div class="speaker-avatar">組</div>
+                    <div>
+                        <h4 style="margin-bottom: 0;">分而治之小組</h4>
+                        <p style="margin-bottom: 0;">阿牛、Hebe、高仁、Vivian</p>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>組名理念 💡</h4>
+                    <p>「複雜社會，分而治之；多元需求，協調共進」</p>
+                    <ul>
+                        <li>精確分析與分類社會問題</li>
+                        <li>精準識別不同群體需求</li>
+                        <li>針對性設計差異化解決方案</li>
+                        <li>系統整合各方資源與力量</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item"><i class="fas fa-search"></i> 需求分析</div>
+                    <div class="timeline-item"><i class="fas fa-project-diagram"></i> 系統評估</div>
+                    <div class="timeline-item"><i class="fas fa-globe"></i> 國際參考</div>
+                    <div class="timeline-item"><i class="fas fa-tools"></i> 介入框架</div>
+                    <div class="timeline-item"><i class="fas fa-handshake"></i> 協作倡議</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 過渡頁：「分而治之」 - 阿牛負責 -->
+        <div class="slide transition-slide" id="slide2">
+            <div class="slide-content">
+                <div class="slide-number">2 / 27</div>
+                <button class="notes-button" data-slide="2"><i class="fas fa-microphone"></i></button>
+                
+                <h2>「分而治之」 <i class="fas fa-puzzle-piece"></i></h2>
+                <p>複雜社會的宏觀解決思維</p>
+                
+                <div class="svg-container">
+                    <svg width="300" height="300" viewBox="0 0 300 300">
+                        <defs>
+                            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
+                            </filter>
+                        </defs>
+                        <circle cx="150" cy="150" r="120" fill="#fff" filter="url(#shadow)"/>
+                        <path d="M150,30 L150,270" stroke="#5F7ADB" stroke-width="3"/>
+                        <path d="M30,150 L270,150" stroke="#5F7ADB" stroke-width="3"/>
+                        <circle cx="150" cy="150" r="20" fill="#2B3A67"/>
+                        <text x="110" y="80" fill="#2B3A67" font-size="14" font-weight="bold">分析</text>
+                        <text x="210" y="80" fill="#2B3A67" font-size="14" font-weight="bold">分類</text>
+                        <text x="110" y="230" fill="#2B3A67" font-size="14" font-weight="bold">協調</text>
+                        <text x="210" y="230" fill="#2B3A67" font-size="14" font-weight="bold">整合</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 數碼轉型與生涯挑戰 - 阿牛負責 -->
+        <div class="slide" id="slide3">
+            <div class="slide-content">
+                <div class="slide-number">3 / 27</div>
+                <button class="notes-button" data-slide="3"><i class="fas fa-microphone"></i></button>
+                
+                <h2>數碼轉型與生涯挑戰 <i class="fas fa-laptop-code"></i></h2>
+                
+                <div class="data-box">
+                    <h4>數碼經濟發展數據 📊</h4>
+                    <ul>
+                        <li>香港數字經濟規模 > 千億港元（普華永道2023）</li>
+                        <li>粵港澳大灣區具備集群式創新條件</li>
+                        <li>金融科技、生物科技成優勢產業</li>
+                        <li>遠程辦公、AI應用成常態</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>成人面臨的獨特挑戰 🔍</h4>
+                    <ul>
+                        <li><strong>轉型而非起步</strong>：在已有職業基礎上調整</li>
+                        <li><strong>風險更高</strong>：家庭責任、財務壓力大</li>
+                        <li><strong>支援不足</strong>：現有資源傾斜於青少年</li>
+                        <li><strong>適應障礙</strong>：數碼鴻溝、學習挑戰</li>
+                    </ul>
+                </div>
+                
+                <div class="icon-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                        <p>AI替代</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                        <p>遠程工作</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                        <p>技能淘汰</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                        <p>平台經濟</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 可持續發展框架導入 - 阿牛負責 -->
+        <div class="slide" id="slide4">
+            <div class="slide-content">
+                <div class="slide-number">4 / 27</div>
+                <button class="notes-button" data-slide="4"><i class="fas fa-microphone"></i></button>
+                
+                <h2>可持續發展框架導入 <i class="fas fa-leaf"></i></h2>
+                
+                <div class="sdg-box">
+                    <div class="sdg-number">4</div>
+                    <div class="sdg-content">
+                        <h4>優質教育</h4>
+                        <ul>
+                            <li>終身學習的持續過程</li>
+                            <li>教育資源公平可及</li>
+                            <li>能力認證與資格框架</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="sdg-box">
+                    <div class="sdg-number">8</div>
+                    <div class="sdg-content">
+                        <h4>體面工作和經濟增長</h4>
+                        <ul>
+                            <li>優質就業機會</li>
+                            <li>勞動權益保障</li>
+                            <li>彈性工作安排</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="sdg-box">
+                    <div class="sdg-number">10</div>
+                    <div class="sdg-content">
+                        <h4>減少不平等</h4>
+                        <ul>
+                            <li>消除數碼鴻溝</li>
+                            <li>防止年齡歧視</li>
+                            <li>確保機會平等</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 過渡頁：「細分需求，精準支援」 - Hebe負責 -->
+        <div class="slide transition-slide" id="slide5">
+            <div class="slide-content">
+                <div class="slide-number">5 / 27</div>
+                <button class="notes-button" data-slide="5"><i class="fas fa-microphone"></i></button>
+                
+                <h2>「細分需求，精準支援」 <i class="fas fa-users-cog"></i></h2>
+                <p>多元群體分析</p>
+                
+                <div class="svg-container">
+                    <svg width="320" height="200" viewBox="0 0 320 200">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#5F7ADB;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#2B3A67;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="40" y="40" width="240" height="30" rx="15" fill="url(#grad1)" opacity="0.8"/>
+                        <rect x="40" y="85" width="240" height="30" rx="15" fill="url(#grad1)" opacity="0.8"/>
+                        <rect x="40" y="130" width="240" height="30" rx="15" fill="url(#grad1)" opacity="0.8"/>
+                        <text x="100" y="60" fill="white" font-size="14">25-40歲 青壯年群體</text>
+                        <text x="100" y="105" fill="white" font-size="14">41-55歲 中年群體</text>
+                        <text x="100" y="150" fill="white" font-size="14">56歲以上 高齡工作者</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 成人群體分層分析 - Hebe負責 -->
+        <div class="slide" id="slide6">
+            <div class="slide-content">
+                <div class="slide-number">6 / 27</div>
+                <button class="notes-button" data-slide="6"><i class="fas fa-microphone"></i></button>
+                
+                <h2>成人群體分層分析 <i class="fas fa-layer-group"></i></h2>
+                <p>「分而治之」的第一步：精準識別和分類不同群體的獨特需求</p>
+                
+                <div class="age-group">
+                    <h4>25-40歲的青壯年群體</h4>
+                    <ul>
+                        <li>面臨「晉升瓶頸」和「橫向轉型」雙重壓力</li>
+                        <li>擁有數位適應力，缺乏系統性職涯規劃指導</li>
+                        <li>在職培訓與晉升機會不足</li>
+                    </ul>
+                </div>
+                
+                <div class="age-group">
+                    <h4>41-55歲的中年群體</h4>
+                    <ul>
+                        <li>40%認為技能5年內可能過時</li>
+                        <li>面臨最大的技術淘汰風險</li>
+                        <li>需要全新的職業身份重塑</li>
+                    </ul>
+                </div>
+                
+                <div class="age-group">
+                    <h4>56歲以上的高齡工作者</h4>
+                    <ul>
+                        <li>數位適應挑戰與退休過渡需求</li>
+                        <li>勞動參與率：2006年29.6% → 2016年44.1%</li>
+                        <li>「彈性退休」和「銀齡創業」支援不足</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 問題樹分析 - Hebe負責 -->
+        <div class="slide" id="slide7">
+            <div class="slide-content">
+                <div class="slide-number">7 / 27</div>
+                <button class="notes-button" data-slide="7"><i class="fas fa-microphone"></i></button>
+                
+                <h2>問題樹分析 <i class="fas fa-sitemap"></i></h2>
+                
+                <div class="svg-container">
+                    <svg width="500" height="300" viewBox="0 0 500 300">
+                        <defs>
+                            <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="1" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.2"/>
+                            </filter>
+                        </defs>
+                        <!-- 樹幹 -->
+                        <rect x="225" y="125" width="50" height="80" fill="#8B4513" filter="url(#shadow2)"/>
+                        <!-- 核心問題 -->
+                        <rect x="175" y="100" width="150" height="50" rx="10" fill="#FF7A5A" filter="url(#shadow2)"/>
+                        <text x="190" y="130" fill="white" font-size="12" font-weight="bold">成人生涯規劃服務缺口</text>
+                        <!-- 根本原因 -->
+                        <path d="M250,205 L150,230" stroke="#8B4513" stroke-width="3"/>
+                        <path d="M250,205 L250,230" stroke="#8B4513" stroke-width="3"/>
+                        <path d="M250,205 L350,230" stroke="#8B4513" stroke-width="3"/>
+                        <rect x="100" y="230" width="100" height="40" rx="5" fill="#8B4513" filter="url(#shadow2)"/>
+                        <rect x="200" y="230" width="100" height="40" rx="5" fill="#8B4513" filter="url(#shadow2)"/>
+                        <rect x="300" y="230" width="100" height="40" rx="5" fill="#8B4513" filter="url(#shadow2)"/>
+                        <text x="115" y="255" fill="white" font-size="10">政策碎片化</text>
+                        <text x="212" y="255" fill="white" font-size="10">資源分配不均</text>
+                        <text x="310" y="255" fill="white" font-size="10">市場主導邏輯</text>
+                        <!-- 結果枝葉 -->
+                        <path d="M250,100 L150,60" stroke="#2B3A67" stroke-width="3"/>
+                        <path d="M250,100 L250,60" stroke="#2B3A67" stroke-width="3"/>
+                        <path d="M250,100 L350,60" stroke="#2B3A67" stroke-width="3"/>
+                        <rect x="100" y="30" width="100" height="40" rx="5" fill="#2B3A67" filter="url(#shadow2)"/>
+                        <rect x="200" y="30" width="100" height="40" rx="5" fill="#2B3A67" filter="url(#shadow2)"/>
+                        <rect x="300" y="30" width="100" height="40" rx="5" fill="#2B3A67" filter="url(#shadow2)"/>
+                        <text x="112" y="55" fill="white" font-size="10">職業不穩定</text>
+                        <text x="212" y="55" fill="white" font-size="10">收入下降</text>
+                        <text x="305" y="55" fill="white" font-size="10">心理健康風險</text>
+                    </svg>
+                </div>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>根本原因</h4>
+                        <ul>
+                            <li>政策碎片化</li>
+                            <li>資源分配不均</li>
+                            <li>服務設計不足</li>
+                            <li>市場主導邏輯</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>核心問題</h4>
+                        <ul>
+                            <li>技能錯配</li>
+                            <li>服務可及性低</li>
+                            <li>支援連續性缺失</li>
+                            <li>資訊不對稱</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>後果影響</h4>
+                        <ul>
+                            <li>個人：職業不穩定</li>
+                            <li>家庭：壓力增加</li>
+                            <li>社會：人力資源浪費</li>
+                            <li>系統：社會保障壓力</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 三維可持續性評估 - Hebe負責 -->
+        <div class="slide" id="slide8">
+            <div class="slide-content">
+                <div class="slide-number">8 / 27</div>
+                <button class="notes-button" data-slide="8"><i class="fas fa-microphone"></i></button>
+                
+                <h2>三維可持續性評估 <i class="fas fa-balance-scale"></i></h2>
+                
+                <div class="highlight-box">
+                    <h4>經濟可持續性 <i class="fas fa-chart-pie"></i></h4>
+                    <ul>
+                        <li>人力資本無法適應市場需求</li>
+                        <li>香港整體人力短缺達117,900人</li>
+                        <li>數碼人才缺口持續擴大</li>
+                        <li>生產力下降，經濟損失</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>社會可持續性 <i class="fas fa-hands-helping"></i></h4>
+                    <ul>
+                        <li>就業不平等加劇</li>
+                        <li>社會流動性下降</li>
+                        <li>群體間隔閡擴大</li>
+                        <li>代際衝突風險增加</li>
+                    </ul>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>環境可持續性 <i class="fas fa-leaf"></i></h4>
+                    <ul>
+                        <li>缺乏綠色職業轉型引導</li>
+                        <li>延緩環保產業發展</li>
+                        <li>未能有效促進人才向綠色產業流動</li>
+                    </ul>
+                </div>
+                
+                <div class="quote-box">
+                    <p>成人生涯規劃不僅是個人適應問題，而是複雜的社會結構性議題，影響可持續發展的三個維度。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 過渡頁：「現況掃描」 - 高仁負責 -->
+        <div class="slide transition-slide" id="slide9">
+            <div class="slide-content">
+                <div class="slide-number">9 / 27</div>
+                <button class="notes-button" data-slide="9"><i class="fas fa-microphone"></i></button>
+                
+                <h2>「現況掃描」 <i class="fas fa-search"></i></h2>
+                <p>服務體系批判評估</p>
+                
+                <div class="svg-container">
+                    <svg width="300" height="200" viewBox="0 0 300 200">
+                        <defs>
+                            <clipPath id="magnifyClip">
+                                <circle cx="200" cy="100" r="80"/>
+                            </clipPath>
+                        </defs>
+                        <circle cx="200" cy="100" r="90" fill="none" stroke="#2B3A67" stroke-width="3"/>
+                        <circle cx="120" cy="100" r="25" fill="#2B3A67"/>
+                        <rect x="135" y="95" width="70" height="10" fill="#2B3A67"/>
+                        <g clip-path="url(#magnifyClip)">
+                            <line x1="140" y1="60" x2="260" y2="140" stroke="#5F7ADB" stroke-width="2"/>
+                            <line x1="140" y1="80" x2="260" y2="120" stroke="#5F7ADB" stroke-width="2"/>
+                            <line x1="140" y1="100" x2="260" y2="100" stroke="#5F7ADB" stroke-width="2"/>
+                            <line x1="140" y1="120" x2="260" y2="80" stroke="#5F7ADB" stroke-width="2"/>
+                            <line x1="140" y1="140" x2="260" y2="60" stroke="#5F7ADB" stroke-width="2"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 香港現有服務盤點 – 高仁負責 -->
+        <div class="slide" id="slide10">
+            <div class="slide-content">
+                <div class="slide-number">10 / 27</div>
+                <button class="notes-button" data-slide="10"><i class="fas fa-microphone"></i></button>
+                
+                <h2>香港現有服務盤點 <i class="fas fa-clipboard-list"></i></h2>
+                
+                <div class="stakeholder-map">
+                    <div class="stakeholder-box">
+                        <h4><i class="fas fa-school"></i> 僱員再培訓局(ERB)</h4>
+                        <ul>
+                            <li>提供700+培訓課程</li>
+                            <li>短期技能培訓為主</li>
+                            <li>缺乏整全生涯規劃視角</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="stakeholder-box">
+                        <h4><i class="fas fa-graduation-cap"></i> 職業訓練局(VTC)</h4>
+                        <ul>
+                            <li>主要針對年輕人</li>
+                            <li>聚焦特定行業</li>
+                            <li>中高齡支援有限</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="stakeholder-box">
+                        <h4><i class="fas fa-briefcase"></i> 勞工處就業中心</h4>
+                        <ul>
+                            <li>服務以配對為主</li>
+                            <li>深度職涯輔導不足</li>
+                            <li>「中年就業計劃」($4,000津貼)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="stakeholder-box">
+                        <h4><i class="fas fa-hands-helping"></i> 社區組織</h4>
+                        <ul>
+                            <li>明愛、聖雅各福群會等</li>
+                            <li>提供零散就業支援</li>
+                            <li>規模有限，難以擴展</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>現有服務存在問題 ⚠️</h4>
+                    <div class="multi-model">
+                        <div>
+                            <ul>
+                                <li>重技能訓練，輕生涯規劃</li>
+                                <li>重短期就業，輕長期發展</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>重標準化，輕個性化</li>
+                                <li>重被動應對，輕主動預防</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 政策框架批判分析 - 高仁負責 -->
+        <div class="slide" id="slide11">
+            <div class="slide-content">
+                <div class="slide-number">11 / 27</div>
+                <button class="notes-button" data-slide="11"><i class="fas fa-microphone"></i></button>
+                
+                <h2>政策框架批判分析 <i class="fas fa-gavel"></i></h2>
+                
+                <div class="highlight-box">
+                    <h4>新自由主義傾向批判</h4>
+                    
+                    <div class="comparison-table">
+                        <table>
+                            <tr>
+                                <th>問題面向</th>
+                                <th>現況表現</th>
+                                <th>理想願景</th>
+                            </tr>
+                            <tr>
+                                <td>責任歸屬</td>
+                                <td>過度強調個人責任</td>
+                                <td>平衡個人與社會責任</td>
+                            </tr>
+                            <tr>
+                                <td>服務模式</td>
+                                <td>碎片化與市場化</td>
+                                <td>整合式與權利基礎</td>
+                            </tr>
+                            <tr>
+                                <td>資源分配</td>
+                                <td>年齡歧視與短視思維</td>
+                                <td>生命週期與長期投資</td>
+                            </tr>
+                            <tr>
+                                <td>核心價值</td>
+                                <td>經濟效率與市場導向</td>
+                                <td>社會公平與人文關懷</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="quote-box">
+                    <p>政策框架存在系統性缺陷，將結構性問題個人化，忽視了創造包容性支持系統的公共責任。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 反壓迫實踐視角 - 高仁負責 -->
+        <div class="slide" id="slide12">
+            <div class="slide-content">
+                <div class="slide-number">12 / 27</div>
+                <button class="notes-button" data-slide="12"><i class="fas fa-microphone"></i></button>
+                
+                <h2>反壓迫實踐視角 <i class="fas fa-fist-raised"></i></h2>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4><i class="fas fa-birthday-cake"></i> 年齡歧視</h4>
+                        <ul>
+                            <li>招聘廣告中的隱性歧視</li>
+                            <li>中高齡員工晉升障礙</li>
+                            <li>職場文化排斥</li>
+                            <li>技能評價偏見</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4><i class="fas fa-sort-amount-down"></i> 階級不平等</h4>
+                        <ul>
+                            <li>教育資源不平等分配</li>
+                            <li>網絡資本差異</li>
+                            <li>優質培訓門檻高</li>
+                            <li>低質標準化培訓</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4><i class="fas fa-ban"></i> 數位排斥</h4>
+                        <ul>
+                            <li>數位能力差異</li>
+                            <li>資訊獲取障礙</li>
+                            <li>服務獲取困難</li>
+                            <li>就業機會限制</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="quote-box">
+                    <p>這些壓迫因素相互交織，形成複合型障礙，單一服務干預難以有效應對。</p>
+                    <p>成人生涯規劃服務體系需要根本性變革，而不僅是技術性改良。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 過渡頁：「放眼全球」 - Vivian負責 -->
+        <div class="slide transition-slide" id="slide13">
+            <div class="slide-content">
+                <div class="slide-number">13 / 27</div>
+                <button class="notes-button" data-slide="13"><i class="fas fa-microphone"></i></button>
+                
+                <h2>「放眼全球」 <i class="fas fa-globe-asia"></i></h2>
+                <p>SDG框架下的國際創新實踐</p>
+                
+                <div class="svg-container">
+                    <svg width="300" height="200" viewBox="0 0 300 200">
+                        <defs>
+                            <linearGradient id="worldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#5F7ADB;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#2B3A67;stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="150" cy="100" r="80" fill="url(#worldGrad)" stroke="#fff" stroke-width="2"/>
+                        <path d="M110,60 Q130,40 150,60 T190,60" stroke="#fff" stroke-width="1.5" fill="none"/>
+                        <path d="M90,80 Q120,60 150,80 T210,80" stroke="#fff" stroke-width="1.5" fill="none"/>
+                        <path d="M80,100 Q120,80 150,100 T220,100" stroke="#fff" stroke-width="1.5" fill="none"/>
+                        <path d="M90,120 Q120,140 150,120 T210,120" stroke="#fff" stroke-width="1.5" fill="none"/>
+                        <path d="M110,140 Q130,160 150,140 T190,140" stroke="#fff" stroke-width="1.5" fill="none"/>
+                        <text x="95" y="50" fill="#fff" font-size="10">芬蘭</text>
+                        <text x="195" y="50" fill="#fff" font-size="10">韓國</text>
+                        <text x="75" y="100" fill="#fff" font-size="10">德國</text>
+                        <text x="215" y="100" fill="#fff" font-size="10">新加坡</text>
+                        <text x="95" y="150" fill="#fff" font-size="10">丹麥</text>
+                        <text x="185" y="150" fill="#fff" font-size="10">澳洲</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SDG 4下的終身學習創新 - Vivian負責 -->
+        <div class="slide" id="slide14">
+            <div class="slide-content">
+                <div class="slide-number">14 / 27</div>
+                <button class="notes-button" data-slide="14"><i class="fas fa-microphone"></i></button>
+                
+                <h2>SDG 4：終身學習創新 <i class="fas fa-book-reader"></i></h2>
+                
+                <div class="sdg-box">
+                    <div class="sdg-number">4</div>
+                    <div class="sdg-content">
+                        <h4>確保包容和公平的優質教育，促進全民終身學習機會</h4>
+                    </div>
+                </div>
+                
+                <div class="comparison-table">
+                    <table>
+                        <tr>
+                            <th>國家</th>
+                            <th>創新模式</th>
+                            <th>關鍵特色</th>
+                        </tr>
+                        <tr>
+                            <td>芬蘭</td>
+                            <td>成人教育體系</td>
+                            <td>
+                                <ul>
+                                    <li>50%成人年參與培訓</li>
+                                    <li>能力本位認證系統</li>
+                                    <li>跨年齡學習社區</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>新加坡</td>
+                            <td>SkillsFuture計劃</td>
+                            <td>
+                                <ul>
+                                    <li>每人500元學習幣</li>
+                                    <li>40歲以上90%津貼</li>
+                                    <li>技能未來信託委員會</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="quote-box">
+                    <p>國際實踐強調「去標籤化」—避免將成人學習與「補救」或「不足」掛鉤，而是將其定位為職業發展的自然階段。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SDG 8下的工作轉型支援 - Vivian負責 -->
+        <div class="slide" id="slide15">
+            <div class="slide-content">
+                <div class="slide-number">15 / 27</div>
+                <button class="notes-button" data-slide="15"><i class="fas fa-microphone"></i></button>
+                
+                <h2>SDG 8：工作轉型支援 <i class="fas fa-briefcase"></i></h2>
+                
+                <div class="sdg-box">
+                    <div class="sdg-number">8</div>
+                    <div class="sdg-content">
+                        <h4>促進持久、包容和可持續的經濟增長，促進充分和生產性就業</h4>
+                    </div>
+                </div>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>丹麥「彈性安全」模式</h4>
+                        <ul>
+                            <li>靈活勞動市場</li>
+                            <li>慷慨社會保障</li>
+                            <li>積極勞動市場政策</li>
+                            <li>工資保障達90%</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>德國雙軌制職業教育</h4>
+                        <ul>
+                            <li>理論學習與實習結合</li>
+                            <li>企業參與課程設計</li>
+                            <li>擴展至成人再教育</li>
+                            <li>系統性技能轉型路徑</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>日本「人生百年計劃」</h4>
+                        <ul>
+                            <li>鼓勵「多重職業生涯」</li>
+                            <li>支持「第二職業」轉型</li>
+                            <li>延長工作年限</li>
+                            <li>建立退休過渡支持</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SDG 10下的包容性策略 - Vivian負責 -->
+        <div class="slide" id="slide16">
+            <div class="slide-content">
+                <div class="slide-number">16 / 27</div>
+                <button class="notes-button" data-slide="16"><i class="fas fa-microphone"></i></button>
+                
+                <h2>SDG 10：包容性策略 <i class="fas fa-universal-access"></i></h2>
+                
+                <div class="sdg-box">
+                    <div class="sdg-number">10</div>
+                    <div class="sdg-content">
+                        <h4>減少國家內部和國家之間的不平等</h4>
+                    </div>
+                </div>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>韓國「數碼包容」政策</h4>
+                        <ul>
+                            <li>社區「數碼學習空間」</li>
+                            <li>年輕志願者導師計劃</li>
+                            <li>修訂勞動法禁止年齡歧視</li>
+                            <li>僱用45歲以上稅收優惠</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>澳洲「數位能力建設」計劃</h4>
+                        <ul>
+                            <li>圖書館和社區中心為基地</li>
+                            <li>「數位導師」培訓</li>
+                            <li>一對一支援服務</li>
+                            <li>社區為本提高可及性</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="svg-container">
+                    <svg width="400" height="120" viewBox="0 0 400 120">
+                        <defs>
+                            <linearGradient id="inclusionGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#FF7A5A;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#FFB13D;stop-opacity:0.8" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="50" y="40" width="300" height="40" rx="20" fill="url(#inclusionGrad)"/>
+                        <text x="95" y="65" fill="white" font-size="14" font-weight="bold">數碼包容 = 社會包容 = 就業包容</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESG框架下的企業參與 - Vivian負責 -->
+        <div class="slide" id="slide17">
+            <div class="slide-content">
+                <div class="slide-number">17 / 27</div>
+                <button class="notes-button" data-slide="17"><i class="fas fa-microphone"></i></button>
+                
+                <h2>ESG框架下的企業參與 <i class="fas fa-building"></i></h2>
+                
+                <div class="icon-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                        <p>環境</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                        <p>社會</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-chess-king"></i>
+                        <p>治理</p>
+                    </div>
+                </div>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>瑞士「技能化未來倡議」</h4>
+                        <ul>
+                            <li>30+大型企業共同發起</li>
+                            <li>ESG指標納入員工發展</li>
+                            <li>投資再培訓</li>
+                            <li>數據與最佳實踐分享</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>微軟「技能提升計劃」</h4>
+                        <ul>
+                            <li>免費數位技能培訓</li>
+                            <li>與非營利組織合作</li>
+                            <li>確保弱勢群體獲取資源</li>
+                            <li>雙贏企業社會責任</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>西班牙「代際導師計劃」</h4>
+                        <ul>
+                            <li>雙向導師制</li>
+                            <li>資深員工傳授專業知識</li>
+                            <li>年輕員工教授數位技能</li>
+                            <li>改善代際關係</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 過渡頁：「系統介入」 - 高仁負責 -->
+        <div class="slide transition-slide" id="slide18">
+            <div class="slide-content">
+                <div class="slide-number">18 / 27</div>
+                <button class="notes-button" data-slide="18"><i class="fas fa-microphone"></i></button>
+                
+                <h2>「系統介入」 <i class="fas fa-cogs"></i></h2>
+                <p>多模式宏觀實踐框架</p>
+                
+                <div class="svg-container">
+                    <svg width="300" height="200" viewBox="0 0 300 200">
+                        <defs>
+                            <linearGradient id="systemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#2B3A67;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#5F7ADB;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- 大圓 -->
+                        <circle cx="150" cy="100" r="80" fill="none" stroke="url(#systemGrad)" stroke-width="3"/>
+                        <!-- 小圓 -->
+                        <circle cx="120" cy="70" r="25" fill="none" stroke="#5F7ADB" stroke-width="2"/>
+                        <circle cx="190" cy="60" r="20" fill="none" stroke="#5F7ADB" stroke-width="2"/>
+                        <circle cx="100" cy="130" r="30" fill="none" stroke="#5F7ADB" stroke-width="2"/>
+                        <circle cx="190" cy="140" r="25" fill="none" stroke="#5F7ADB" stroke-width="2"/>
+                        <!-- 連線 -->
+                        <line x1="120" y1="70" x2="190" y2="60" stroke="#2B3A67" stroke-width="1.5"/>
+                        <line x1="120" y1="70" x2="100" y2="130" stroke="#2B3A67" stroke-width="1.5"/>
+                        <line x1="190" y1="60" x2="190" y2="140" stroke="#2B3A67" stroke-width="1.5"/>
+                        <line x1="100" y1="130" x2="190" y2="140" stroke="#2B3A67" stroke-width="1.5"/>
+                        <line x1="100" y1="130" x2="190" y2="60" stroke="#2B3A67" stroke-width="1.5"/>
+                        <!-- 節點標籤 -->
+                        <text x="120" y="70" fill="#2B3A67" font-size="10" text-anchor="middle">政策</text>
+                        <text x="190" y="60" fill="#2B3A67" font-size="10" text-anchor="middle">社區</text>
+                        <text x="100" y="130" fill="#2B3A67" font-size="10" text-anchor="middle">企業</text>
+                        <text x="190" y="140" fill="#2B3A67" font-size="10" text-anchor="middle">個人</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 系統思維應用 - 高仁負責 -->
+        <div class="slide" id="slide19">
+            <div class="slide-content">
+                <div class="slide-number">19 / 27</div>
+                <button class="notes-button" data-slide="19"><i class="fas fa-microphone"></i></button>
+                
+                <h2>系統思維應用 <i class="fas fa-project-diagram"></i></h2>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>主要系統</h4>
+                        <ul>
+                            <li>教育與培訓系統</li>
+                            <li>勞動市場系統</li>
+                            <li>社會保障系統</li>
+                            <li>社區支持系統</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>利益相關者</h4>
+                        <ul>
+                            <li>政府部門</li>
+                            <li>培訓機構</li>
+                            <li>企業僱主</li>
+                            <li>社區組織</li>
+                            <li>服務使用者</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="system-diagram">
+                    <h4>關鍵介入點 <i class="fas fa-bullseye"></i></h4>
+                    <div class="multi-model">
+                        <div>
+                            <ul>
+                                <li>政策整合與協調機制</li>
+                                <li>服務提供模式創新</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>社區能力建設</li>
+                                <li>支持網絡發展</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quote-box">
+                    <p>系統性問題需要整體性思考。通過識別關鍵介入點，我們可以撬動整個系統產生積極變化。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rothman多模式介入應用 - 高仁負責 -->
+        <div class="slide" id="slide20">
+            <div class="slide-content">
+                <div class="slide-number">20 / 27</div>
+                <button class="notes-button" data-slide="20"><i class="fas fa-microphone"></i></button>
+                
+                <h2>Rothman多模式介入應用 <i class="fas fa-sitemap"></i></h2>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4><i class="fas fa-cog"></i> 社會規劃模式</h4>
+                        <p><strong>針對政策和系統</strong></p>
+                        <ul>
+                            <li>跨部門「成人生涯發展委員會」</li>
+                            <li>「成人生涯發展藍圖」</li>
+                            <li>數據共享平台</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4><i class="fas fa-users"></i> 社區發展模式</h4>
+                        <p><strong>針對社區和組織</strong></p>
+                        <ul>
+                            <li>「社區生涯支援中心」網絡</li>
+                            <li>「生涯夥伴」朋輩支援</li>
+                            <li>「技能銀行」互換平台</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4><i class="fas fa-bullhorn"></i> 社會行動模式</h4>
+                        <p><strong>針對倡導和充權</strong></p>
+                        <ul>
+                            <li>「年齡友善職場」運動</li>
+                            <li>「數碼權利」倡導網絡</li>
+                            <li>「終身學習權」立法</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="svg-container">
+                    <svg width="400" height="80" viewBox="0 0 400 80">
+                        <rect x="10" y="20" width="110" height="40" rx="5" fill="#2B3A67"/>
+                        <rect x="145" y="20" width="110" height="40" rx="5" fill="#5F7ADB"/>
+                        <rect x="280" y="20" width="110" height="40" rx="5" fill="#FF7A5A"/>
+                        <text x="65" y="45" fill="white" font-size="14" text-anchor="middle">社會規劃</text>
+                        <text x="200" y="45" fill="white" font-size="14" text-anchor="middle">社區發展</text>
+                        <text x="335" y="45" fill="white" font-size="14" text-anchor="middle">社會行動</text>
+                        <path d="M120,40 L145,40" stroke="#2B3A67" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M255,40 L280,40" stroke="#5F7ADB" stroke-width="2" marker-end="url(#arrow)"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 跨界別合作框架 - 高仁負責 -->
+        <div class="slide" id="slide21">
+            <div class="slide-content">
+                <div class="slide-number">21 / 27</div>
+                <button class="notes-button" data-slide="21"><i class="fas fa-microphone"></i></button>
+                
+                <h2>跨界別合作框架 <i class="fas fa-hands-helping"></i></h2>
+                
+                <div class="svg-container">
+                    <svg width="400" height="140" viewBox="0 0 400 140">
+                        <defs>
+                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                <path d="M0,0 L0,6 L9,3 z" fill="#2B3A67"/>
+                            </marker>
+                        </defs>
+                        <circle cx="200" cy="40" r="30" fill="#2B3A67"/>
+                        <circle cx="120" cy="100" r="30" fill="#5F7ADB"/>
+                        <circle cx="280" cy="100" r="30" fill="#FF7A5A"/>
+                        <text x="200" y="45" fill="white" font-size="12" text-anchor="middle">公共部門</text>
+                        <text x="120" y="105" fill="white" font-size="12" text-anchor="middle">私營部門</text>
+                        <text x="280" y="105" fill="white" font-size="12" text-anchor="middle">第三部門</text>
+                        <path d="M175,60 L140,80" stroke="#2B3A67" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M225,60 L260,80" stroke="#2B3A67" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M150,100 L250,100" stroke="#5F7ADB" stroke-width="2" marker-end="url(#arrow)"/>
+                    </svg>
+                </div>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>公共部門</h4>
+                        <ul>
+                            <li>政策制定與協調</li>
+                            <li>資源分配與監管</li>
+                            <li>支持性法律框架</li>
+                        </ul>
+                        <p><strong>參考：</strong>新加坡SkillsFuture</p>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>私營部門</h4>
+                        <ul>
+                            <li>實習和就業機會</li>
+                            <li>課程設計與評估</li>
+                            <li>CSR項目投資</li>
+                        </ul>
+                        <p><strong>參考：</strong>德國雙軌制</p>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>第三部門</h4>
+                        <ul>
+                            <li>服務創新與提供</li>
+                            <li>社區動員與組織</li>
+                            <li>倡導與研究</li>
+                        </ul>
+                        <p><strong>參考：</strong>澳洲社區計劃</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 多層次介入策略 - 高仁和Hebe合作 -->
+        <div class="slide" id="slide22">
+            <div class="slide-content">
+                <div class="slide-number">22 / 27</div>
+                <button class="notes-button" data-slide="22"><i class="fas fa-microphone"></i></button>
+                
+                <h2>多層次介入策略 <i class="fas fa-layer-group"></i></h2>
+                
+                <div class="age-group">
+                    <h4>25-40歲青壯年群體</h4>
+                    <ul>
+                        <li>「職業發展規劃師」認證計劃</li>
+                        <li>行業轉型預警系統</li>
+                        <li>「斜槓技能」培養計劃</li>
+                    </ul>
+                </div>
+                
+                <div class="age-group">
+                    <h4>41-55歲中年群體</h4>
+                    <ul>
+                        <li>「中年轉型支援包」一站式服務</li>
+                        <li>「經驗價值化」計劃</li>
+                        <li>彈性工作政策倡導</li>
+                    </ul>
+                </div>
+                
+                <div class="age-group">
+                    <h4>56歲以上高齡工作者</h4>
+                    <ul>
+                        <li>「銀齡人才庫」建設</li>
+                        <li>「代際合作」工作場所</li>
+                        <li>「退休過渡」規劃服務</li>
+                    </ul>
+                </div>
+                
+                <div class="quote-box">
+                    <p>每個策略同時考慮經濟可持續性、社會公平性和個人發展需求，形成多維度支援。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 過渡頁：「協調共進」 - 阿牛負責 -->
+        <div class="slide transition-slide" id="slide23">
+            <div class="slide-content">
+                <div class="slide-number">23 / 27</div>
+                <button class="notes-button" data-slide="23"><i class="fas fa-microphone"></i></button>
+                
+                <h2>「協調共進」 <i class="fas fa-handshake"></i></h2>
+                <p>社會工作價值在宏觀實踐中的體現</p>
+                
+                <div class="svg-container">
+                    <svg width="300" height="200" viewBox="0 0 300 200">
+                        <defs>
+                            <radialGradient id="radialGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#5F7ADB;stop-opacity:0.5" />
+                            </radialGradient>
+                        </defs>
+                        <circle cx="150" cy="100" r="80" fill="url(#radialGrad)" stroke="#2B3A67" stroke-width="2"/>
+                        <text x="150" y="55" fill="#2B3A67" font-size="14" font-weight="bold" text-anchor="middle">社會公義</text>
+                        <text x="150" y="105" fill="#2B3A67" font-size="14" font-weight="bold" text-anchor="middle">賦權充權</text>
+                        <text x="150" y="155" fill="#2B3A67" font-size="14" font-weight="bold" text-anchor="middle">整體視角</text>
+                        <circle cx="150" cy="100" r="20" fill="#2B3A67" opacity="0.3"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 宏觀社會工作的核心價值 - 阿牛負責 -->
+        <div class="slide" id="slide24">
+            <div class="slide-content">
+                <div class="slide-number">24 / 27</div>
+                <button class="notes-button" data-slide="24"><i class="fas fa-microphone"></i></button>
+                
+                <h2>宏觀社會工作的核心價值 <i class="fas fa-heart"></i></h2>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4><i class="fas fa-balance-scale"></i> 社會公義</h4>
+                        <ul>
+                            <li>挑戰勞動市場年齡歧視</li>
+                            <li>消除數碼排斥</li>
+                            <li>倡導機會平等</li>
+                            <li>確保服務可及性公平</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4><i class="fas fa-fist-raised"></i> 賦權充權</h4>
+                        <ul>
+                            <li>培養個人能力</li>
+                            <li>發展社區互助</li>
+                            <li>促進自主發展</li>
+                            <li>注重能力建設</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4><i class="fas fa-search-plus"></i> 整體視角</h4>
+                        <ul>
+                            <li>連結微觀需求與宏觀政策</li>
+                            <li>促進系統協調與整合</li>
+                            <li>識別關鍵介入點</li>
+                            <li>提高整體效能</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="quote-box">
+                    <p>社會工作者能在複雜的數碼轉型過程中，堅持以人為本，確保技術發展服務於人類福祉。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 社會工作者的多重角色 - 阿牛負責 -->
+        <div class="slide" id="slide25">
+            <div class="slide-content">
+                <div class="slide-number">25 / 27</div>
+                <button class="notes-button" data-slide="25"><i class="fas fa-microphone"></i></button>
+                
+                <h2>社會工作者的多重角色 <i class="fas fa-user-tie"></i></h2>
+                
+                <div class="icon-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-link"></i>
+                        <p>系統連結者</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                        <p>政策分析者</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-users-cog"></i>
+                        <p>社區動員者</p>
+                    </div>
+                    <div class="feature-icon">
+                        <i class="fas fa-bullhorn"></i>
+                        <p>倡導者</p>
+                    </div>
+                </div>
+                
+                <div class="multi-model">
+                    <div class="model-box">
+                        <h4>系統連結者</h4>
+                        <ul>
+                            <li>在教育、就業、福利間建橋樑</li>
+                            <li>識別系統斷裂點</li>
+                            <li>創造連接機制</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="model-box">
+                        <h4>社區動員者</h4>
+                        <ul>
+                            <li>組織社區力量</li>
+                            <li>建立互助網絡</li>
+                            <li>發展社區韌性</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="quote-box">
+                    <p>社會工作者需靈活轉換多種角色，結合微觀實踐與宏觀視野，應對數碼轉型的多層次挑戰。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 互動討論 - 全組合作 -->
+        <div class="slide" id="slide26">
+            <div class="slide-content">
+                <div class="slide-number">26 / 27</div>
+                <button class="notes-button" data-slide="26"><i class="fas fa-microphone"></i></button>
+                
+                <h2>互動討論 <i class="fas fa-comments"></i></h2>
+                
+                <div class="discussion-section">
+                    <h3>思考問題：</h3>
+                    
+                    <div class="discussion-question">1. 在你的專業或學習領域中，數碼轉型帶來了哪些機遇與挑戰？</div>
+                    <p>考慮技能需求變化、工作方式轉變和職業發展路徑的改變。</p>
+                    
+                    <div class="discussion-question">2. 作為未來的社會工作者，你可以如何參與成人生涯規劃的系統變革？</div>
+                    <p>思考你可能扮演的角色、可以運用的技能和可能面臨的挑戰。</p>
+                    
+                    <div class="discussion-question">3. 「分而治之」的思維方式如何幫助你理解和應對其他複雜社會問題？</div>
+                    <p>考慮這種方法如何應用於其他社會工作實踐領域。</p>
+                </div>
+                
+                <div class="speaker-info">
+                    <div class="speaker-avatar"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <h4 style="margin-bottom: 0;">小組討論時間</h4>
+                        <p style="margin-bottom: 0;">3分鐘小組討論 + 2-3位同學分享想法</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 總結與展望 - 阿牛負責 -->
+        <div class="slide" id="slide27">
+            <div class="slide-content">
+                <div class="slide-number">27 / 27</div>
+                <button class="notes-button" data-slide="27"><i class="fas fa-microphone"></i></button>
+                
+                <h2>總結與展望 <i class="fas fa-flag-checkered"></i></h2>
+                
+                <div class="highlight-box">
+                    <h4>關鍵發現 🔍</h4>
+                    <div class="multi-model">
+                        <div>
+                            <ul>
+                                <li>數碼轉型浪潮不可逆轉</li>
+                                <li>勞動力短缺問題日益嚴峻</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>現有服務呈現碎片化</li>
+                                <li>需政府、企業、社區協同</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>前瞻展望 🚀</h4>
+                    <ul>
+                        <li>需分析分解與協調整合的系統思維</li>
+                        <li>數碼技術持續演進，社工需更新知識技能</li>
+                        <li>堅守核心價值，確保包容性轉型</li>
+                        <li>三大支柱：經濟、社會、環境可持續性</li>
+                    </ul>
+                </div>
+                
+                <div class="quote-box">
+                    <p>「複雜世界，分而治之；多元需求，協調共進。」</p>
+                </div>
+                
+                <div class="speaker-info">
+                    <div class="speaker-avatar"><i class="fas fa-users"></i></div>
+                    <div>
+                        <h4 style="margin-bottom: 0;">分而治之小組</h4>
+                        <p style="margin-bottom: 0;">感謝聆聽！歡迎提問與討論</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 講稿內容 -->
+    <script>
+        // 每張幻燈片的講稿內容
+        const speakerNotes = {
+            1: `<div class="speaker-note">
+                <p><strong>阿牛（2分鐘）</strong></p>
+                <p>大家好！我是阿牛，代表「分而治之」小組向大家報告我們的研究主題：數碼轉型下的成人生涯規劃服務缺口。</p>
+                <p>首先解釋一下我們的組名理念。「分而治之」不僅是一種策略，更是一種解決複雜社會問題的思維方式。就像今天討論的主題——成人生涯規劃，看似是個體議題，實則涉及經濟、社會、環境等多重系統的複雜互動。</p>
+                <p>我們的核心理念是「複雜社會，分而治之；多元需求，協調共進」。這表示我們需要精確分析問題、精準識別需求、設計差異化方案，並系統整合資源與力量。</p>
+                <p>接下來，我們將按照這個時間線展開報告：需求分析、系統評估、國際參考、介入框架和協作倡議。</p>
+                </div>`,
+            
+            2: `<div class="speaker-note">
+                <p><strong>阿牛（30秒）</strong></p>
+                <p>「分而治之」的思維方式包含四個關鍵環節：分析問題的本質，分類不同群體與需求，協調各方資源與力量，整合形成系統性解決方案。這正是我們應對複雜社會問題的宏觀視角。</p>
+                </div>`,
+            
+            3: `<div class="speaker-note">
+                <p><strong>阿牛（2分鐘）</strong></p>
+                <p>首先，讓我們看看數碼轉型的現況與挑戰。根據普華永道2023年的報告，香港的數字經濟規模已超過千億港元，粵港澳大灣區正形成集群式創新條件，金融科技和生物科技已成為香港的優勢產業。</p>
+                <p>數碼轉型正以前所未有的速度重塑我們的工作方式：AI正取代重複性工作，遠程辦公成為常態，平台經濟創造新的就業形態，但同時也加速了傳統技能的淘汰。</p>
+                <p>在這一背景下，成人面臨的挑戰與青少年有本質區別。成年人面臨的是「轉型」而非「起步」的挑戰，他們需要在已有生涯基礎上進行調整和重建，這一過程充滿不確定性和風險。同時，他們背負著更大的家庭責任和財務壓力，失敗的代價更高。</p>
+                <p>更重要的是，現有的生涯支援資源顯著傾斜於青少年和初入職者，成年人特別是中年群體的支援相對匱乏。</p>
+                </div>`,
+            
+            4: `<div class="speaker-note">
+                <p><strong>阿牛（2分鐘）</strong></p>
+                <p>我們的分析框架植根於聯合國可持續發展目標(SDGs)，特別是三個與主題密切相關的核心目標。</p>
+                <p>SDG 4「優質教育」：在數碼時代，教育不再是人生早期的單一階段，而是終身學習的持續過程。成人能否獲得優質的持續教育和技能培訓，直接關係到他們的職業可持續性。</p>
+                <p>SDG 8「體面工作和經濟增長」：數碼轉型可能帶來就業兩極化，一方面創造高技能崗位，另一方面淘汰傳統職業。如何確保體面工作機會的普惠性，是我們必須面對的挑戰。</p>
+                <p>SDG 10「減少不平等」：數碼鴻溝可能加劇不同年齡、教育和社會經濟背景群體間的不平等。我們需要關注如何避免數碼排斥，確保機會平等。</p>
+                <p>這三個目標相互關聯，共同構成了成人生涯規劃的可持續發展框架。</p>
+                </div>`,
+            
+            5: `<div class="speaker-note">
+                <p><strong>阿牛（30秒）</strong></p>
+                <p>基於「分而治之」的理念，我們首先需要深入了解不同年齡層成人的獨特需求。通過細分需求，才能提供精準支援。接下來，為大家介紹成人群體的分層分析。</p>
+                </div>`,
+            
+            6: `<div class="speaker-note">
+                <p><strong>Hebe（2分鐘）</strong></p>
+                <p>謝謝阿牛。「分而治之」的第一步就是精準識別和分類——只有充分理解不同群體的獨特需求，才能提供真正有效的支援。</p>
+                <p>我們將成人群體分為三個主要年齡層：</p>
+                <p>25-40歲的青壯年群體：已進入職場但仍處於職業發展早期階段。根據勞工處的數據，這個群體面臨「晉升瓶頸」和「橫向轉型」的雙重壓力。他們擁有一定數位適應力，但缺乏系統性的中長期職涯規劃指導。</p>
+                <p>41-55歲的中年群體：正值職業生涯的中後期。他們面臨最大的技術淘汰風險——數據顯示，超過40%的中年專業人士認為自己的技能在未來5年內可能過時。他們需要的不僅是技能提升，更是全新的職業身份重塑。</p>
+                <p>56歲以上的高齡工作者：他們既面臨數位適應挑戰，也需要為退休過渡做準備。根據2022年人力資源推算報告，香港55-74歲耆壯人士的勞動人口參與率已上升至44.1%，但「彈性退休」和「銀齡創業」等支援服務明顯不足。</p>
+                </div>`,
+            
+            7: `<div class="speaker-note">
+                <p><strong>Hebe（2分鐘）</strong></p>
+                <p>通過系統性分析，我們構建了成人生涯規劃服務缺口的問題樹，從根本原因到表現問題再到後果影響，形成完整的因果鏈。</p>
+                <p>在根本原因層面：我們發現香港缺乏整全的成人生涯發展戰略，現有政策呈碎片化；資源分配不均，過度集中於青少年群體；服務設計不足，未考慮成人學習者的特殊需求；以及過度依賴市場機制解決社會問題。</p>
+                <p>這些根本原因導致了直接的問題表現：培訓與實際需求脫節，形成技能錯配；服務在時間、地點、形式上不符合成人需求，可及性低；職業轉型關鍵期缺乏密集支援，連續性缺失；優質資源無法觸達最需要的群體，資訊不對稱。</p>
+                <p>這些問題進一步造成嚴重後果：在個人層面，導致職業不穩定、收入下降和心理健康風險；在家庭層面，增加家庭壓力並產生代際影響；在社會層面，造成人力資源浪費、社會保障體系壓力和社會凝聚力削弱。</p>
+                </div>`,
+            
+            8: `<div class="speaker-note">
+                <p><strong>Hebe（2分鐘）</strong></p>
+                <p>從可持續發展的三個維度來看，成人生涯規劃服務缺口正威脅著整體可持續性。</p>
+                <p>經濟可持續性方面：人力資本無法適應市場需求，造成資源浪費與經濟損失。根據2022年人力資源推算報告，香港整體人力資源供不應求，短缺達117,900人。數碼轉型加速下，這一缺口可能進一步擴大。</p>
+                <p>社會可持續性方面：就業不平等加劇，社會流動性下降，群體間隔閡擴大。數碼鴻溝成為新的社會分層機制，加深現有不平等。中高齡群體面臨的技能淘汰風險若得不到有效應對，還會加劇代際衝突。</p>
+                <p>環境可持續性方面：缺乏對綠色職業轉型的引導，延緩環保產業發展。數碼轉型與綠色轉型密切相關，但現有生涯規劃服務缺乏環境可持續性視角，未能有效促進人才向綠色產業流動。</p>
+                <p>透過這種多維度分析，我們可以看到，成人生涯規劃問題絕非個人適應不良，而是複雜的社會結構性議題。</p>
+                </div>`,
+            
+            9: `<div class="speaker-note">
+                <p><strong>阿牛（30秒）</strong></p>
+                <p>了解了問題的本質，現在讓我們掃描現有的服務體系，發現其中的不足。以下繼續為我們介紹香港現有的服務盤點。</p>
+                </div>`,
+            
+            10: `<div class="speaker-note">
+                <p><strong>Hebe（2分鐘）</strong></p>
+                <p>系統掃描是「分而治之」的重要一步——了解現有資源和限制，才能精準識別介入點。</p>
+                <p>香港現有的成人生涯規劃服務主要由四類機構提供：</p>
+                <p>僱員再培訓局提供超過700項培訓課程，但大多為短期技能培訓，缺乏整全生涯規劃視角。</p>
+                <p>職業訓練局主要針對年輕人和特定行業，中高齡群體的支援有限。</p>
+                <p>勞工處就業中心服務以配對為主，深度職涯輔導不足。2018年優化了「中年就業計劃」，向聘用60歲以上求職人士的僱主提供每月$4,000的津貼。</p>
+                <p>社區組織如明愛、聖雅各福群會等提供零散就業支援，但規模有限。</p>
+                <p>綜合來看，現有服務存在四大問題：重技能訓練，輕生涯規劃；重短期就業，輕長期發展；重標準化服務，輕個性化需求；重被動應對，輕主動預防。</p>
+                <p>正如一位49歲的服務使用者所說：「我在三個不同機構參加了培訓課程，拿到了證書，但仍然找不到工作。每個地方只負責自己那一小塊，沒有人幫我看整體的職業方向。」</p>
+                </div>`,
+            
+            11: `<div class="speaker-note">
+                <p><strong>高仁（2分鐘）</strong></p>
+                <p>從批判性社會工作的視角，我們可以深入分析這些服務缺口背後的結構性因素。</p>
+                <p>香港成人生涯規劃政策顯示出明顯的新自由主義傾向，具體表現在四個方面：</p>
+                <p>首先，在責任歸屬上，「個人責任」被過度強調，將結構性問題個人化。政策話語強調個人適應市場變化的責任，卻忽視了系統性支援的必要性。</p>
+                <p>其次，服務提供模式呈現碎片化和市場化趨勢，不同部門和機構各自為政，缺乏有效協調；服務外判導致連續性和質量難以保證。</p>
+                <p>第三，資源分配反映出年齡歧視與短視思維，青年就業政策獲得大量資源，成人和中高齡群體的支援相對匱乏；培訓資源傾向於短期見效的項目。</p>
+                <p>最後，在核心價值上，過度強調經濟效率和市場導向，忽視了社會公平和人文關懷。</p>
+                <p>我們的批判分析表明，政策框架存在系統性缺陷，將結構性問題個人化，忽視了創造包容性支持系統的公共責任。理想的願景應該是平衡個人與社會責任，建立整合式與權利基礎的服務模式，資源分配考慮生命週期與長期投資，核心價值強調社會公平與人文關懷。</p>
+                </div>`,
+            
+            12: `<div class="speaker-note">
+                <p><strong>高仁（2分鐘）</strong></p>
+                <p>從反壓迫實踐的視角看，我們需要正視成人生涯發展中的多重壓迫因素：</p>
+                <p>年齡歧視是首要壓迫形式。勞動市場中的系統性年齡歧視限制了中高齡群體的發展機會。招聘廣告中常見的「年輕」、「有活力」等詞彙實際上是年齡歧視的隱性表達。中高齡員工面臨晉升障礙、職場文化排斥和技能評價偏見。</p>
+                <p>階級不平等是第二重壓迫形式。教育資源和網絡資本的不平等分配強化了現有階級差距。擁有經濟資源的人更容易獲得優質培訓和轉型機會，而基層勞工則往往被迫接受低質量的標準化培訓。</p>
+                <p>數位排斥是新興的壓迫形式。數位能力差異造成新的社會排斥形式。不熟悉數位工具的群體在信息獲取、服務獲取和就業機會方面均處於不利地位。</p>
+                <p>這些壓迫因素相互交織，形成複合型障礙，單一的服務干預難以有效應對。香港成人生涯規劃服務體系需要根本性變革，而不僅是技術性改良。</p>
+                </div>`,
+            
+            13: `<div class="speaker-note">
+                <p><strong>阿牛（30秒）</strong></p>
+                <p>在理解了問題本質和現有系統的不足後，我們需要放眼全球，借鑒國際創新實踐。接下來，為我們介紹在SDG框架下的國際經驗。</p>
+                </div>`,
+            
+            14: `<div class="speaker-note">
+                <p><strong>Vivian（2分鐘）</strong></p>
+                <p>謝謝阿牛。在SDG 4「確保包容和公平的優質教育，促進全民終身學習機會」框架下，全球有許多創新實踐值得借鑒。</p>
+                <p>芬蘭的成人教育體系被譽為全球標竿，其特點是高度普及——約50%的成人每年參與某種形式的教育培訓。其關鍵特色是採用「能力本位」而非「學歷本位」的認證系統，使各年齡層的學習者都能獲得認可。他們還創建了跨年齡學習社區，促進代際知識交流。</p>
+                <p>新加坡的SkillsFuture計劃實現了全民學習的制度創新。該計劃由新加坡精深局負責推動與統籌，隸屬於教育部。每位25歲以上公民獲得價值500新元的學習幣，可用於政府認可的任何課程；40歲以上的新加坡人可獲得高達學費90%的職業加強津貼。數據顯示，2016年資助新加坡國人92萬個進修技能培訓學額，受益企業從2015年的15,000家增至2016年的17,000家。</p>
+                <p>這些國際實踐均強調「去標籤化」——避免將成人學習與「補救」或「不足」掛鉤，而是將其定位為職業發展的自然階段。</p>
+                </div>`,
+            
+            15: `<div class="speaker-note">
+                <p><strong>Vivian（2分鐘）</strong></p>
+                <p>在SDG 8「促進持久、包容和可持續的經濟增長，促進充分的生產性就業和人人獲得體面工作」框架下，全球有三個創新模式特別值得關注：</p>
+                <p>丹麥的「彈性安全」模式被公認為應對職業轉型的有效方案。該模式結合了靈活的勞動市場、慷慨的社會保障和積極的勞動市場政策。當工人面臨轉型時，他們可以獲得高達原工資90%的失業補助，同時接受密集培訓，為新工作做準備。這一模式使丹麥在維持就業流動性的同時，保障了工人福祉。</p>
+                <p>德國的雙軌制職業教育模式為成人提供了系統性的技能轉型路徑。該模式將理論學習與實習工作相結合，企業直接參與課程設計和評估。德國已將這一模式擴展至成人再教育領域，使中年工人也能通過「雙軌制」獲得新技能。</p>
+                <p>日本的「人生百年計劃」是對人口老齡化和工作期延長的系統性回應。該計劃鼓勵「多重職業生涯」，支持工作者在50-60歲時進行「第二職業」轉型，延長工作年限並建立退休過渡支持。</p>
+                <p>這些模式共同指向一個方向：未來的職業發展不是線性的，而是多階段、多元化的路徑。</p>
+                </div>`,
+            
+            16: `<div class="speaker-note">
+                <p><strong>Vivian（2分鐘）</strong></p>
+                <p>在SDG 10「減少國家內部和國家之間的不平等」框架下，各國採取了不同策略減少數碼鴻溝：</p>
+                <p>韓國的「數碼包容」政策專門針對50歲以上人群設計。政府在每個社區中心設立「數碼學習空間」，由年輕志願者擔任導師，教授實用數碼技能。同時，韓國修訂勞動法，明確禁止招聘和晉升中的年齡歧視，並為僱用45歲以上求職者的企業提供稅收優惠。</p>
+                <p>澳洲的「數位能力建設」社區計劃通過「數位導師」計劃，在圖書館和社區中心培訓義工，為需要數位支援的成人提供一對一協助。這種社區為本的方式極大提高了服務的可及性。</p>
+                <p>這些經驗告訴我們，數碼包容是社會包容的前提，也是就業包容的基礎。只有確保每個人都能平等獲取和使用數字技術，才能實現真正的機會平等。</p>
+                </div>`,
+            
+            17: `<div class="speaker-note">
+                <p><strong>Vivian（2分鐘）</strong></p>
+                <p>在ESG(環境、社會和治理)框架的推動下，企業參與成人生涯支援已成為國際趨勢：</p>
+                <p>瑞士的「技能化未來倡議」由30多家大型企業共同發起，承諾投資員工再培訓，並分享數據和最佳實踐。這一倡議將員工技能發展納入企業ESG指標，促進企業負責任的人力資源管理。</p>
+                <p>微軟的「技能提升計劃」向全球提供免費數位技能培訓，並與非營利組織合作，確保弱勢群體能夠獲得這些資源。此計劃既滿足微軟對數位人才的需求，也履行了企業社會責任，是企業ESG實踐的典範。</p>
+                <p>西班牙的「代際導師計劃」創新地促進了企業內部的知識傳遞——資深員工擔任年輕員工的專業導師，同時年輕員工為資深員工提供數位技能指導。這種雙向導師模式不僅促進了技能傳承，也改善了企業內部的代際關係。</p>
+                <p>這些國際經驗告訴我們，成功的成人生涯支援系統需要政府、企業和社區的緊密協作，需要兼顧經濟效益和社會公平，更需要將個人發展置於終身視角下考量。</p>
+                </div>`,
+            
+            18: `<div class="speaker-note">
+                <p><strong>阿牛（30秒）</strong></p>
+                <p>在了解問題和參考國際經驗後，我們需要構建適合香港的系統介入框架。接下來，為我們介紹基於系統思維的多模式宏觀實踐框架。</p>
+                </div>`,
+            
+            19: `<div class="speaker-note">
+                <p><strong>高仁（2分鐘）</strong></p>
+                <p>「分而治之」的最終目標是找到精準的介入點，並整合各方資源形成合力。運用系統思維，我們首先識別成人生涯規劃系統中的關鍵要素與關係。</p>
+                <p>成人生涯規劃系統包含四個主要子系統：教育與培訓系統、勞動市場系統、社會保障系統和社區支持系統。這些系統互相影響，形成複雜的動態關係。</p>
+                <p>關鍵利益相關者包括政府部門、培訓機構、企業僱主、行業協會、社區組織和服務使用者。每個相關者都有其獨特的角色和影響力。</p>
+                <p>基於系統分析，我們識別出三個關鍵介入點：政策整合與協調機制——解決碎片化問題，統籌規劃；服務提供模式創新——改變服務設計，滿足不同需求；社區能力建設與網絡發展——發揮社區力量，形成支持網絡。</p>
+                <p>系統性問題需要整體性思考。通過識別關鍵介入點，我們可以撬動整個系統產生積極變化，而不是僅僅解決表面症狀。</p>
+                </div>`,
+            
+            20: `<div class="speaker-note">
+                <p><strong>高仁（2分鐘）</strong></p>
+                <p>根據Rothman的社區介入框架，我們提出三種互補的介入模式：</p>
+                <p>社會規劃模式針對政策和系統層面：建立跨部門「成人生涯發展委員會」，整合勞工及福利局、創新科技及工業局、教育局等資源；設計「成人生涯發展藍圖」，確立長期發展方向和資源分配；發展數據共享平台，促進政策與服務的實證基礎。</p>
+                <p>社區發展模式針對社區和組織層面：建立「社區生涯支援中心」網絡，提供一站式服務；發展「生涯夥伴」朋輩支援計劃，促進同齡互助；創建「技能銀行」社區互換平台，促進技能流動。</p>
+                <p>社會行動模式針對倡導和充權層面：發起「年齡友善職場」運動，挑戰勞動市場中的年齡歧視；組織「數碼權利」倡導網絡，關注數碼排斥問題；推動「終身學習權」立法，確保成人學習機會。</p>
+                <p>這三種模式相互補充、相互強化，共同構成一個多層次的宏觀介入框架。社會規劃確保政策支持，社區發展提供落地服務，社會行動推動結構性變革。</p>
+                </div>`,
+            
+            21: `<div class="speaker-note">
+                <p><strong>高仁（2分鐘）</strong></p>
+                <p>借鑒ESG理念，我們提出「三方協作」框架，明確各部門的角色與責任：</p>
+                <p>公共部門負責政策制定與協調、資源分配與監管以及建立支持性法律框架。新加坡的SkillsFuture計劃提供了政府主導跨部門協作的有效模式。</p>
+                <p>私營部門負責提供實習和就業機會、參與課程設計與評估以及通過CSR項目投資技能發展。德國雙軌制中企業的積極參與為香港企業提供了範例。</p>
+                <p>第三部門負責服務創新與提供、社區動員與組織以及倡導與研究。澳洲的社區為本數位能力建設計劃展示了社區組織的重要角色。</p>
+                <p>這三個部門通過「成人發展聯盟」平台實現協調與合作，共同應對複雜挑戰。平台可負責資源協調、信息共享、合作項目開發和效果評估等功能。</p>
+                <p>只有三方協作，才能形成足夠的系統影響力，解決成人生涯規劃的結構性障礙。</p>
+                </div>`,
+            
+            22: `<div class="speaker-note">
+                <p><strong>高仁（2分鐘，與Hebe協作）</strong></p>
+                <p>將「分而治之」理念應用於實踐，我們設計針對不同群體的差異化策略：</p>
+                <p>針對25-40歲青壯年群體：「職業發展規劃師」認證計劃，培養專業人才提供生涯規劃服務；行業轉型預警系統，提前識別受數碼轉型影響的行業，主動介入；「斜槓技能」培養計劃，支持多元技能發展，增強職業韌性。</p>
+                <p>針對41-55歲中年群體：「中年轉型支援包」一站式服務，整合培訓、輔導、就業配對等服務；「經驗價值化」計劃，幫助中年人將累積經驗轉化為市場認可的專業價值；彈性工作政策倡導，推動企業採用彈性工作安排，支持中年過渡。</p>
+                <p>針對56歲以上高齡工作者：「銀齡人才庫」建設，開發專門展示高齡人才專長的平台；「代際合作」工作場所，促進不同年齡員工的協作與互補；「退休過渡」規劃服務，提供退休前的全面生涯規劃支援。</p>
+                <p>每個策略都同時考慮了經濟可持續性、社會公平性和個人發展需求，形成多維度支援。這個宏觀介入框架體現了「分而治之」的核心理念——通過精準分析不同需求，設計針對性策略，同時通過系統協調，確保資源整合和合力發揮。</p>
+                </div>`,
+            
+            23: `<div class="speaker-note">
+                <p><strong>阿牛（30秒）</strong></p>
+                <p>在構建了具體的介入框架後，我們需要回到社會工作的核心價值，思考社會工作者在這一過程中的角色。接下來，我將為大家介紹「協調共進」的專業價值實踐。</p>
+                </div>`,
+            
+            24: `<div class="speaker-note">
+                <p><strong>阿牛（2分鐘）</strong></p>
+                <p>社會工作一直強調「人在環境中」的視角，而數碼轉型下的成人生涯規劃恰恰需要這種整合視角——既看到個人能力與需求，也關注結構性障礙與機會。</p>
+                <p>在宏觀實踐中，社會工作有三個核心價值尤為重要：</p>
+                <p>社會公義：挑戰勞動市場中的年齡歧視和數碼排斥，倡導機會平等。宏觀實踐需要關注服務可及性的公平分配，確保弱勢群體獲得充分支援。只有確保每個年齡段的人都能平等參與數碼社會，才能實現真正的社會公義。</p>
+                <p>賦權充權：培養個人與社區的能力，促進自主發展與相互支持。介入策略應該注重能力建設，而非僅提供短期服務。這種方法不僅解決當前需求，還培養長期適應能力。</p>
+                <p>整體視角：連結微觀需求與宏觀政策，促進系統協調與整合。這種視角使社會工作者能夠在複雜系統中找到關鍵介入點，提高整體效能。</p>
+                <p>正是這些價值觀，使社會工作者能夠在複雜的數碼轉型過程中，堅持以人為本，確保技術發展服務於人類福祉，而非相反。</p>
+                </div>`,
+            
+            25: `<div class="speaker-note">
+                <p><strong>阿牛（2分鐘）</strong></p>
+                <p>在數碼轉型的背景下，社會工作者需要承擔多重角色，以應對成人生涯規劃的多層次挑戰。</p>
+                <p>首先，作為系統連結者，社會工作者在教育、就業和福利系統之間搭建橋樑，識別系統中的斷裂點並創造連接機制。例如，協調培訓機構與企業需求，確保服務連貫性。</p>
+                <p>其次，作為政策分析者，社會工作者需要批判性地審視現有政策框架，提出基於證據的改進建議，推動系統性變革。</p>
+                <p>第三，作為社區動員者，社會工作者組織社區力量，建立互助網絡，提升社區的整體韌性。例如，通過「生涯夥伴」計劃促進朋輩支持。</p>
+                <p>最後，作為倡導者，社會工作者需要為弱勢群體發聲，推動如「年齡友善職場」或「數碼權利」等運動，改變結構性壓迫。</p>
+                <p>這些角色並非孤立，而是相互交織。社會工作者需靈活轉換角色，結合微觀實踐與宏觀視野，應對數碼轉型的挑戰。</p>
+                </div>`,
+
+            26: `<div class="speaker-note">
+                <p><strong>全組（5分鐘）</strong></p>
+                <p>現在進入互動環節。我們設計了三個問題，邀請大家思考並討論。請分成小組，每組討論3分鐘，之後請2-3位同學分享想法。</p>
+                <p>第一個問題：在你的專業或學習領域中，數碼轉型帶來了哪些機遇與挑戰？可以從技能需求、工作方式或職業路徑的角度思考。</p>
+                <p>第二個問題：作為未來的社會工作者，你可以如何參與成人生涯規劃的系統變革？考慮你的角色、技能和可能面臨的挑戰。</p>
+                <p>第三個問題：「分而治之」的思維方式如何幫助你理解和應對其他複雜社會問題？請思考這種方法在其他領域的應用可能性。</p>
+                <p>我們期待聽到大家的觀點，這將幫助我們進一步完善報告內容。</p>
+                </div>`,
+
+            27: `<div class="speaker-note">
+                <p><strong>阿牛（2分鐘）</strong></p>
+                <p>感謝大家的參與！現在進入總結與展望。</p>
+                <p>我們的報告發現，數碼轉型浪潮不可逆轉，對成人生涯規劃提出了全新挑戰。香港正面臨日益嚴峻的勞動力短缺問題，而現有服務體系呈碎片化，無法有效應對這些挑戰。解決方案需要政府、企業和社區的協同努力。</p>
+                <p>展望未來，我們認為應對複雜挑戰需要分析分解與協調整合的系統思維。數碼技術將持續演進，社會工作者需要不斷更新知識與技能，同時堅守社會公義、賦權和整體視角的核心價值，確保轉型過程的包容性。</p>
+                <p>我們的方案以經濟、社會和環境可持續性為三大支柱，通過「分而治之」的策略分解問題，並通過「協調共進」整合資源與力量。</p>
+                <p>最後引用我們的理念：「複雜世界，分而治之；多元需求，協調共進。」感謝大家的聆聽，歡迎提問與討論！</p>
+                </div>`
+        };
+
+        // JavaScript 控制幻燈片切換、進度條、導航點和講稿
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressBar = document.getElementById('progressBar');
+            const slideIndicator = document.getElementById('slideIndicator');
+            const notesPanel = document.getElementById('notesPanel');
+            const closeNotes = document.getElementById('closeNotes');
+            const currentNotes = document.getElementById('currentNotes');
+            let currentSlide = 0;
+
+            // 初始化導航點
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('indicator-dot');
+                if (index === 0) dot.classList.add('active');
+                slideIndicator.appendChild(dot);
+            });
+
+            const dots = document.querySelectorAll('.indicator-dot');
+
+            // 更新幻燈片顯示狀態
+            function updateSlide() {
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentSlide);
+                });
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+                const progress = ((currentSlide + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === slides.length - 1;
+            }
+
+            // 切換到指定幻燈片
+            function goToSlide(index) {
+                currentSlide = Math.max(0, Math.min(index, slides.length - 1));
+                updateSlide();
+                if (notesPanel.classList.contains('active')) {
+                    currentNotes.innerHTML = speakerNotes[currentSlide + 1] || '無講稿內容';
+                }
+            }
+
+            // 導航按鈕事件
+            prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+            nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+            // 講稿按鈕事件
+            document.querySelectorAll('.notes-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const slideNum = parseInt(button.getAttribute('data-slide'));
+                    currentNotes.innerHTML = speakerNotes[slideNum] || '無講稿內容';
+                    notesPanel.classList.add('active');
+                });
+            });
+
+            // 關閉講稿面板
+            closeNotes.addEventListener('click', () => {
+                notesPanel.classList.remove('active');
+            });
+
+            // 鍵盤導航
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') goToSlide(currentSlide - 1);
+                if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
+            });
+
+            // 初始化
+            updateSlide();
+        });
+    </script>
+</body>
+</html>
