@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyle性格透視測試計算機</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --tertiary: #f1c40f;
+            --quaternary: #e67e22;
+            --background: #f9f9f9;
+            --text: #333;
+            --light-text: #777;
+            --border: #ddd;
+            --error: #e74c3c;
+            --blue: #3498db;
+            --green: #2ecc71;
+            --gold: #f1c40f;
+            --orange: #e67e22;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background);
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--light-text);
+            position: relative;
+        }
+        
+        .tab-button.active {
+            color: var(--primary);
+        }
+        
+        .tab-button.active::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .question-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .question-column {
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .question-column h3 {
+            text-align: center;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .option-text {
+            flex: 1;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .radio-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .radio-label input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .radio-label span {
+            font-size: 14px;
+        }
+        
+        .radio-label input:checked + span {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .radio-label:has(input:checked) {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .calculator-input {
+            margin-bottom: 20px;
+        }
+        
+        .calculator-input label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .calculator-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 16px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.reset-btn {
+            background-color: #95a5a6;
+        }
+        
+        button.reset-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        .results h3 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--primary);
+        }
+        
+        .color-scores {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .color-score {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            width: 22%;
+        }
+        
+        .color-score.green {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 2px solid var(--secondary);
+        }
+        
+        .color-score.gold {
+            background-color: rgba(241, 196, 15, 0.2);
+            border: 2px solid var(--tertiary);
+        }
+        
+        .color-score.blue {
+            background-color: rgba(52, 152, 219, 0.2);
+            border: 2px solid var(--primary);
+        }
+        
+        .color-score.orange {
+            background-color: rgba(230, 126, 34, 0.2);
+            border: 2px solid var(--quaternary);
+        }
+        
+        .color-score h4 {
+            margin-top: 0;
+        }
+        
+        .color-score .score {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .rank-result {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .rank-box {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .rank-position {
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: var(--light-text);
+        }
+        
+        .rank-colors {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .verification {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--light-text);
+        }
+        
+        .input-verification {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        
+        .input-verification h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .input-groups {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .input-group-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .input-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .number-group {
+            font-family: monospace;
+            padding: 5px 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        
+        .number-group.error {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .direct-calc-section {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .direct-calc-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .direct-calc-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .direct-calc-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .direct-calc-input label {
+            width: 60px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .direct-calc-input input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        /* 新增人名欄位樣式 */
+        .name-input {
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        
+        .name-input label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .name-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        /* 歷史記錄樣式 */
+        .history-section {
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+        
+        .history-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .history-list {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-item:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .history-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .history-scores {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .history-score {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .history-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .history-color-dot.green {
+            background-color: var(--secondary);
+        }
+        
+        .history-color-dot.gold {
+            background-color: var(--tertiary);
+        }
+        
+        .history-color-dot.blue {
+            background-color: var(--primary);
+        }
+        
+        .history-color-dot.orange {
+            background-color: var(--quaternary);
+        }
+        
+        /* 數字輸入格式化 */
+        .formatted-input {
+            letter-spacing: 2px;
+        }
+        
+        /* 數字分組顯示 */
+        .number-groups-display {
+            font-family: monospace;
+            letter-spacing: 1px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 5px;
+            min-height: 36px;
+            border: 1px solid var(--border);
+        }
+        
+        /* 清除歷史記錄按鈕 */
+        .clear-history-btn {
+            background-color: var(--error);
+            margin-top: 10px;
+        }
+        
+        .clear-history-btn:hover {
+            background-color: #c0392b;
+        }
+
+        @media (max-width: 768px) {
+            .question-section {
+                flex-direction: column;
+            }
+            
+            .color-scores {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .color-score {
+                width: 45%;
+            }
+            
+            .rank-result {
+                flex-wrap: wrap;
+            }
+            
+            .rank-box {
+                width: 80px;
+                height: 80px;
+            }
+
+            .direct-calc-inputs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .history-scores {
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kyle性格透視測試計算機</h1>
+        
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="self-filling">自行填寫</button>
+            <button class="tab-button" data-tab="calculator">工作員快速計算機</button>
+        </div>
+        
+        <div id="self-filling" class="tab-content active">
+            <div class="question-section">
+                <div class="question-column">
+                    <h3>左邊</h3>
+                    
+                    <div class="question" data-question="1">
+                        <div class="question-title">1. 你認為最基本和重要的需要是 (1)</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 尋找人生意義</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q1a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 學習做好每一件事</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q1b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 獲得別人的接納</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q1c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 行事自由</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q1d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q1d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="2">
+                        <div class="question-title">2. 你認為最基本和重要的需要是 (2)</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 產生影響力</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q2a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 保持理智鎮定</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q2b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 維繫良好的人際關係</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q2c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 有責任與職責</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q2d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q2d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="3">
+                        <div class="question-title">3. 你最感興趣的是</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 人</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q3a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 思想</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q3b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 數據</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q3c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 行動</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q3d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q3d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="4">
+                        <div class="question-title">4. 你尊重</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 權威</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q4a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 知識</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q4b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 表現</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q4c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 關係</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q4d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q4d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="5">
+                        <div class="question-title">5. 你喜歡 (1)</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 幫助有困難的人</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q5a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 同時處理很多事情</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q5b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 想像新的可能性</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q5c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 滿足別人的需求</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q5d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q5d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="6">
+                        <div class="question-title">6. 你喜歡 (2)</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 發掘新概念</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q6a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 讓別人有安全感</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q6b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 鼓勵各人合作</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q6c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 把握時機</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q6d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q6d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question-column">
+                    <h3>右邊</h3>
+                    
+                    <div class="question" data-question="7">
+                        <div class="question-title">7. 你擅長</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 反應迅速</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q7a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 照顧細節</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q7b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 激勵他人</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q7c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 解決難題</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q7d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q7d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="8">
+                        <div class="question-title">8. 你追求</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 多元化</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q8a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 邏輯</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q8b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 和諧和平</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q8c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 穩定性</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q8d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q8d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="9">
+                        <div class="question-title">9. 你比較注意</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 有條理地組織事物</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q9a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 與人有良好關係</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q9b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 把事情辦妥</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q9c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 了解「為甚麼」和「怎樣」</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q9d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q9d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="10">
+                        <div class="question-title">10. 你重視</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 行動</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q10a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 安全感</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q10b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 自我改進</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q10c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 智慧</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q10d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q10d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="11">
+                        <div class="question-title">11. 作出決定時，你會依賴</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 直覺</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q11a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 所見所聞</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q11b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 資訊</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q11c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 經驗</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q11d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q11d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="12">
+                        <div class="question-title">12. 你享受</div>
+                        <div class="options">
+                            <div class="option">
+                                <div class="option-text">a) 歷險</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q12a" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12a" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12a" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12a" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">b) 社交生活</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q12b" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12b" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12b" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12b" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">c) 有意義的談話</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q12c" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12c" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12c" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12c" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                            <div class="option">
+                                <div class="option-text">d) 尋找理論與事實的全部</div>
+                                <div class="radio-group">
+                                    <label class="radio-label"><input type="radio" name="q12d" value="4"><span>4</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12d" value="3"><span>3</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12d" value="2"><span>2</span></label>
+                                    <label class="radio-label"><input type="radio" name="q12d" value="1"><span>1</span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button id="calculate-self">計算結果</button>
+                <button id="reset-self" class="reset-btn">重新清除</button>
+            </div>
+        </div>
+        
+        <div id="calculator" class="tab-content">
+            <!-- 新增人名欄位 -->
+            <div class="name-input">
+                <label>姓名:</label>
+                <input type="text" id="person-name" placeholder="請輸入受測者姓名">
+            </div>
+            
+            <div class="calculator-input">
+                <label>左邊欄位 (輸入24個數字):</label>
+                <input type="text" id="left-input" class="formatted-input" placeholder="例如: 431243124312431243124312">
+                <div class="number-groups-display" id="left-display"></div>
+            </div>
+            
+            <div class="calculator-input">
+                <label>右邊欄位 (輸入24個數字):</label>
+                <input type="text" id="right-input" class="formatted-input" placeholder="例如: 123412341234123412341234">
+                <div class="number-groups-display" id="right-display"></div>
+            </div>
+            
+            <div class="calculator-input">
+                <label>全部欄位 (輸入48個數字):</label>
+                <input type="text" id="all-input" class="formatted-input" placeholder="例如: 431243124312431243124312123412341234123412341234">
+                <div class="number-groups-display" id="all-display"></div>
+            </div>
+            
+            <div class="direct-calc-section">
+                <div class="direct-calc-title">排列總分</div>
+                <div class="direct-calc-inputs">
+                    <div class="direct-calc-input">
+                        <label>綠色:</label>
+                        <input type="number" id="direct-green" min="0" max="48" placeholder="0-48">
+                    </div>
+                    <div class="direct-calc-input">
+                        <label>金色:</label>
+                        <input type="number" id="direct-gold" min="0" max="48" placeholder="0-48">
+                    </div>
+                    <div class="direct-calc-input">
+                        <label>藍色:</label>
+                        <input type="number" id="direct-blue" min="0" max="48" placeholder="0-48">
+                    </div>
+                    <div class="direct-calc-input">
+                        <label>橙色:</label>
+                        <input type="number" id="direct-orange" min="0" max="48" placeholder="0-48">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button id="calculate-quick">A+B/C快速計算</button>
+                <button id="calculate-direct">排列總分</button>
+                <button id="reset-quick" class="reset-btn">重新清除</button>
+            </div>
+            
+            <!-- 歷史記錄部分 -->
+            <div class="history-section">
+                <div class="history-title">歷史記錄</div>
+                <div class="history-list" id="history-list">
+                    <!-- 歷史記錄項目會在此顯示 -->
+                </div>
+                <!-- 新增清除歷史記錄按鈕 -->
+                <div class="button-container">
+                    <button id="clear-history" class="clear-history-btn">清除所有歷史記錄</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="input-visualization" class="input-verification" style="display: none;">
+            <h4>數據可視化檢查</h4>
+            <div class="input-groups">
+                <div id="left-section">
+                    <div class="input-group-title">左邊數據：</div>
+                    <div class="input-numbers" id="left-numbers"></div>
+                </div>
+                
+                <div id="right-section">
+                    <div class="input-group-title">右邊數據：</div>
+                    <div class="input-numbers" id="right-numbers"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results" class="results" style="display: none;">
+            <h3>測試結果 <span id="result-name"></span></h3>
+            
+            <div class="color-scores">
+                <div class="color-score green">
+                    <h4>綠色 (Green)</h4>
+                    <div class="score" id="green-score">0</div>
+                </div>
+                <div class="color-score gold">
+                    <h4>金色 (Gold)</h4>
+                    <div class="score" id="gold-score">0</div>
+                </div>
+                <div class="color-score blue">
+                    <h4>藍色 (Blue)</h4>
+                    <div class="score" id="blue-score">0</div>
+                </div>
+                <div class="color-score orange">
+                    <h4>橙色 (Orange)</h4>
+                    <div class="score" id="orange-score">0</div>
+                </div>
+            </div>
+            
+            <h3>性格排序</h3>
+            
+            <div class="rank-result">
+                <div class="rank-box" id="rank-1">
+                    <div class="rank-position">第一位</div>
+                    <div class="rank-colors"></div>
+                </div>
+                <div class="rank-box" id="rank-2">
+                    <div class="rank-position">第二位</div>
+                    <div class="rank-colors"></div>
+                </div>
+                <div class="rank-box" id="rank-3">
+                    <div class="rank-position">第三位</div>
+                    <div class="rank-colors"></div>
+                </div>
+                <div class="rank-box" id="rank-4">
+                    <div class="rank-position">第四位</div>
+                    <div class="rank-colors"></div>
+                </div>
+            </div>
+            
+            <div class="verification" id="verification-message"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Color mappings for each question and option
+        const colorMappings = {
+            1: {a: "blue", b: "green", c: "gold", d: "orange"},
+            2: {a: "orange", b: "green", c: "blue", d: "gold"},
+            3: {a: "blue", b: "green", c: "gold", d: "orange"},
+            4: {a: "gold", b: "green", c: "orange", d: "blue"},
+            5: {a: "blue", b: "orange", c: "green", d: "gold"},
+            6: {a: "green", b: "gold", c: "blue", d: "orange"},
+            7: {a: "orange", b: "gold", c: "blue", d: "green"},
+            8: {a: "orange", b: "green", c: "blue", d: "gold"},
+            9: {a: "gold", b: "blue", c: "orange", d: "green"},
+            10: {a: "orange", b: "gold", c: "blue", d: "green"},
+            11: {a: "blue", b: "orange", c: "green", d: "gold"},
+            12: {a: "orange", b: "gold", c: "blue", d: "green"}
+        };
+        
+        // Chinese color names
+        const colorNamesChinese = {
+            "green": "綠",
+            "gold": "金",
+            "blue": "藍",
+            "orange": "橙"
+        };
+
+        // Color CSS variables
+        const colorVariables = {
+            "green": "var(--green)",
+            "gold": "var(--gold)",
+            "blue": "var(--blue)",
+            "orange": "var(--orange)"
+        };
+        
+        // 初始化歷史記錄數組
+        let historyRecords = [];
+        
+        // 檢查本地存儲是否有保存的歷史記錄
+        if (localStorage.getItem('testHistory')) {
+            historyRecords = JSON.parse(localStorage.getItem('testHistory'));
+            updateHistoryDisplay();
+        }
+        
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                button.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+                
+                // Hide results when switching tabs
+                document.getElementById('results').style.display = 'none';
+                document.getElementById('input-visualization').style.display = 'none';
+            });
+        });
+        
+        // 格式化數字輸入，每4個數字一組
+        function formatNumberInput(inputField, displayField) {
+            inputField.addEventListener('input', function() {
+                // 清除非數字字符
+                let value = this.value.replace(/[^\d]/g, '');
+                
+                // 限制只能輸入數字1-4
+                value = value.replace(/[^1-4]/g, '');
+                
+                // 更新輸入框值
+                this.value = value;
+                
+                // 更新分組顯示
+                let formattedDisplay = '';
+                for (let i = 0; i < value.length; i += 4) {
+                    const chunk = value.substring(i, i + 4);
+                    if (chunk.length === 4) {
+                        const isValid = validateNumberGroup(chunk);
+                        formattedDisplay += `<span class="${isValid ? '' : 'error'}">${chunk}</span> `;
+                    } else {
+                        formattedDisplay += `<span>${chunk}</span> `;
+                    }
+                }
+                
+                document.getElementById(displayField).innerHTML = formattedDisplay;
+            });
+        }
+        
+        // 初始化輸入框的格式化
+        formatNumberInput(document.getElementById('left-input'), 'left-display');
+        formatNumberInput(document.getElementById('right-input'), 'right-display');
+        formatNumberInput(document.getElementById('all-input'), 'all-display');
+        
+        // Question validation
+        function validateQuestionInput(questionNumber) {
+            const optionLetters = ['a', 'b', 'c', 'd'];
+            const values = [];
+            
+            for (const letter of optionLetters) {
+                const radioName = `q${questionNumber}${letter}`;
+                const checkedRadio = document.querySelector(`input[name="${radioName}"]:checked`);
+                
+                if (!checkedRadio) {
+                    return false;
+                }
+                
+                values.push(parseInt(checkedRadio.value));
+            }
+            
+            // Check if all values 1-4 are used exactly once
+            const sorted = [...values].sort();
+            return sorted.join('') === '1234';
+        }
+        
+        // Function to validate if a set of 4 numbers uses 1-4 exactly once
+        function validateNumberGroup(numbers) {
+            if (numbers.length !== 4) return false;
+            const sorted = [...numbers].sort().join('');
+            return sorted === '1234';
+        }
+        
+        // Function to generate the question input string
+        function generateQuestionInputString() {
+            let inputString = '';
+            
+            for (let questionNumber = 1; questionNumber <= 12; questionNumber++) {
+                for (const optionLetter of ['a', 'b', 'c', 'd']) {
+                    const radioName = `q${questionNumber}${optionLetter}`;
+                    const checkedRadio = document.querySelector(`input[name="${radioName}"]:checked`);
+                    
+                    if (checkedRadio) {
+                        inputString += checkedRadio.value;
+                    } else {
+                        // Use a placeholder for missing values
+                        inputString += '0';
+                    }
+                }
+            }
+            
+            return inputString;
+        }
+        
+        // 添加記錄到歷史
+        function addToHistory(name, scores) {
+            // 如果沒有提供名字，使用默認名稱
+            const personName = name || `未命名-${new Date().toLocaleString()}`;
+            
+            // 創建記錄對象
+            const record = {
+                id: Date.now(),
+                name: personName,
+                scores: scores,
+                date: new Date().toLocaleString()
+            };
+            
+            // 添加到記錄數組
+            historyRecords.unshift(record); // 添加到數組開頭
+            
+            // 限制歷史記錄數量（可選）
+            if (historyRecords.length > 50) {
+                historyRecords.pop(); // 移除最舊的記錄
+            }
+            
+            // 保存到本地存儲
+            localStorage.setItem('testHistory', JSON.stringify(historyRecords));
+            
+            // 更新顯示
+            updateHistoryDisplay();
+        }
+        
+        // 更新歷史記錄顯示
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            
+            if (historyRecords.length === 0) {
+                historyList.innerHTML = '<div class="history-item">暫無記錄</div>';
+                return;
+            }
+            
+            historyRecords.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                
+                const nameEl = document.createElement('div');
+                nameEl.className = 'history-name';
+                nameEl.textContent = record.name;
+                
+                const scoresEl = document.createElement('div');
+                scoresEl.className = 'history-scores';
+                
+                // 添加每種顏色的分數
+                ['green', 'gold', 'blue', 'orange'].forEach(color => {
+                    const scoreEl = document.createElement('div');
+                    scoreEl.className = 'history-score';
+                    
+                    const dot = document.createElement('span');
+                    dot.className = `history-color-dot ${color}`;
+                    
+                    const score = document.createElement('span');
+                    score.textContent = record.scores[color];
+                    
+                    scoreEl.appendChild(dot);
+                    scoreEl.appendChild(score);
+                    scoresEl.appendChild(scoreEl);
+                });
+                
+                item.appendChild(nameEl);
+                item.appendChild(scoresEl);
+                historyList.appendChild(item);
+            });
+        }
+        
+        // 清除所有歷史記錄
+        function clearAllHistory() {
+            if (confirm('確定要清除所有歷史記錄嗎？此操作無法復原。')) {
+                historyRecords = [];
+                localStorage.removeItem('testHistory');
+                updateHistoryDisplay();
+                alert('歷史記錄已清除！');
+            }
+        }
+        
+        // 添加清除歷史記錄按鈕的事件監聽器
+        document.getElementById('clear-history').addEventListener('click', clearAllHistory);
+        
+        // Self-filling calculator
+        document.getElementById('calculate-self').addEventListener('click', () => {
+            // Validate all questions
+            let allValid = true;
+            let invalidQuestions = [];
+            
+            for (let i = 1; i <= 12; i++) {
+                if (!validateQuestionInput(i)) {
+                    allValid = false;
+                    invalidQuestions.push(i);
+                }
+            }
+            
+            if (!allValid) {
+                alert(`請完成所有題目的評分。未完成的題目: ${invalidQuestions.join(', ')}`);
+                return;
+            }
+            
+            // Get input string for visualization
+            const inputString = generateQuestionInputString();
+            const leftInput = inputString.substring(0, 24);
+            const rightInput = inputString.substring(24, 48);
+            
+            // Visualize input
+            visualizeInput(leftInput, rightInput);
+            
+            // Calculate scores
+            const scores = {
+                green: 0,
+                gold: 0,
+                blue: 0,
+                orange: 0
+            };
+            
+            for (let questionNumber = 1; questionNumber <= 12; questionNumber++) {
+                for (const optionLetter of ['a', 'b', 'c', 'd']) {
+                    const radioName = `q${questionNumber}${optionLetter}`;
+                    const checkedRadio = document.querySelector(`input[name="${radioName}"]:checked`);
+                    const value = parseInt(checkedRadio.value);
+                    const color = colorMappings[questionNumber][optionLetter];
+                    scores[color] += value;
+                }
+            }
+            
+            displayResults(scores, "自行填寫者");
+            
+            // 添加到歷史記錄
+            addToHistory("自行填寫者", scores);
+        });
+        
+        // Quick calculator
+        document.getElementById('calculate-quick').addEventListener('click', () => {
+            const leftInput = document.getElementById('left-input').value.trim();
+            const rightInput = document.getElementById('right-input').value.trim();
+            const allInput = document.getElementById('all-input').value.trim();
+            const personName = document.getElementById('person-name').value.trim();
+            
+            let inputNumbers = '';
+            
+            if (allInput) {
+                if (!/^\d{48}$/.test(allInput)) {
+                    alert('全部欄位應該包含48個數字 (1-4)');
+                    return;
+                }
+                inputNumbers = allInput;
+                
+                // Split for visualization
+                const leftPart = allInput.substring(0, 24);
+                const rightPart = allInput.substring(24, 48);
+                visualizeInput(leftPart, rightPart);
+                
+            } else if (leftInput && rightInput) {
+                if (!/^\d{24}$/.test(leftInput)) {
+                    alert('左邊欄位應該包含24個數字 (1-4)');
+                    return;
+                }
+                if (!/^\d{24}$/.test(rightInput)) {
+                    alert('右邊欄位應該包含24個數字 (1-4)');
+                    return;
+                }
+                inputNumbers = leftInput + rightInput;
+                
+                // Visualize the input
+                visualizeInput(leftInput, rightInput);
+                
+            } else {
+                alert('請輸入完整的數字資料');
+                return;
+            }
+            
+            // Process input
+            const scores = {
+                green: 0,
+                gold: 0,
+                blue: 0,
+                orange: 0
+            };
+            
+            let index = 0;
+            
+            for (let questionNumber = 1; questionNumber <= 12; questionNumber++) {
+                for (const optionLetter of ['a', 'b', 'c', 'd']) {
+                    const value = parseInt(inputNumbers[index]);
+                    const color = colorMappings[questionNumber][optionLetter];
+                    scores[color] += value;
+                    index++;
+                }
+            }
+            
+            displayResults(scores, personName);
+            
+            // 添加到歷史記錄
+            addToHistory(personName, scores);
+        });
+
+        // Direct calculator
+        document.getElementById('calculate-direct').addEventListener('click', () => {
+            const greenScore = parseInt(document.getElementById('direct-green').value) || 0;
+            const goldScore = parseInt(document.getElementById('direct-gold').value) || 0;
+            const blueScore = parseInt(document.getElementById('direct-blue').value) || 0;
+            const orangeScore = parseInt(document.getElementById('direct-orange').value) || 0;
+            const personName = document.getElementById('person-name').value.trim();
+            
+            const totalScore = greenScore + goldScore + blueScore + orangeScore;
+            
+            if (totalScore !== 120) {
+                alert(`總分應為120分，目前為${totalScore}分。請檢查輸入值。`);
+                return;
+            }
+            
+            const scores = {
+                green: greenScore,
+                gold: goldScore,
+                blue: blueScore,
+                orange: orangeScore
+            };
+            
+            document.getElementById('input-visualization').style.display = 'none';
+            displayResults(scores, personName);
+            
+            // 添加到歷史記錄
+            addToHistory(personName, scores);
+        });
+        
+// Display results with updated ranking logic
+function displayResults(scores, name) {
+    // Update score displays
+    document.getElementById('green-score').textContent = scores.green;
+    document.getElementById('gold-score').textContent = scores.gold;
+    document.getElementById('blue-score').textContent = scores.blue;
+    document.getElementById('orange-score').textContent = scores.orange;
+    
+    // 顯示姓名（如果有）
+    if (name) {
+        document.getElementById('result-name').textContent = `- ${name}`;
+    } else {
+        document.getElementById('result-name').textContent = '';
+    }
+    
+    // 準備顏色分數數組
+    const colorScores = [
+        {color: "green", score: scores.green},
+        {color: "gold", score: scores.gold},
+        {color: "blue", score: scores.blue},
+        {color: "orange", score: scores.orange}
+    ];
+    
+    // 按分數從大到小排序
+    colorScores.sort((a, b) => b.score - a.score);
+    
+    // 分組並計算順位
+    const scoreGroups = [];
+    let currentGroup = [colorScores[0]];
+    for (let i = 1; i < colorScores.length; i++) {
+        if (colorScores[i].score === currentGroup[0].score) {
+            currentGroup.push(colorScores[i]);
+        } else {
+            scoreGroups.push(currentGroup);
+            currentGroup = [colorScores[i]];
+        }
+    }
+    scoreGroups.push(currentGroup);
+    
+    // 計算每個顏色的順位
+    const rankMap = {};
+    let position = 1;
+    for (const group of scoreGroups) {
+        const groupSize = group.length;
+        const rank = position + groupSize - 1; // 順位是組內最後一個位置
+        for (const item of group) {
+            rankMap[item.color] = rank;
+        }
+        position += groupSize;
+    }
+    
+    // 順位名稱映射
+    const rankNames = {
+        1: "第一順位",
+        2: "第二順位",
+        3: "第三順位",
+        4: "第四順位"
+    };
+    
+    // 清除先前的結果
+    for (let i = 1; i <= 4; i++) {
+        const rankBox = document.getElementById(`rank-${i}`);
+        rankBox.querySelector('.rank-colors').textContent = '';
+        rankBox.style.background = 'white';
+    }
+
+    // 檢查分數組數
+    const uniqueScores = [...new Set(colorScores.map(item => item.score))];
+    if (uniqueScores.length === 2) {
+        // 特殊情境：只有兩個分數組
+        // 第一組（最高分）放入 rank-1
+        const topGroup = scoreGroups[0];
+        const topRankBox = document.getElementById(`rank-1`);
+        const topColorNames = topGroup.map(item => colorNamesChinese[item.color]).join(', ');
+        topRankBox.querySelector('.rank-colors').textContent = topColorNames;
+
+        // 設置第一順位背景色
+        if (topGroup.length === 1) {
+            topRankBox.style.background = `linear-gradient(to right, ${colorVariables[topGroup[0].color]}40, white)`;
+        } else if (topGroup.length === 2) {
+            topRankBox.style.background = `linear-gradient(to right, 
+                ${colorVariables[topGroup[0].color]}40 0%, 
+                ${colorVariables[topGroup[0].color]}40 50%, 
+                ${colorVariables[topGroup[1].color]}40 50%, 
+                ${colorVariables[topGroup[1].color]}40 100%)`;
+        } else if (topGroup.length === 3) {
+            topRankBox.style.background = `linear-gradient(to right, 
+                ${colorVariables[topGroup[0].color]}40 0%, 
+                ${colorVariables[topGroup[0].color]}40 33%, 
+                ${colorVariables[topGroup[1].color]}40 33%, 
+                ${colorVariables[topGroup[1].color]}40 66%, 
+                ${colorVariables[topGroup[2].color]}40 66%, 
+                ${colorVariables[topGroup[2].color]}40 100%)`;
+        }
+
+        // 第二組（最低分）放入 rank-4
+        const bottomGroup = scoreGroups[1];
+        const bottomRankBox = document.getElementById(`rank-4`);
+        const bottomColorNames = bottomGroup.map(item => colorNamesChinese[item.color]).join(', ');
+        bottomRankBox.querySelector('.rank-colors').textContent = bottomColorNames;
+
+        // 設置第四順位背景色
+        if (bottomGroup.length === 1) {
+            bottomRankBox.style.background = `linear-gradient(to right, ${colorVariables[bottomGroup[0].color]}40, white)`;
+        } else if (bottomGroup.length === 2) {
+            bottomRankBox.style.background = `linear-gradient(to right, 
+                ${colorVariables[bottomGroup[0].color]}40 0%, 
+                ${colorVariables[bottomGroup[0].color]}40 50%, 
+                ${colorVariables[bottomGroup[1].color]}40 50%, 
+                ${colorVariables[bottomGroup[1].color]}40 100%)`;
+        } else if (bottomGroup.length === 3) {
+            bottomRankBox.style.background = `linear-gradient(to right, 
+                ${colorVariables[bottomGroup[0].color]}40 0%, 
+                ${colorVariables[bottomGroup[0].color]}40 33%, 
+                ${colorVariables[bottomGroup[1].color]}40 33%, 
+                ${colorVariables[bottomGroup[1].color]}40 66%, 
+                ${colorVariables[bottomGroup[2].color]}40 66%, 
+                ${colorVariables[bottomGroup[2].color]}40 100%)`;
+        }
+    } else {
+        // 原有顯示邏輯
+        for (let rank = 1; rank <= 4; rank++) {
+            const rankBox = document.getElementById(`rank-${rank}`);
+            const colorsInRank = colorScores.filter(item => rankMap[item.color] === rank);
+            if (colorsInRank.length > 0) {
+                const colorNames = colorsInRank.map(item => colorNamesChinese[item.color]).join(', ');
+                rankBox.querySelector('.rank-colors').textContent = colorNames;
+                
+                // 設置背景色
+                if (colorsInRank.length === 1) {
+                    rankBox.style.background = `linear-gradient(to right, ${colorVariables[colorsInRank[0].color]}40, white)`;
+                } else if (colorsInRank.length === 2) {
+                    rankBox.style.background = `linear-gradient(to right, 
+                        ${colorVariables[colorsInRank[0].color]}40 0%, 
+                        ${colorVariables[colorsInRank[0].color]}40 50%, 
+                        ${colorVariables[colorsInRank[1].color]}40 50%, 
+                        ${colorVariables[colorsInRank[1].color]}40 100%)`;
+                } else if (colorsInRank.length === 3) {
+                    rankBox.style.background = `linear-gradient(to right, 
+                        ${colorVariables[colorsInRank[0].color]}40 0%, 
+                        ${colorVariables[colorsInRank[0].color]}40 33%, 
+                        ${colorVariables[colorsInRank[1].color]}40 33%, 
+                        ${colorVariables[colorsInRank[1].color]}40 66%, 
+                        ${colorVariables[colorsInRank[2].color]}40 66%, 
+                        ${colorVariables[colorsInRank[2].color]}40 100%)`;
+                } else if (colorsInRank.length === 4) {
+                    rankBox.style.background = `linear-gradient(to right, 
+                        ${colorVariables[colorsInRank[0].color]}40 0%, 
+                        ${colorVariables[colorsInRank[0].color]}40 25%, 
+                        ${colorVariables[colorsInRank[1].color]}40 25%, 
+                        ${colorVariables[colorsInRank[1].color]}40 50%, 
+                        ${colorVariables[colorsInRank[2].color]}40 50%, 
+                        ${colorVariables[colorsInRank[2].color]}40 75%, 
+                        ${colorVariables[colorsInRank[3].color]}40 75%, 
+                        ${colorVariables[colorsInRank[3].color]}40 100%)`;
+                }
+            }
+        }
+    }
+    
+    // 驗算總分
+    const totalScore = scores.green + scores.gold + scores.blue + scores.orange;
+    const verificationMessage = document.getElementById('verification-message');
+    
+    if (totalScore === 120) {
+        verificationMessage.textContent = `總分驗算: ${totalScore}/120 ✓`;
+        verificationMessage.style.color = 'green';
+    } else {
+        verificationMessage.textContent = `總分驗算: ${totalScore}/120 ✗ (應為120分)`;
+        verificationMessage.style.color = 'red';
+    }
+    
+    // 顯示結果
+    document.getElementById('results').style.display = 'block';
+}
+        
+        // Visualize input function
+        function visualizeInput(leftInput, rightInput) {
+            const leftSection = document.getElementById('left-numbers');
+            const rightSection = document.getElementById('right-numbers');
+            
+            // Clear previous content
+            leftSection.innerHTML = '';
+            rightSection.innerHTML = '';
+            
+            // Process left input
+            for (let i = 0; i < leftInput.length; i += 4) {
+                const group = leftInput.substring(i, i + 4);
+                const isValid = validateNumberGroup(group);
+                
+                const groupElement = document.createElement('div');
+                groupElement.className = `number-group ${isValid ? '' : 'error'}`;
+                groupElement.textContent = group;
+                leftSection.appendChild(groupElement);
+            }
+            
+            // Process right input
+            for (let i = 0; i < rightInput.length; i += 4) {
+                const group = rightInput.substring(i, i + 4);
+                const isValid = validateNumberGroup(group);
+                
+                const groupElement = document.createElement('div');
+                groupElement.className = `number-group ${isValid ? '' : 'error'}`;
+                groupElement.textContent = group;
+                rightSection.appendChild(groupElement);
+            }
+            
+            // Show the input visualization
+            document.getElementById('input-visualization').style.display = 'block';
+        }
+        
+        // Form validation - ensure only one radio per row is selected
+        document.querySelectorAll('.radio-label input').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const name = this.name;
+                const value = this.value;
+                const questionNumber = name.charAt(1);
+                const optionLetter = name.charAt(2);
+                
+                // Find all other options in this question
+                const otherOptions = ['a', 'b', 'c', 'd'].filter(letter => letter !== optionLetter);
+                
+                // Make sure the same value isn't used in another option of this question
+                otherOptions.forEach(letter => {
+                    const otherRadios = document.querySelectorAll(`input[name="q${questionNumber}${letter}"]`);
+                    otherRadios.forEach(otherRadio => {
+                        if (otherRadio.value === value && otherRadio.checked) {
+                            otherRadio.checked = false;
+                        }
+                    });
+                });
+            });
+        });
+        
+        // Reset functions
+        document.getElementById('reset-self').addEventListener('click', function() {
+            // Uncheck all radio buttons
+            document.querySelectorAll('#self-filling input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Hide results
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('input-visualization').style.display = 'none';
+        });
+        
+        document.getElementById('reset-quick').addEventListener('click', function() {
+            // Clear all input fields
+            document.getElementById('person-name').value = '';
+            document.getElementById('left-input').value = '';
+            document.getElementById('right-input').value = '';
+            document.getElementById('all-input').value = '';
+            document.getElementById('direct-green').value = '';
+            document.getElementById('direct-gold').value = '';
+            document.getElementById('direct-blue').value = '';
+            document.getElementById('direct-orange').value = '';
+            
+            // 清空顯示框
+            document.getElementById('left-display').innerHTML = '';
+            document.getElementById('right-display').innerHTML = '';
+            document.getElementById('all-display').innerHTML = '';
+            
+            // Hide results
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('input-visualization').style.display = 'none';
+        });
+        
+        // Handle input field exclusivity in quick calculator
+        document.getElementById('all-input').addEventListener('input', function() {
+            if (this.value.trim()) {
+                document.getElementById('left-input').value = '';
+                document.getElementById('right-input').value = '';
+                document.getElementById('left-display').innerHTML = '';
+                document.getElementById('right-display').innerHTML = '';
+            }
+        });
+        
+        function updateLeftRightInputs() {
+            const leftInput = document.getElementById('left-input');
+            const rightInput = document.getElementById('right-input');
+            
+            if (leftInput.value.trim() || rightInput.value.trim()) {
+                document.getElementById('all-input').value = '';
+                document.getElementById('all-display').innerHTML = '';
+            }
+        }
+        
+        document.getElementById('left-input').addEventListener('input', updateLeftRightInputs);
+        document.getElementById('right-input').addEventListener('input', updateLeftRightInputs);
+    </script>
+</body>
+</html>
