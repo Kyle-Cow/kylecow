@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性格透視結果匯出程式</title>
+    <style>
+        :root {
+            /* 四種主要性格顏色 */
+            --orange: #FF6B35;
+            --blue: #1A5F7A;
+            --gold: #FFD700;
+            --green: #4F9153;
+            
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #6c757d;
+            --primary: #4361ee;
+            --border: #e9ecef;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .color-box {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            background-color: var(--card-bg);
+        }
+        
+        .color-box h3 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .score-input {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .score-input label {
+            margin-right: 10px;
+            display: inline;
+        }
+        
+        .color-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .color-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .color-option:hover {
+            background-color: #f1f3f5;
+        }
+        
+        .color-circle {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: inline-block;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .orange { background-color: var(--orange); }
+        .blue { background-color: var(--blue); }
+        .gold { background-color: var(--gold); }
+        .green { background-color: var(--green); }
+        
+        .color-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            min-height: 40px;
+            border: 1px dashed var(--border);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .color-tag {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            background-color: #f1f3f5;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .color-tag .color-circle {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+        
+        .color-tag .remove {
+            margin-left: 5px;
+            cursor: pointer;
+            color: #adb5bd;
+        }
+        
+        .color-tag .remove:hover {
+            color: #fa5252;
+        }
+        
+        .personality-type {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 30px;
+        }
+        
+        .type-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .type-option input {
+            margin-right: 8px;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-display {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .result-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 120px;
+        }
+        
+        .result-circles {
+            display: flex;
+            gap: 5px;
+            position: relative;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .result-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+        
+        .result-score {
+            margin-top: 5px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .arrow {
+            font-size: 24px;
+            color: var(--text-secondary);
+        }
+        
+        .personality-indicator {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: #f1f3f5;
+        }
+        
+        .participants-list {
+            margin-top: 40px;
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-box input {
+            width: 250px;
+        }
+        
+        .participant-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .participant-item:last-child {
+            border-bottom: none;
+        }
+        
+        .participant-name {
+            font-weight: 600;
+        }
+        
+        .participant-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .participant-result {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .participant-result .result-circle {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+        }
+        
+        .participant-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background-color: #3a56e4;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .empty-message {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+        }
+        
+        .type-warning {
+            color: #dc3545;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .color-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .result-display {
+                flex-wrap: wrap;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .participant-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .participant-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>性格透視結果匯出程式</h1>
+        
+        <div class="card">
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="activity-name">活動名稱</label>
+                        <input type="text" id="activity-name" placeholder="請輸入活動名稱">
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="participant-name">參加者姓名</label>
+                        <input type="text" id="participant-name" placeholder="請輸入參加者姓名">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="color-grid">
+                <div class="color-box">
+                    <h3>最像我的顏色</h3>
+                    <div class="score-input">
+                        <label for="score-1">總分</label>
+                        <input type="text" id="score-1" placeholder="輸入分數" style="width: 80px;">
+                        <div class="tooltip">
+                            <span>?</span>
+                            <span class="tooltip-text">輸入此分類的總分</span>
+                        </div>
+                    </div>
+                    <div class="color-selection">
+                        <div class="color-option" data-box="1" data-color="orange">
+                            <div class="color-circle orange"></div>
+                            <span>橙色</span>
+                        </div>
+                        <div class="color-option" data-box="1" data-color="blue">
+                            <div class="color-circle blue"></div>
+                            <span>藍色</span>
+                        </div>
+                        <div class="color-option" data-box="1" data-color="gold">
+                            <div class="color-circle gold"></div>
+                            <span>金色</span>
+                        </div>
+                        <div class="color-option" data-box="1" data-color="green">
+                            <div class="color-circle green"></div>
+                            <span>綠色</span>
+                        </div>
+                    </div>
+                    <p class="help-text">點擊顏色將其添加到此分類</p>
+                    <div class="color-tags" id="colors-1"></div>
+                </div>
+                
+                <div class="color-box">
+                    <h3>多數像我的顏色</h3>
+                    <div class="score-input">
+                        <label for="score-2">總分</label>
+                        <input type="text" id="score-2" placeholder="輸入分數" style="width: 80px;">
+                        <div class="tooltip">
+                            <span>?</span>
+                            <span class="tooltip-text">輸入此分類的總分</span>
+                        </div>
+                    </div>
+                    <div class="color-selection">
+                        <div class="color-option" data-box="2" data-color="orange">
+                            <div class="color-circle orange"></div>
+                            <span>橙色</span>
+                        </div>
+                        <div class="color-option" data-box="2" data-color="blue">
+                            <div class="color-circle blue"></div>
+                            <span>藍色</span>
+                        </div>
+                        <div class="color-option" data-box="2" data-color="gold">
+                            <div class="color-circle gold"></div>
+                            <span>金色</span>
+                        </div>
+                        <div class="color-option" data-box="2" data-color="green">
+                            <div class="color-circle green"></div>
+                            <span>綠色</span>
+                        </div>
+                    </div>
+                    <p class="help-text">點擊顏色將其添加到此分類</p>
+                    <div class="color-tags" id="colors-2"></div>
+                </div>
+                
+                <div class="color-box">
+                    <h3>有點不像我的顏色</h3>
+                    <div class="score-input">
+                        <label for="score-3">總分</label>
+                        <input type="text" id="score-3" placeholder="輸入分數" style="width: 80px;">
+                        <div class="tooltip">
+                            <span>?</span>
+                            <span class="tooltip-text">輸入此分類的總分</span>
+                        </div>
+                    </div>
+                    <div class="color-selection">
+                        <div class="color-option" data-box="3" data-color="orange">
+                            <div class="color-circle orange"></div>
+                            <span>橙色</span>
+                        </div>
+                        <div class="color-option" data-box="3" data-color="blue">
+                            <div class="color-circle blue"></div>
+                            <span>藍色</span>
+                        </div>
+                        <div class="color-option" data-box="3" data-color="gold">
+                            <div class="color-circle gold"></div>
+                            <span>金色</span>
+                        </div>
+                        <div class="color-option" data-box="3" data-color="green">
+                            <div class="color-circle green"></div>
+                            <span>綠色</span>
+                        </div>
+                    </div>
+                    <p class="help-text">點擊顏色將其添加到此分類</p>
+                    <div class="color-tags" id="colors-3"></div>
+                </div>
+                
+                <div class="color-box">
+                    <h3>最少像我的顏色</h3>
+                    <div class="score-input">
+                        <label for="score-4">總分</label>
+                        <input type="text" id="score-4" placeholder="輸入分數" style="width: 80px;">
+                        <div class="tooltip">
+                            <span>?</span>
+                            <span class="tooltip-text">輸入此分類的總分</span>
+                        </div>
+                    </div>
+                    <div class="color-selection">
+                        <div class="color-option" data-box="4" data-color="orange">
+                            <div class="color-circle orange"></div>
+                            <span>橙色</span>
+                        </div>
+                        <div class="color-option" data-box="4" data-color="blue">
+                            <div class="color-circle blue"></div>
+                            <span>藍色</span>
+                        </div>
+                        <div class="color-option" data-box="4" data-color="gold">
+                            <div class="color-circle gold"></div>
+                            <span>金色</span>
+                        </div>
+                        <div class="color-option" data-box="4" data-color="green">
+                            <div class="color-circle green"></div>
+                            <span>綠色</span>
+                        </div>
+                    </div>
+                    <p class="help-text">點擊顏色將其添加到此分類</p>
+                    <div class="color-tags" id="colors-4"></div>
+                </div>
+            </div>
+            
+            <div class="personality-type">
+                <div class="type-option">
+                    <input type="radio" id="type-i" name="personality-type" value="i">
+                    <label for="type-i">內向 (I)</label>
+                </div>
+                <div class="type-option">
+                    <input type="radio" id="type-e" name="personality-type" value="e">
+                    <label for="type-e">外向 (E)</label>
+                </div>
+            </div>
+            
+            <div class="type-warning" id="type-warning">請選擇性格取向：內向 (I) 或 外向 (E)</div>
+            
+            <div class="btn-container">
+                <button class="btn" id="generate-btn">生成結果預覽</button>
+                <button class="btn" id="save-btn">儲存參加者</button>
+                <button class="btn btn-secondary" id="clear-btn">清空表單</button>
+                <button class="btn" id="export-btn">匯出全部結果</button>
+            </div>
+        </div>
+        
+        <div class="card results-section" id="results-card" style="display: none;">
+            <div class="results-header">
+                <h2>結果預覽</h2>
+                <button class="btn btn-sm" id="copy-result-btn">複製結果</button>
+            </div>
+            <div class="result-display" id="result-display">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+        
+        <div class="card participants-list" id="participants-card" style="display: none;">
+            <div class="list-header">
+                <h2>參加者列表</h2>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="搜尋參加者...">
+                    <button class="btn btn-sm" id="search-btn">搜尋</button>
+                </div>
+            </div>
+            <div id="participants-container">
+                <!-- Participants will be listed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const colorOptions = document.querySelectorAll('.color-option');
+            const generateBtn = document.getElementById('generate-btn');
+            const saveBtn = document.getElementById('save-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const copyResultBtn = document.getElementById('copy-result-btn');
+            const searchBtn = document.getElementById('search-btn');
+            const searchInput = document.getElementById('search-input');
+            const resultsCard = document.getElementById('results-card');
+            const participantsCard = document.getElementById('participants-card');
+            const resultDisplay = document.getElementById('result-display');
+            const participantsContainer = document.getElementById('participants-container');
+            const typeWarning = document.getElementById('type-warning');
+            
+            // Color mapping for Excel
+            const colorHexCodes = {
+                orange: 'FF6B35',
+                blue: '1A5F7A',
+                gold: 'FFD700',
+                green: '4F9153'
+            };
+            
+            const colorTranslations = {
+                orange: '橙色',
+                blue: '藍色',
+                gold: '金色',
+                green: '綠色'
+            };
+            
+            // Array to store participants data
+            let participants = [];
+            
+            // Check for saved data in localStorage
+            const savedData = localStorage.getItem('colorPersonalityParticipants');
+            if (savedData) {
+                try {
+                    participants = JSON.parse(savedData);
+                    updateParticipantsList();
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+            
+            // Color selection
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const box = this.dataset.box;
+                    const color = this.dataset.color;
+                    const colorName = this.querySelector('span').textContent;
+                    
+                    // Add color to tags
+                    const colorTags = document.getElementById(`colors-${box}`);
+                    
+                    // Check if color already exists
+                    const existingTags = colorTags.querySelectorAll('.color-tag');
+                    for (let tag of existingTags) {
+                        if (tag.dataset.color === color) {
+                            return; // Color already selected
+                        }
+                    }
+                    
+                    const tag = document.createElement('div');
+                    tag.className = 'color-tag';
+                    tag.dataset.color = color;
+                    tag.innerHTML = `
+                        <div class="color-circle ${color}"></div>
+                        <span>${colorName}</span>
+                        <span class="remove">×</span>
+                    `;
+                    colorTags.appendChild(tag);
+                    
+                    // Add remove event
+                    tag.querySelector('.remove').addEventListener('click', function() {
+                        tag.remove();
+                    });
+                });
+            });
+            
+            // Check if personality type is selected
+            function checkPersonalityType() {
+                const typeI = document.getElementById('type-i');
+                const typeE = document.getElementById('type-e');
+                
+                if (!typeI.checked && !typeE.checked) {
+                    typeWarning.style.display = 'block';
+                    return false;
+                } else {
+                    typeWarning.style.display = 'none';
+                    return true;
+                }
+            }
+            
+            // Generate result preview
+            generateBtn.addEventListener('click', function() {
+                // Check personality type
+                const typeSelected = checkPersonalityType();
+                
+                resultsCard.style.display = 'block';
+                resultDisplay.innerHTML = '';
+                
+                // Get colors from each box
+                const colorsByBox = {};
+                const scoresByBox = {};
+                
+                for (let i = 1; i <= 4; i++) {
+                    const tags = document.getElementById(`colors-${i}`).querySelectorAll('.color-tag');
+                    colorsByBox[i] = Array.from(tags).map(tag => ({
+                        color: tag.dataset.color,
+                        name: tag.querySelector('span').textContent
+                    }));
+                    
+                    scoresByBox[i] = document.getElementById(`score-${i}`).value;
+                }
+                
+                // Create the result display with consistent spacing
+                for (let i = 1; i <= 4; i++) {
+                    const colors = colorsByBox[i];
+                    const score = scoresByBox[i];
+                    
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'result-group';
+                    
+                    const circlesDiv = document.createElement('div');
+                    circlesDiv.className = 'result-circles';
+                    
+                    if (colors.length > 0) {
+                        colors.forEach(c => {
+                            const circle = document.createElement('div');
+                            circle.className = `result-circle ${c.color}`;
+                            circle.title = c.name;
+                            if (score) {
+                                circle.textContent = score;
+                            }
+                            circlesDiv.appendChild(circle);
+                        });
+                    }
+                    
+                    groupDiv.appendChild(circlesDiv);
+                    resultDisplay.appendChild(groupDiv);
+                    
+                    // Add arrow if not the last group
+                    if (i < 4) {
+                        const arrow = document.createElement('div');
+                        arrow.className = 'arrow';
+                        arrow.textContent = '→';
+                        resultDisplay.appendChild(arrow);
+                    }
+                }
+                
+                // Add personality type if selected
+                const typeI = document.getElementById('type-i');
+                const typeE = document.getElementById('type-e');
+                
+                if (typeI.checked || typeE.checked) {
+                    const typeDiv = document.createElement('div');
+                    typeDiv.className = 'personality-indicator';
+                    typeDiv.innerHTML = typeI.checked ? '(I)' : '(E)';
+                    resultDisplay.appendChild(typeDiv);
+                }
+            });
+            
+            // Copy result
+            copyResultBtn.addEventListener('click', function() {
+                const tempCanvas = document.createElement('canvas');
+                const ctx = tempCanvas.getContext('2d');
+                
+                // Get the result display dimensions
+                const display = document.getElementById('result-display');
+                const width = display.offsetWidth;
+                const height = display.offsetHeight;
+                
+                // Set canvas size
+                tempCanvas.width = width;
+                tempCanvas.height = height;
+                
+                // Draw white background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, width, height);
+                
+                // Draw all elements with consistent spacing
+                const resultGroups = display.querySelectorAll('.result-group');
+                const arrows = display.querySelectorAll('.arrow');
+                
+                // First pass: Draw all result groups (color circles)
+                resultGroups.forEach((group, groupIndex) => {
+                    const groupRect = group.getBoundingClientRect();
+                    const displayRect = display.getBoundingClientRect();
+                    
+                    // Calculate position relative to the result display
+                    const groupX = groupRect.left - displayRect.left + groupRect.width / 2;
+                    const groupY = groupRect.top - displayRect.top + groupRect.height / 2;
+                    
+                    const circles = group.querySelectorAll('.result-circle');
+                    const circleWidth = circles.length > 0 ? circles[0].offsetWidth : 40;
+                    const totalWidth = circles.length * circleWidth + (circles.length - 1) * 5; // 5px gap
+                    let startX = groupX - totalWidth / 2;
+                    
+                    circles.forEach(circle => {
+                        const radius = circleWidth / 2;
+                        const x = startX + radius;
+                        const y = groupY;
+                        
+                        // Draw circle
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        ctx.fillStyle = window.getComputedStyle(circle).backgroundColor;
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        
+                        // Draw score text if exists
+                        if (circle.textContent) {
+                            ctx.fillStyle = 'white';
+                            ctx.font = 'bold 14px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(circle.textContent, x, y);
+                        }
+                        
+                        startX += circleWidth + 5; // Move to next circle position
+                    });
+                });
+                
+                // Second pass: Draw arrows
+                arrows.forEach((arrow, index) => {
+                    const arrowRect = arrow.getBoundingClientRect();
+                    const displayRect = display.getBoundingClientRect();
+                    
+                    const x = arrowRect.left - displayRect.left + arrowRect.width / 2;
+                    const y = arrowRect.top - displayRect.top + arrowRect.height / 2;
+                    
+                    ctx.fillStyle = '#6c757d';
+                    ctx.font = '24px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('→', x, y);
+                });
+                
+                // Draw personality type if exists
+                const personalityIndicator = display.querySelector('.personality-indicator');
+                if (personalityIndicator) {
+                    const rect = personalityIndicator.getBoundingClientRect();
+                    const displayRect = display.getBoundingClientRect();
+                    
+                    const x = rect.left - displayRect.left + rect.width / 2;
+                    const y = rect.top - displayRect.top + rect.height / 2;
+                    
+                    ctx.fillStyle = '#333333';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(personalityIndicator.textContent, x, y);
+                }
+                
+                // Try to copy to clipboard
+                try {
+                    tempCanvas.toBlob(function(blob) {
+                        navigator.clipboard.write([
+                            new ClipboardItem({'image/png': blob})
+                        ]).then(function() {
+                            alert('結果已複製到剪貼板!');
+                        }, function(err) {
+                            console.error('複製失敗:', err);
+                            // 提供下載選項
+                            const link = document.createElement('a');
+                            link.download = '性格透視結果.png';
+                            link.href = tempCanvas.toDataURL();
+                            link.click();
+                        });
+                    });
+                } catch (err) {
+                    console.error('複製失敗:', err);
+                    // 提供下載選項
+                    const link = document.createElement('a');
+                    link.download = '性格透視結果.png';
+                    link.href = tempCanvas.toDataURL();
+                    link.click();
+                }
+            });
+            
+            // Save participant
+            saveBtn.addEventListener('click', function() {
+                const activityName = document.getElementById('activity-name').value;
+                const participantName = document.getElementById('participant-name').value;
+                
+                if (!activityName) {
+                    alert('請輸入活動名稱!');
+                    return;
+                }
+                
+                if (!participantName) {
+                    alert('請輸入參加者姓名!');
+                    return;
+                }
+                
+                // Check personality type
+                if (!checkPersonalityType()) {
+                    alert('請選擇性格取向：內向 (I) 或 外向 (E)');
+                    return;
+                }
+                
+                // Get colors from each box
+                const colorsByBox = {};
+                for (let i = 1; i <= 4; i++) {
+                    const tags = document.getElementById(`colors-${i}`).querySelectorAll('.color-tag');
+                    colorsByBox[i] = Array.from(tags).map(tag => ({
+                        color: tag.dataset.color,
+                        name: tag.querySelector('span').textContent
+                    }));
+                }
+                
+                // Get scores
+                const scores = {};
+                for (let i = 1; i <= 4; i++) {
+                    scores[i] = document.getElementById(`score-${i}`).value;
+                }
+                
+                // Get personality type
+                const typeI = document.getElementById('type-i');
+                const typeE = document.getElementById('type-e');
+                const personalityType = typeI.checked ? 'i' : (typeE.checked ? 'e' : '');
+                
+                // Create participant object
+                const participant = {
+                    activity: activityName,
+                    name: participantName,
+                    colors: colorsByBox,
+                    scores: scores,
+                    type: personalityType,
+                    date: new Date().toLocaleString()
+                };
+                
+                // Check if participant with same name already exists
+                const existingIndex = participants.findIndex(p => 
+                    p.name === participantName && p.activity === activityName
+                );
+                
+                if (existingIndex >= 0) {
+                    if (confirm(`參加者 "${participantName}" 在活動 "${activityName}" 中已存在。要覆蓋現有資料嗎?`)) {
+                        participants[existingIndex] = participant;
+                    } else {
+                        return;
+                    }
+                } else {
+                    // Add to participants array
+                    participants.push(participant);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('colorPersonalityParticipants', JSON.stringify(participants));
+                
+                // Update participants list
+                updateParticipantsList();
+                
+                // Show success message
+                alert('參加者已儲存!');
+            });
+            
+            // Clear form
+            clearBtn.addEventListener('click', function() {
+                if (confirm('確定要清空目前的表單嗎?')) {
+                    clearForm();
+                }
+            });
+            
+            // Export all results with Excel formatting
+            exportBtn.addEventListener('click', function() {
+                if (participants.length === 0) {
+                    alert('沒有參加者資料可匯出!');
+                    return;
+                }
+                
+                // Create Excel XML content with formatting
+                const excelContent = generateExcelXML(participants);
+                
+                // Create download link
+                const blob = new Blob([excelContent], { type: 'application/vnd.ms-excel' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', '性格透視結果_' + new Date().toISOString().split('T')[0] + '.xls');
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            // Generate Excel XML with color formatting
+            function generateExcelXML(participants) {
+                let xml = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>';
+                xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" ';
+                xml += 'xmlns:o="urn:schemas-microsoft-com:office:office" ';
+                xml += 'xmlns:x="urn:schemas-microsoft-com:office:excel" ';
+                xml += 'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" ';
+                xml += 'xmlns:html="http://www.w3.org/TR/REC-html40">';
+                
+                // Add styles for cell colors
+                xml += '<Styles>';
+                xml += '<Style ss:ID="Default"><Alignment ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="10"/></Style>';
+                
+                // Add styles for each color
+                xml += `<Style ss:ID="Orange"><Interior ss:Color="#${colorHexCodes.orange}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#FFFFFF"/></Style>`;
+                xml += `<Style ss:ID="Blue"><Interior ss:Color="#${colorHexCodes.blue}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#FFFFFF"/></Style>`;
+                xml += `<Style ss:ID="Gold"><Interior ss:Color="#${colorHexCodes.gold}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#000000"/></Style>`;
+                xml += `<Style ss:ID="Green"><Interior ss:Color="#${colorHexCodes.green}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#FFFFFF"/></Style>`;
+                
+                // Add styles for mixed colors
+                xml += '<Style ss:ID="MultiColor"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1"/></Style>';
+                xml += '</Styles>';
+                
+                xml += '<Worksheet ss:Name="性格透視結果">';
+                xml += '<Table>';
+                
+                // Column widths
+                xml += '<Column ss:Width="120"/>';
+                xml += '<Column ss:Width="80"/>';
+                
+                // Add headers for original columns
+                for (let i = 1; i <= 4; i++) {
+                    xml += '<Column ss:Width="120"/>';
+                }
+                
+                // Add headers for color detail columns
+                for (let i = 1; i <= 4; i++) {
+                    xml += '<Column ss:Width="80"/>';
+                }
+                
+                // Add headers for color distribution columns (1 per color per box = 16 columns)
+                for (let i = 1; i <= 16; i++) {
+                    xml += '<Column ss:Width="60"/>';
+                }
+                
+                // Header Row
+                xml += '<Row ss:Height="30">';
+                xml += '<Cell><Data ss:Type="String">活動名稱</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">參加者姓名</Data></Cell>';
+                
+                // Original column headers
+                xml += '<Cell><Data ss:Type="String">最像我的顏色</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">多數像我的顏色</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">有點不像我的顏色</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">最少像我的顏色</Data></Cell>';
+                
+                // Score column headers
+                xml += '<Cell><Data ss:Type="String">最像我的顏色分數</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">多數像我的顏色分數</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">有點不像我的顏色分數</Data></Cell>';
+                xml += '<Cell><Data ss:Type="String">最少像我的顏色分數</Data></Cell>';
+                
+                // Color distribution column headers
+                const boxNames = ['最像我', '多數像我', '有點不像我', '最少像我'];
+                const colorNames = ['橙色', '藍色', '金色', '綠色'];
+                
+                for (let i = 0; i < 4; i++) { // For each box
+                    for (let j = 0; j < 4; j++) { // For each color
+                        xml += `<Cell><Data ss:Type="String">${boxNames[i]}-${colorNames[j]}</Data></Cell>`;
+                    }
+                }
+                
+                xml += '<Cell><Data ss:Type="String">性格類型</Data></Cell>';
+                xml += '</Row>';
+                
+                // Data rows
+                participants.forEach(p => {
+                    xml += '<Row ss:Height="25">';
+                    xml += `<Cell><Data ss:Type="String">${escapeXml(p.activity)}</Data></Cell>`;
+                    xml += `<Cell><Data ss:Type="String">${escapeXml(p.name)}</Data></Cell>`;
+                    
+                    // Format colors for each box
+                    for (let i = 1; i <= 4; i++) {
+                        const colorList = p.colors[i].map(c => c.name).join('|');
+                        
+                        if (p.colors[i].length === 1) {
+                            // Single color cell
+                            const colorStyle = p.colors[i][0].color.charAt(0).toUpperCase() + p.colors[i][0].color.slice(1);
+                            xml += `<Cell ss:StyleID="${colorStyle}"><Data ss:Type="String">${escapeXml(colorList)}</Data></Cell>`;
+                        } else if (p.colors[i].length > 1) {
+                            // Multiple colors - use text only
+                            xml += `<Cell ss:StyleID="MultiColor"><Data ss:Type="String">${escapeXml(colorList)}</Data></Cell>`;
+                        } else {
+                            // Empty cell
+                            xml += '<Cell><Data ss:Type="String"></Data></Cell>';
+                        }
+                    }
+                    
+                    // Add scores
+                    for (let i = 1; i <= 4; i++) {
+                        const score = p.scores[i] || '';
+                        xml += `<Cell><Data ss:Type="String">${score}</Data></Cell>`;
+                    }
+                    
+                    // Add individual color cells (1 if present, 0 if not)
+                    const allColors = ['orange', 'blue', 'gold', 'green'];
+                    for (let i = 1; i <= 4; i++) { // For each box
+                        const boxColors = p.colors[i].map(c => c.color);
+                        
+                        // For each possible color
+                        for (let color of allColors) {
+                            if (boxColors.includes(color)) {
+                                // Color is present - add colored cell with value 1
+                                const colorStyle = color.charAt(0).toUpperCase() + color.slice(1);
+                                xml += `<Cell ss:StyleID="${colorStyle}"><Data ss:Type="Number">1</Data></Cell>`;
+                            } else {
+                                // Color is not present - add empty cell with value 0
+                                xml += '<Cell><Data ss:Type="Number">0</Data></Cell>';
+                            }
+                        }
+                    }
+                    
+                    // Add personality type
+                    xml += `<Cell><Data ss:Type="String">${p.type.toUpperCase()}</Data></Cell>`;
+                    
+                    xml += '</Row>';
+                });
+                
+                xml += '</Table>';
+                xml += '</Worksheet>';
+                xml += '</Workbook>';
+                
+                return xml;
+            }
+            
+            // Helper function to escape XML special characters
+            function escapeXml(unsafe) {
+                return unsafe
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&apos;');
+            }
+            
+            // Search participants
+            searchBtn.addEventListener('click', function() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                updateParticipantsList(searchTerm);
+            });
+            
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    updateParticipantsList(searchTerm);
+                }
+            });
+            
+            // Update participants list
+            function updateParticipantsList(searchTerm = '') {
+                participantsCard.style.display = 'block';
+                participantsContainer.innerHTML = '';
+                
+                if (participants.length === 0) {
+                    participantsContainer.innerHTML = '<p class="empty-message">沒有儲存的參加者</p>';
+                    return;
+                }
+                
+                let filteredParticipants = participants;
+                
+                // Apply search filter if provided
+                if (searchTerm) {
+                    filteredParticipants = participants.filter(p => 
+                        p.name.toLowerCase().includes(searchTerm) || 
+                        p.activity.toLowerCase().includes(searchTerm)
+                    );
+                    
+                    if (filteredParticipants.length === 0) {
+                        participantsContainer.innerHTML = `<p class="empty-message">沒有找到符合 "${searchTerm}" 的參加者</p>`;
+                        return;
+                    }
+                }
+                
+                // Sort by date (newest first)
+                filteredParticipants.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                filteredParticipants.forEach((p, index) => {
+                    const participantIndex = participants.indexOf(p);
+                    const item = document.createElement('div');
+                    item.className = 'participant-item';
+                    
+                    // Create result preview
+                    let resultPreview = '';
+                    for (let i = 1; i <= 4; i++) {
+                        if (p.colors[i] && p.colors[i].length > 0) {
+                            p.colors[i].forEach(c => {
+                                const circleText = p.scores[i] ? p.scores[i] : '';
+                                resultPreview += `<div class="result-circle ${c.color}" title="${c.name}">${circleText}</div>`;
+                            });
+                        }
+                        if (i < 4) {
+                            resultPreview += '<span class="arrow">→</span>';
+                        }
+                    }
+                    
+                    if (p.type) {
+                        resultPreview += `<span>(${p.type.toUpperCase()})</span>`;
+                    }
+                    
+                    // 移除下方的日期顯示
+                    item.innerHTML = `
+                        <div>
+                            <div class="participant-name">${p.name}</div>
+                            <div class="participant-meta">${p.activity}</div>
+                        </div>
+                        <div class="participant-result">${resultPreview}</div>
+                        <div class="participant-actions">
+                            <button class="btn btn-sm" onclick="loadParticipant(${participantIndex})">載入</button>
+                            <button class="btn btn-sm btn-secondary" onclick="exportParticipant(${participantIndex})">匯出</button>
+                            <button class="btn btn-sm btn-danger" onclick="removeParticipant(${participantIndex})">移除</button>
+                        </div>
+                    `;
+                    participantsContainer.appendChild(item);
+                });
+            }
+            
+            // Load participant data to form
+            window.loadParticipant = function(index) {
+                const p = participants[index];
+                
+                // Fill in form data
+                document.getElementById('activity-name').value = p.activity;
+                document.getElementById('participant-name').value = p.name;
+                
+                // Set scores
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`score-${i}`).value = p.scores[i] || '';
+                }
+                
+                // Set personality type
+                if (p.type === 'i') {
+                    document.getElementById('type-i').checked = true;
+                    document.getElementById('type-e').checked = false;
+                } else if (p.type === 'e') {
+                    document.getElementById('type-i').checked = false;
+                    document.getElementById('type-e').checked = true;
+                } else {
+                    document.getElementById('type-i').checked = false;
+                    document.getElementById('type-e').checked = false;
+                }
+                
+                // Hide warning if type is selected
+                if (p.type) {
+                    typeWarning.style.display = 'none';
+                }
+                
+                // Clear existing color tags
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`colors-${i}`).innerHTML = '';
+                }
+                
+                // Add color tags
+                for (let i = 1; i <= 4; i++) {
+                    const colorTags = document.getElementById(`colors-${i}`);
+                    
+                    if (p.colors[i]) {
+                        p.colors[i].forEach(c => {
+                            const tag = document.createElement('div');
+                            tag.className = 'color-tag';
+                            tag.dataset.color = c.color;
+                            tag.innerHTML = `
+                                <div class="color-circle ${c.color}"></div>
+                                <span>${c.name}</span>
+                                <span class="remove">×</span>
+                            `;
+                            colorTags.appendChild(tag);
+                            
+                            // Add remove event
+                            tag.querySelector('.remove').addEventListener('click', function() {
+                                tag.remove();
+                            });
+                        });
+                    }
+                }
+                
+                // Generate preview
+                generateBtn.click();
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            };
+            
+            // Remove participant
+            window.removeParticipant = function(index) {
+                if (confirm('確定要移除此參加者?')) {
+                    participants.splice(index, 1);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('colorPersonalityParticipants', JSON.stringify(participants));
+                    
+                    updateParticipantsList();
+                }
+            };
+            
+            // Export single participant
+            window.exportParticipant = function(index) {
+                const p = participants[index];
+                
+                // Create Excel XML for a single participant
+                let xmlContent = '<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?>';
+                xmlContent += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" ';
+                xmlContent += 'xmlns:o="urn:schemas-microsoft-com:office:office" ';
+                xmlContent += 'xmlns:x="urn:schemas-microsoft-com:office:excel" ';
+                xmlContent += 'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" ';
+                xmlContent += 'xmlns:html="http://www.w3.org/TR/REC-html40">';
+                
+                // Add styles for cell colors
+                xmlContent += '<Styles>';
+                xmlContent += '<Style ss:ID="Default"><Alignment ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="10"/></Style>';
+                
+                // Add styles for each color
+                xmlContent += `<Style ss:ID="Orange"><Interior ss:Color="#${colorHexCodes.orange}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#FFFFFF"/></Style>`;
+                xmlContent += `<Style ss:ID="Blue"><Interior ss:Color="#${colorHexCodes.blue}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#FFFFFF"/></Style>`;
+                xmlContent += `<Style ss:ID="Gold"><Interior ss:Color="#${colorHexCodes.gold}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#000000"/></Style>`;
+                xmlContent += `<Style ss:ID="Green"><Interior ss:Color="#${colorHexCodes.green}" ss:Pattern="Solid"/><Font ss:FontName="Arial" ss:Size="10" ss:Color="#FFFFFF"/></Style>`;
+                
+                // Add styles for mixed colors
+                xmlContent += '<Style ss:ID="MultiColor"><Font ss:FontName="Arial" ss:Size="10" ss:Bold="1"/></Style>';
+                xmlContent += '</Styles>';
+                
+                xmlContent += `<Worksheet ss:Name="${p.name}的性格透視結果">`;
+                xmlContent += '<Table>';
+                
+                // Column widths
+                xmlContent += '<Column ss:Width="120"/>';
+                xmlContent += '<Column ss:Width="80"/>';
+                
+                // Add headers for original columns
+                for (let i = 1; i <= 4; i++) {
+                    xmlContent += '<Column ss:Width="120"/>';
+                }
+                
+                // Add headers for color detail columns
+                for (let i = 1; i <= 4; i++) {
+                    xmlContent += '<Column ss:Width="80"/>';
+                }
+                
+                // Add headers for color distribution columns (1 per color per box = 16 columns)
+                for (let i = 1; i <= 16; i++) {
+                    xmlContent += '<Column ss:Width="60"/>';
+                }
+                
+                // Header Row
+                xmlContent += '<Row ss:Height="30">';
+                xmlContent += '<Cell><Data ss:Type="String">活動名稱</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">參加者姓名</Data></Cell>';
+                
+                // Original column headers
+                xmlContent += '<Cell><Data ss:Type="String">最像我的顏色</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">多數像我的顏色</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">有點不像我的顏色</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">最少像我的顏色</Data></Cell>';
+                
+                // Score column headers
+                xmlContent += '<Cell><Data ss:Type="String">最像我的顏色分數</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">多數像我的顏色分數</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">有點不像我的顏色分數</Data></Cell>';
+                xmlContent += '<Cell><Data ss:Type="String">最少像我的顏色分數</Data></Cell>';
+                
+                // Color distribution column headers
+                const boxNames = ['最像我', '多數像我', '有點不像我', '最少像我'];
+                const colorNames = ['橙色', '藍色', '金色', '綠色'];
+                
+                for (let i = 0; i < 4; i++) { // For each box
+                    for (let j = 0; j < 4; j++) { // For each color
+                        xmlContent += `<Cell><Data ss:Type="String">${boxNames[i]}-${colorNames[j]}</Data></Cell>`;
+                    }
+                }
+                
+                xmlContent += '<Cell><Data ss:Type="String">性格類型</Data></Cell>';
+                xmlContent += '</Row>';
+                
+                // Data row for this participant
+                xmlContent += '<Row ss:Height="25">';
+                xmlContent += `<Cell><Data ss:Type="String">${escapeXml(p.activity)}</Data></Cell>`;
+                xmlContent += `<Cell><Data ss:Type="String">${escapeXml(p.name)}</Data></Cell>`;
+                
+                // Format colors for each box
+                for (let i = 1; i <= 4; i++) {
+                    const colorList = p.colors[i].map(c => c.name).join('|');
+                    
+                    if (p.colors[i].length === 1) {
+                        // Single color cell
+                        const colorStyle = p.colors[i][0].color.charAt(0).toUpperCase() + p.colors[i][0].color.slice(1);
+                        xmlContent += `<Cell ss:StyleID="${colorStyle}"><Data ss:Type="String">${escapeXml(colorList)}</Data></Cell>`;
+                    } else if (p.colors[i].length > 1) {
+                        // Multiple colors - use text only
+                        xmlContent += `<Cell ss:StyleID="MultiColor"><Data ss:Type="String">${escapeXml(colorList)}</Data></Cell>`;
+                    } else {
+                        // Empty cell
+                        xmlContent += '<Cell><Data ss:Type="String"></Data></Cell>';
+                    }
+                }
+                
+                // Add scores
+                for (let i = 1; i <= 4; i++) {
+                    const score = p.scores[i] || '';
+                    xmlContent += `<Cell><Data ss:Type="String">${score}</Data></Cell>`;
+                }
+                
+                // Add individual color cells (1 if present, 0 if not)
+                const allColors = ['orange', 'blue', 'gold', 'green'];
+                for (let i = 1; i <= 4; i++) { // For each box
+                    const boxColors = p.colors[i].map(c => c.color);
+                    
+                    // For each possible color
+                    for (let color of allColors) {
+                        if (boxColors.includes(color)) {
+                            // Color is present - add colored cell with value 1
+                            const colorStyle = color.charAt(0).toUpperCase() + color.slice(1);
+                            xmlContent += `<Cell ss:StyleID="${colorStyle}"><Data ss:Type="Number">1</Data></Cell>`;
+                        } else {
+                            // Color is not present - add empty cell with value 0
+                            xmlContent += '<Cell><Data ss:Type="Number">0</Data></Cell>';
+                        }
+                    }
+                }
+                
+                // Add personality type
+                xmlContent += `<Cell><Data ss:Type="String">${p.type.toUpperCase()}</Data></Cell>`;
+                
+                xmlContent += '</Row>';
+                xmlContent += '</Table>';
+                xmlContent += '</Worksheet>';
+                xmlContent += '</Workbook>';
+                
+                // Create download link
+                const blob = new Blob([xmlContent], { type: 'application/vnd.ms-excel' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `性格透視結果_${p.name}_${new Date().toISOString().split('T')[0]}.xls`);
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            
+            // Clear form
+            function clearForm() {
+                document.getElementById('activity-name').value = '';
+                document.getElementById('participant-name').value = '';
+                
+                for (let i = 1; i <= 4; i++) {
+                    document.getElementById(`colors-${i}`).innerHTML = '';
+                    document.getElementById(`score-${i}`).value = '';
+                }
+                
+                document.getElementById('type-i').checked = false;
+                document.getElementById('type-e').checked = false;
+                typeWarning.style.display = 'none';
+                
+                resultsCard.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
