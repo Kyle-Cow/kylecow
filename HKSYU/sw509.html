@@ -1,0 +1,713 @@
+..
+
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NGO策略分析專案執行指南</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-title {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .course-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .info-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 40px;
+            min-height: 70vh;
+        }
+        
+        .timeline-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .timeline-item {
+            background: white;
+            border: 2px solid #e1e8ff;
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .timeline-item.critical {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-color: #ff6b6b;
+            animation: urgentPulse 2s infinite;
+        }
+        
+        .timeline-item.critical::before {
+            background: white;
+        }
+        
+        @keyframes urgentPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .timeline-date {
+            font-weight: 700;
+            font-size: 0.9em;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-item.critical .timeline-date {
+            color: #fff;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .timeline-desc {
+            font-size: 0.85em;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+        
+        .analysis-framework {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .framework-card {
+            background: white;
+            border: 2px solid #e1e8ff;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .framework-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .framework-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        
+        .card-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        
+        .card-content {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 5px solid #e17055;
+        }
+        
+        .highlight-title {
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .presentation-structure {
+            background: #f1f8ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        
+        .structure-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .structure-time {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .structure-content {
+            flex: 1;
+        }
+        
+        .structure-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .structure-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .grading-criteria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .criteria-card {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .criteria-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .criteria-card:hover::before {
+            opacity: 1;
+        }
+        
+        .criteria-percentage {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+        
+        .criteria-title {
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+        
+        .criteria-desc {
+            font-size: 0.9em;
+            color: #636e72;
+        }
+        
+        .team-roles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .role-card {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(252, 182, 159, 0.4);
+        }
+        
+        .role-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .role-title {
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+        
+        .role-desc {
+            font-size: 0.9em;
+            color: #636e72;
+            line-height: 1.4;
+        }
+        
+        .countdown-banner {
+            background: linear-gradient(135deg, #ff7675, #fd79a8);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .course-info {
+                gap: 15px;
+            }
+            
+            .main-title {
+                font-size: 2em;
+            }
+            
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grading-criteria {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .team-roles {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="countdown-banner" id="countdownBanner">
+        🚨 距離簡報日期還有 <span id="daysLeft"></span> 天 | 立即檢查進度！
+    </div>
+<div class="container">
+<div class="header">
+<div class="header-content">
+<h1 class="main-title">📊 NGO策略分析專案</h1>
+<p class="subtitle">Strategic Analysis &amp; CEO Dialogue Framework</p>
+<div class="course-info">
+<div class="info-badge">SW509 社會服務管理</div>
+<div class="info-badge">25% 總成績</div>
+<div class="info-badge">30分鐘簡報</div>
+<div class="info-badge">4組分工</div>
+</div>
+</div>
+</div>
+<div class="main-content">
+<div class="timeline-section">
+<h2 class="section-title">📅 精細執行時間表（含交稿節點）</h2>
+<table style="width:100%; border-collapse: collapse; font-size: 0.95em;">
+<thead>
+<tr style="background-color: #667eea; color: white;">
+<th style="padding: 8px; border: 1px solid #ccc;">週次</th>
+<th style="padding: 8px; border: 1px solid #ccc;">日期範圍</th>
+<th style="padding: 8px; border: 1px solid #ccc;">主要任務與重點</th><th>課堂引用內容</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background-color: #f3f4ff;">
+<td style="padding: 8px; border: 1px solid #ccc;">Week 1</td>
+<td style="padding: 8px; border: 1px solid #ccc;">6月3日–9日</td>
+<td style="padding: 8px; border: 1px solid #ccc;">選定NGO、擬題、分組、初步收集背景資料與服務定位</td><td></td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #ccc;">Week 2</td>
+<td style="padding: 8px; border: 1px solid #ccc;">6月10日–16日</td>
+<td style="padding: 8px; border: 1px solid #ccc;">組員分工、小組分析撰寫初稿、整合小組框架、準備consultation提問</td><td></td>
+</tr>
+<tr style="background-color: #f3f4ff;">
+<td style="padding: 8px; border: 1px solid #ccc;">Week 3</td>
+<td style="padding: 8px; border: 1px solid #ccc;">6月17日–23日</td>
+<td style="padding: 8px; border: 1px solid #ccc;">Consultation會議、接收導師回饋、第二稿整合與初步PPT設計</td><td></td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #ccc;">Week 4</td>
+<td style="padding: 8px; border: 1px solid #ccc;">6月24日–30日</td>
+<td style="padding: 8px; border: 1px solid #ccc;">完成策略建議、提交CEO問題（6/28前）、PPT初稿定稿與模擬演練</td><td></td>
+</tr>
+<tr style="background-color: #f3f4ff;">
+<td style="padding: 8px; border: 1px solid #ccc;">簡報週</td>
+<td style="padding: 8px; border: 1px solid #ccc;">7月1日–5日</td>
+<td style="padding: 8px; border: 1px solid #ccc;">正式簡報演出（7/4或7/5），回顧團隊表現與討論</td><td></td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #ccc;">個人提交</td>
+<td style="padding: 8px; border: 1px solid #ccc;">7月6日–14日</td>
+<td style="padding: 8px; border: 1px solid #ccc;">撰寫2000字反思報告，整合實踐與理論觀察</td><td></td>
+</tr>
+</tbody>
+</table>
+<div class="timeline"><div class="timeline-item"><div class="timeline-date">📆 Week 1 (3–9 Jun)</div><div class="timeline-desc">• 完成 NGO 名單閱讀、4人小組成立並選出組長</div><br/><div class="timeline-desc">• 組長設立 WhatsApp + Google Drive 分工文件</div><br/><div class="timeline-desc">• 初步討論可能題目方向與NGO資料</div><br/><div class="timeline-desc">• （6月7日）與Dr. Fong簡單確認主題方向 ✅</div><br/></div><div class="timeline-item critical" style="background: linear-gradient(135deg, #fff9c4, #ffe082); color: black; border-color: #f9ca24;"><div class="timeline-date" style="font-weight: bold; color: black;">📆 Week 2 (10–16 Jun)</div><div class="timeline-desc" style="color: black;">• 擬定策略分析大綱（可參考課程PPT與教材）</div><br/><div class="timeline-desc" style="color: black;">• 每位組員開始負責章節資料蒐集與文稿撰寫</div><br/><div class="timeline-desc" style="color: black;">• （6月14日）組員初稿交給組長彙整 🔴</div><br/></div><div class="timeline-item critical" style="background: linear-gradient(135deg, #fff9c4, #ffe082); color: black; border-color: #f9ca24;"><div class="timeline-date" style="font-weight: bold; color: black;">📆 Week 3 (17–23 Jun)</div><div class="timeline-desc" style="color: black;">• 小組會議修正整體內容邏輯與策略一致性</div><br/><div class="timeline-desc" style="color: black;">• 製作初版PPT版本，進行設計及整體調性統一</div><br/><div class="timeline-desc" style="color: black;">• （6月19日）向Dr. Fong諮詢重點框架 🔴</div><br/></div><div class="timeline-item critical" style="background: linear-gradient(135deg, #fff9c4, #ffe082); color: black; border-color: #f9ca24;"><div class="timeline-date" style="font-weight: bold; color: black;">📆 Week 4 (24–30 Jun)</div><div class="timeline-desc" style="color: black;">• 整理CEO問答重點，提交五條高質問題</div><br/><div class="timeline-desc" style="color: black;">• （6月28日 23:59）CEO問題提交 DEADLINE 🔴</div><br/><div class="timeline-desc" style="color: black;">• 完成PPT正式版本</div><br/></div><div class="timeline-item critical" style="background: linear-gradient(135deg, #fff9c4, #ffe082); color: black; border-color: #f9ca24;"><div class="timeline-date" style="font-weight: bold; color: black;">📆 Week 5 (1–7 Jul)</div><div class="timeline-desc" style="color: black;">• 進行模擬簡報練習，確認語速、分工與視覺效果</div><br/><div class="timeline-desc" style="color: black;">• （7月3日 23:59）簡報PPT正式上載 🔴</div><br/><div class="timeline-desc" style="color: black;">• （7月4或5日）正式Presentation日！💥</div><br/></div></div></div>
+<div class="analysis-framework">
+<div class="highlight-box" style="background: linear-gradient(135deg, #fff9c4, #ffe082); color: black; border-left: 5px solid #e17055; padding: 20px; margin: 25px 0; border-radius: 12px;">
+<div class="highlight-title" style="color: black;">📘 Group Project Guidelines</div>
+<div style="color: black;">
+        • 小組將被分為四組，需準備30分鐘的簡報內容並與NGO高層對話。<br/><br/>
+        • 每組需選擇導師指定的NGO，進行策略分析，包括：<br/>
+          - 組織概況（Organization Profile）<br/>
+          - 市場分析（Market Analysis）<br/>
+          - 競爭者分析（Competitor Analysis）<br/>
+          - PESTLE環境掃描<br/>
+          - SWOT分析<br/><br/>
+        • 分析應引導出該NGO的策略定位，並據此擬訂初步策略計劃。<br/><br/>
+        • 簡報時須提交PowerPoint（7月2或3日 23:59前）。<br/><br/>
+        • 預備與CEO對話的至少五條問題（6月27或28日 23:59前提交）。<br/><br/>
+        • 每組將安排與導師會面（Consultation）獲得內容及簡報建議。
+    </div>
+</div>
+<h2 class="section-title">
+                    🎯 策略分析架構
+                </h2>
+<div class="framework-grid">
+<div class="framework-card">
+<span class="card-icon">🏢</span>
+<div class="card-title">組織概況分析</div>
+<div class="card-content">
+                            • 成立背景與發展歷程<br/>
+                            • 使命願景價值觀<br/>
+                            • 組織架構與治理模式<br/>
+                            • 服務範圍與受益群體<br/>
+                            • 財務狀況與資源配置
+                        </div>
+</div>
+<div class="framework-card">
+<span class="card-icon">📊</span>
+<div class="card-title">市場環境分析</div>
+<div class="card-content">
+                            • 目標受益群體需求評估<br/>
+                            • 社會問題規模與趨勢<br/>
+                            • 政府政策環境影響<br/>
+                            • 資金來源多元化分析<br/>
+                            • 社會資源網絡映射
+                        </div>
+</div>
+<div class="framework-card">
+<span class="card-icon">⚔️</span>
+<div class="card-title">競爭對手分析</div>
+<div class="card-content">
+                            • 同領域NGO識別與定位<br/>
+                            • 服務模式差異化比較<br/>
+                            • 資源獲取能力對比<br/>
+                            • 影響力與品牌認知度<br/>
+                            • 合作與競爭機會評估
+                        </div>
+</div>
+<div class="framework-card">
+<span class="card-icon">🌍</span>
+<div class="card-title">PESTLE環境掃描</div>
+<div class="card-content">
+                            • <strong>Political:</strong> 政策法規變化<br/>
+                            • <strong>Economic:</strong> 經濟環境影響<br/>
+                            • <strong>Social:</strong> 社會文化趨勢<br/>
+                            • <strong>Technology:</strong> 數位轉型機會<br/>
+                            • <strong>Legal:</strong> 法律合規要求<br/>
+                            • <strong>Environmental:</strong> 永續發展議題
+                        </div>
+</div>
+<div class="framework-card">
+<span class="card-icon">⚖️</span>
+<div class="card-title">SWOT策略矩陣</div>
+<div class="card-content">
+                            • <strong>Strengths:</strong> 內部核心優勢<br/>
+                            • <strong>Weaknesses:</strong> 能力缺口識別<br/>
+                            • <strong>Opportunities:</strong> 外部發展機會<br/>
+                            • <strong>Threats:</strong> 潛在風險威脅<br/>
+                            • 四象限交叉策略制定
+                        </div>
+</div>
+<div class="framework-card">
+<span class="card-icon">🎯</span>
+<div class="card-title">策略計劃制定</div>
+<div class="card-content">
+                            • 基於分析的策略方向<br/>
+                            • 短中長期目標設定<br/>
+                            • 關鍵行動計劃規劃<br/>
+                            • 資源需求與配置<br/>
+                            • 績效指標與監控機制
+                        </div>
+</div>
+</div>
+<div class="presentation-structure">
+<h3 class="section-title">🎤 30分鐘簡報結構</h3>
+<div class="structure-item">
+<div class="structure-time">3分</div>
+<div class="structure-content">
+<div class="structure-title">開場與團隊介紹</div>
+<div class="structure-desc">簡報目標、分析範圍、團隊分工</div>
+</div>
+</div>
+<div class="structure-item">
+<div class="structure-time">5分</div>
+<div class="structure-content">
+<div class="structure-title">NGO組織概況</div>
+<div class="structure-desc">背景、使命、服務現況、關鍵數據</div>
+</div>
+</div>
+<div class="structure-item">
+<div class="structure-time">8分</div>
+<div class="structure-content">
+<div class="structure-title">環境分析（PESTLE + 市場競爭）</div>
+<div class="structure-desc">外部環境機會威脅、競爭定位分析</div>
+</div>
+</div>
+<div class="structure-item">
+<div class="structure-time">6分</div>
+<div class="structure-content">
+<div class="structure-title">SWOT策略分析</div>
+<div class="structure-desc">內外部因素整合、策略象限建議</div>
+</div>
+</div>
+<div class="structure-item">
+<div class="structure-time">5分</div>
+<div class="structure-content">
+<div class="structure-title">策略建議與實施計劃</div>
+<div class="structure-desc">具體策略方向、行動計劃、資源需求</div>
+</div>
+</div>
+<div class="structure-item">
+<div class="structure-time">3分</div>
+<div class="structure-content">
+<div class="structure-title">CEO對話與Q&amp;A</div>
+<div class="structure-desc">預備問題討論、開放式對話互動</div>
+</div>
+</div>
+
+</div>
+<div class="highlight-box" style="background: linear-gradient(135deg, #fff9c4, #ffe082); color: black; border-left: 5px solid #e17055; padding: 20px; margin: 25px 0; border-radius: 12px;">
+<div class="highlight-title" style="color: black;">🏆 A+級別簡報特徵</div>
+<div style="color: black;">• 數據驅動的深度分析，避免泛泛而談<br/>
+                    • 創新視角與前瞻性建議<br/>
+                    • 流暢簡報技巧與視覺設計<br/>
+                    • 與CEO的實質性深度對話</div>
+</div>
+<h3 class="section-title">📈 評分標準分解</h3>
+<div class="grading-criteria">
+<div class="criteria-card">
+<div class="criteria-percentage">40%</div>
+<div class="criteria-title">內容分析深度</div>
+<div class="criteria-desc">策略框架應用、數據支撐、洞察質量</div>
+</div>
+<div class="criteria-card">
+<div class="criteria-percentage">20%</div>
+<div class="criteria-title">簡報呈現</div>
+<div class="criteria-desc">邏輯結構、視覺設計、時間掌控</div>
+</div>
+<div class="criteria-card">
+<div class="criteria-percentage">25%</div>
+<div class="criteria-title">CEO互動質量</div>
+<div class="criteria-desc">問題深度、對話技巧、回應能力</div>
+</div>
+<div class="criteria-card">
+<div class="criteria-percentage">10%</div>
+<div class="criteria-title">資源引用</div>
+<div class="criteria-desc">文獻質量、引用格式、證據支撐</div>
+</div>
+<div class="criteria-card">
+<div class="criteria-percentage">5%</div>
+<div class="criteria-title">團隊協作</div>
+<div class="criteria-desc">分工協調、整體性、專業表現</div>
+</div>
+</div>
+
+
+</div>
+</div>
+</div>
+<script>
+        // 動態倒數計時
+        function updateCountdown() {
+            const targetDate = new Date('2025-07-04');
+            const now = new Date();
+            const timeDiff = targetDate - now;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            
+            const countdownElement = document.getElementById('daysLeft');
+            const bannerElement = document.getElementById('countdownBanner');
+            
+            if (daysLeft > 0) {
+                countdownElement.textContent = daysLeft;
+                if (daysLeft <= 7) {
+                    bannerElement.style.background = 'linear-gradient(135deg, #ff3838, #ff6b6b)';
+                    bannerElement.innerHTML = `🚨 緊急！距離簡報僅剩 <span id="daysLeft">${daysLeft}</span> 天！立即檢查所有準備工作！`;
+                }
+            } else {
+                bannerElement.innerHTML = '🎯 簡報日到了！祝您展現完美表現！';
+                bannerElement.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+            }
+        }
+        
+        // 頁面載入時執行倒數計時
+        updateCountdown();
+        setInterval(updateCountdown, 3600000); // 每小時更新一次
+        
+        // 卡片懸停效果增強
+        document.querySelectorAll('.framework-card, .role-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // 時間軸項目點擊效果
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+        
+        // 滾動監聽，顯示進度
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled / (document.body.offsetHeight - window.innerHeight);
+            const banner = document.getElementById('countdownBanner');
+            banner.style.opacity = Math.max(0.8, 1 - rate);
+        });
+    </script>
+</body>
+</html>
