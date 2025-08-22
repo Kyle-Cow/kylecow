@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - 個人介紹系統</title>
+    <!-- Cropper.js for image cropping -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <style>
+        /* --- General Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* --- Main Layout with Sidebar --- */
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .sidebar {
+            flex: 0 0 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .sidebar-person-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-person-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+            background: white;
+        }
+
+        .sidebar-person-item:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-person-item.active {
+            background-color: #e9e7ff;
+            border-color: #667eea;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-person-name {
+            font-weight: 600;
+            color: #333;
+            flex-grow: 1;
+        }
+
+        .sidebar-person-colors {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-color-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #ccc;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0; /* Prevents flexbox overflow */
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-tab.active {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+        
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .personality-section {
+            grid-column: 1 / -1;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .personality-section h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .personality-colors {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .color-input {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .color-input:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .color-box.green { background: linear-gradient(135deg, #28a745, #20c997); }
+        .color-box.gold { background: linear-gradient(135deg, #ffc107, #ffb300); }
+        .color-box.blue { background: linear-gradient(135deg, #007bff, #0056b3); }
+        .color-box.orange { background: linear-gradient(135deg, #fd7e14, #e55100); }
+
+        .color-box.selected {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+        .color-input label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .color-input input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .personality-result {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            min-height: 80px;
+        }
+
+        .personality-order {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .order-box {
+            min-width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            padding: 5px;
+            line-height: 1.2;
+        }
+
+        .arrow {
+            font-size: 24px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .ie-scale-container {
+            padding: 15px 10px;
+        }
+        .ie-input-group {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .ie-input {
+            text-align: center;
+        }
+        .ie-input label {
+            font-weight: 600;
+        }
+        .ie-input input {
+            width: 80px;
+            text-align: center;
+            margin-top: 5px;
+            padding: 8px;
+        }
+        .ie-scale-visual {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .ie-scale-bar {
+            flex-grow: 1;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            position: relative;
+        }
+        .ie-scale-bar::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: -5px;
+            bottom: -5px;
+            width: 2px;
+            background-color: rgba(0,0,0,0.1);
+            border-left: 1px dashed #aaa;
+        }
+        .ie-scale-track {
+            height: 100%;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 5px;
+            position: relative;
+        }
+        .ie-scale-marker {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 3px solid #764ba2;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: left 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #764ba2;
+            font-size: 12px;
+        }
+        .ie-scale-label {
+            font-weight: bold;
+            font-size: 18px;
+            color: #555;
+        }
+
+
+        .photo-upload {
+            text-align: center;
+            padding: 30px;
+            border: 2px dashed #e1e5e9;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.5);
+        }
+
+        .photo-upload:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .photo-preview, .logo-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 15px;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+        }
+        
+        .grouping-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .grouping-controls .btn {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .grouping-controls .btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+        .grouping-input-area {
+            text-align: center;
+            margin-bottom: 30px;
+            display: none; 
+        }
+        .grouping-input-area input {
+              padding: 10px;
+              width: 80px;
+              text-align: center;
+              border-radius: 8px;
+              border: 1px solid #ccc;
+              margin: 0 10px;
+        }
+        .grouping-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .group-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .group-container h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .group-members {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .group-member-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .group-member-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background-color: #e9ecef;
+        }
+        .group-member-info {
+            flex-grow: 1;
+        }
+        .group-member-name {
+            font-weight: 600;
+            color: #333;
+        }
+        .group-member-color {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .color-name-icon {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+
+        .display-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .person-card {
+            display: none;
+            min-height: 600px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .person-card.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .person-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .person-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .person-content {
+            display: block;
+            margin-bottom: 30px;
+        }
+
+        .person-content-top {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 25px;
+            align-items: start;
+            margin-bottom: 25px;
+        }
+        
+        .person-photo-container {
+              width: 150px;
+              height: 150px;
+        }
+
+        .person-photo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #e1e5e9;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .content-section {
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+            height: 100%;
+        }
+
+        .content-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .content-section p {
+            line-height: 1.8;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .personality-display {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .personality-display h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .results-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .results-row .personality-order {
+            flex-basis: 60%;
+        }
+        .results-row .ie-scale-visual {
+            flex-basis: 40%;
+            transform: scale(0.9);
+        }
+
+
+        .slide-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .slide-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slide-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .slide-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator-dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .people-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .person-item {
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .person-item:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .person-item-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .person-item-name {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .person-item-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .data-management {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .stats-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                max-height: 300px;
+                position: static;
+                flex: 0 0 auto;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .person-content-top {
+                grid-template-columns: 1fr;
+            }
+            .person-photo-container {
+                margin: 0 auto 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .personality-colors {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .container {
+                padding: 10px;
+            }
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .display-container {
+                padding: 20px;
+            }
+             .grouping-results {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .name-card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.1cm;
+            padding: 1cm;
+            width: 21cm;
+            margin: auto;
+        }
+
+        .name-card {
+            width: 8.8cm;
+            height: 5.3cm;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 8px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: white;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .name-card .personality-order {
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background-color: white;
+            flex-grow: 1; 
+            align-items: center;
+        }
+
+        .name-card .order-box {
+            width: 42px; 
+            height: 42px;
+            font-size: 12px; 
+            box-shadow: none;
+        }
+        
+        .name-card .arrow {
+            font-size: 20px; 
+        }
+
+        .name-card-bottom {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        
+        .name-card-logo {
+            position: static;
+            max-height: 35px;
+            max-width: 90px;
+            object-fit: contain;
+            margin-right: 10px;
+        }
+        
+        .name-and-ie-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 2px solid #333;
+            padding-bottom: 2px;
+            flex-grow: 1;
+        }
+
+        .name-card-name {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #333;
+            text-align: right;
+            margin-right: 10px;
+        }
+        
+        .name-card-ie {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            border: 2px solid #333;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .crop-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .crop-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .crop-image-container {
+            max-width: 60vw;
+            max-height: 60vh;
+            margin-bottom: 15px;
+        }
+        .crop-image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block; 
+        }
+        .crop-modal-actions {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>About Me</h1>
+            <p>精美的個人介紹與性格透視系統</p>
+        </div>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <div id="sidebar" class="sidebar">
+                <h3>👥 同事列表</h3>
+                <div id="sidebarPersonList" class="sidebar-person-list">
+                    <!-- Person items will be injected here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="switchTab('input')">✏️ 輸入資料</button>
+                    <button class="nav-tab" onclick="switchTab('manage')">📇 管理列表</button>
+                    <button class="nav-tab" onclick="switchTab('display')">📊 展示頁面</button>
+                    <button class="nav-tab" onclick="switchTab('grouping')">🤝 團隊分組</button>
+                    <button class="nav-tab" onclick="switchTab('data')">💾 數據管理</button>
+                    <button class="nav-tab" onclick="switchTab('namecard')">🖨️ 列印名牌</button>
+                </div>
+
+                <div id="input" class="tab-content active">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">新增/編輯人物資料</h2>
+                    <form id="personForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="personName">👤 姓名</label>
+                                <input type="text" id="personName" name="name" required placeholder="請輸入姓名">
+                            </div>
+                            <div class="form-group">
+                                <label>  內向 (I) / 外向 (E) 比例</label>
+                                <div class="ie-scale-container">
+                                    <div class="ie-input-group">
+                                        <div class="ie-input">
+                                            <label for="iScore">內向 (I)</label>
+                                            <input type="number" id="iScore" value="0" min="0">
+                                        </div>
+                                        <div class="ie-input">
+                                            <label for="eScore">外向 (E)</label>
+                                            <input type="number" id="eScore" value="0" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="ie-scale-visual">
+                                        <span class="ie-scale-label">I</span>
+                                        <div class="ie-scale-bar">
+                                            <div class="ie-scale-track">
+                                                <div id="ieScaleMarker" class="ie-scale-marker">X</div>
+                                            </div>
+                                        </div>
+                                        <span class="ie-scale-label">E</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="selfDescription">💭 自我描述</label>
+                                <textarea id="selfDescription" name="selfDescription" placeholder="請描述你對自己的看法..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="othersImpressions">👥 其他同事印象</label>
+                                <textarea id="othersImpressions" name="othersImpressions" placeholder="請描述其他同事對你的印象..."></textarea>
+                            </div>
+                        </div>
+                        <div class="personality-section">
+                            <h3>🎨 性格透視 - 四色性格分析</h3>
+                            <div class="personality-colors">
+                                <div class="color-input">
+                                    <div class="color-box green" data-color="green"></div>
+                                    <label>🟢 綠色</label>
+                                    <input type="number" id="greenScore" min="0" max="100" value="0" placeholder="分數">
+                                </div>
+                                <div class="color-input">
+                                    <div class="color-box gold" data-color="gold"></div>
+                                    <label>🟡 金色</label>
+                                    <input type="number" id="goldScore" min="0" max="100" value="0" placeholder="分數">
+                                </div>
+                                <div class="color-input">
+                                    <div class="color-box blue" data-color="blue"></div>
+                                    <label>🔵 藍色</label>
+                                    <input type="number" id="blueScore" min="0" max="100" value="0" placeholder="分數">
+                                </div>
+                                <div class="color-input">
+                                    <div class="color-box orange" data-color="orange"></div>
+                                    <label>🟠 橙色</label>
+                                    <input type="number" id="orangeScore" min="0" max="100" value="0" placeholder="分數">
+                                </div>
+                            </div>
+                            <div class="personality-result">
+                                <div id="personalityOrder" class="personality-order">
+                                    <span style="color: #666;">請輸入各色分數以查看排序結果</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="personality-section">
+                            <h3>🎨 性格透視 - 四色性格分析(扣除圖片卡)</h3>
+                            <div class="personality-colors">
+                                <div class="color-input">
+                                    <label>🟢 綠色圖片卡</label>
+                                    <input type="number" id="greenCardScore" min="0" max="100" value="0" placeholder="扣分">
+                                </div>
+                                <div class="color-input">
+                                    <label>🟡 金色圖片卡</label>
+                                    <input type="number" id="goldCardScore" min="0" max="100" value="0" placeholder="扣分">
+                                </div>
+                                <div class="color-input">
+                                    <label>🔵 藍色圖片卡</label>
+                                    <input type="number" id="blueCardScore" min="0" max="100" value="0" placeholder="扣分">
+                                </div>
+                                <div class="color-input">
+                                    <label>🟠 橙色圖片卡</label>
+                                    <input type="number" id="orangeCardScore" min="0" max="100" value="0" placeholder="扣分">
+                                </div>
+                            </div>
+                            <div class="personality-result">
+                                <div id="deductedPersonalityOrder" class="personality-order">
+                                     <span style="color: #666;">輸入分數以查看扣除後結果</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>📷 個人照片</label>
+                            <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                                <input type="file" id="photoInput" class="file-input" accept="image/*">
+                                <div id="photoPreview">
+                                    <p>📸 點擊上傳照片</p>
+                                    <small>支援 JPG, PNG 格式，建議大小不超過 2MB</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 30px; grid-column: 1 / -1;">
+                            <button type="submit" class="btn btn-primary">💾 保存資料</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ 清空表單</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="manage" class="tab-content">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">同事管理列表</h2>
+                    <div id="peopleList" class="people-list"></div>
+                </div>
+
+                <div id="display" class="tab-content">
+                    <div class="display-container">
+                        <div id="displayContent"></div>
+                        <div class="slide-controls">
+                            <button class="slide-btn" onclick="previousPerson()" title="上一位">‹</button>
+                            <button class="slide-btn" onclick="nextPerson()" title="下一位">›</button>
+                            <button class="btn btn-primary" onclick="exportToPDF()">📄 匯出所有同事 PDF</button>
+                        </div>
+                        <div id="slideIndicator" class="slide-indicator"></div>
+                    </div>
+                </div>
+
+                <div id="grouping" class="tab-content">
+                     <h2 style="text-align: center; margin-bottom: 30px; color: #333;">團隊分組</h2>
+                     <div class="grouping-controls">
+                         <button class="btn" onclick="generateGroups('brightened')">明亮小組</button>
+                         <button class="btn" onclick="generateGroups('random')">隨意混合小組</button>
+                         <button class="btn" onclick="generateGroups('balanced')">平均混合小組</button>
+                         <button class="btn" onclick="generateGroups('minus_one')">混合減一小組</button>
+                         <button class="btn" onclick="generateGroups('shadow')">明亮陰暗小組</button>
+                         <button class="btn" onclick="generateGroups('balanced_shadow')">平均混合陰暗小組</button>
+                     </div>
+                     <div id="groupingInputArea" class="grouping-input-area">
+                         <label for="numTeamsInput">請輸入組數:</label>
+                         <input type="number" id="numTeamsInput" value="2" min="2">
+                         <button class="btn btn-success" id="generateTeamsBtn">產生分組</button>
+                     </div>
+                     <div id="groupingResults" class="grouping-results">
+                         <div style="text-align: center; color: #666; padding: 40px; grid-column: 1 / -1;">
+                             <h3>請選擇一種分組方式</h3>
+                             <p>點擊上方按鈕以產生團隊分組結果</p>
+                         </div>
+                     </div>
+                </div>
+
+                <div id="data" class="tab-content">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">數據管理</h2>
+                    <div class="data-management">
+                        <button class="btn btn-primary" onclick="exportData()">📤 匯出 JSON</button>
+                        <button class="btn btn-success" onclick="document.getElementById('importInput').click()">📥 匯入 JSON</button>
+                        <input type="file" id="importInput" class="file-input" accept=".json" onchange="importData(event)">
+                        <button class="btn btn-danger" onclick="clearAllData()">🗑️ 清空所有資料</button>
+                    </div>
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label>🏢 公司/活動 LOGO (用於名牌)</label>
+                        <div class="photo-upload" onclick="document.getElementById('logoInput').click()">
+                            <input type="file" id="logoInput" class="file-input" accept="image/*">
+                            <div id="logoPreviewContainer">
+                                <p>🖼️ 點擊上傳 Logo</p>
+                                <small>建議使用透明背景 PNG 格式</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-card">
+                        <h3>📊 系統統計</h3>
+                        <div id="dataStats">載入中...</div>
+                    </div>
+                </div>
+                
+                <div id="namecard" class="tab-content">
+                     <h2 style="text-align: center; margin-bottom: 30px; color: #333;">列印名牌</h2>
+                     <p style="text-align: center; color: #666; margin-bottom: 30px;">此功能將為系統內所有同事生成 A4 尺寸的 2x4 名牌網格，方便列印。</p>
+                     <div style="text-align: center;">
+                         <button class="btn btn-success" onclick="printNameCards()">🖨️ 列印所有名牌</button>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cropper Modal -->
+    <div id="cropModal" class="crop-modal-overlay">
+        <div class="crop-modal-content">
+            <h3 style="text-align: center; margin-bottom: 15px;">裁切圖片</h3>
+            <div class="crop-image-container">
+                <img id="imageToCrop" src="">
+            </div>
+            <div class="crop-modal-actions">
+                <button class="btn btn-primary" id="cropAndSave">裁切並儲存</button>
+                <button class="btn btn-secondary" onclick="closeCropModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        let currentPersonIndex = 0;
+        let currentEditingPerson = null;
+        let peopleData = [];
+        let appLogo = null;
+        let isDbReady = false;
+        let cropper = null; 
+        let currentGroupingMethod = null;
+
+        // --- Database Manager ---
+        class DatabaseManager {
+            constructor() {
+                this.dbName = 'AboutMeDB';
+                this.version = 3;
+                this.db = null;
+            }
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        isDbReady = true;
+                        resolve();
+                    };
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains('people')) {
+                            db.createObjectStore('people', { keyPath: 'id', autoIncrement: true });
+                        }
+                        if (!db.objectStoreNames.contains('config')) {
+                            db.createObjectStore('config', { keyPath: 'key' });
+                        }
+                    };
+                });
+            }
+
+            async waitForDb() {
+                while (!isDbReady) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+            
+            async savePerson(person) {
+                await this.waitForDb();
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(['people'], 'readwrite');
+                    const request = transaction.objectStore('people').put(person);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getAllPeople() {
+                await this.waitForDb();
+                return new Promise((resolve, reject) => {
+                    const request = this.db.transaction(['people'], 'readonly').objectStore('people').getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async deletePerson(id) {
+                await this.waitForDb();
+                return new Promise((resolve, reject) => {
+                    const request = this.db.transaction(['people'], 'readwrite').objectStore('people').delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async clearAll() {
+                 await this.waitForDb();
+                 return new Promise((resolve, reject) => {
+                     const transaction = this.db.transaction(['people', 'config'], 'readwrite');
+                     transaction.objectStore('people').clear();
+                     transaction.objectStore('config').clear();
+                     transaction.oncomplete = () => resolve();
+                     transaction.onerror = () => reject(transaction.error);
+                 });
+            }
+            
+            async saveConfig(key, value) {
+                await this.waitForDb();
+                return new Promise((resolve, reject) => {
+                    const request = this.db.transaction(['config'], 'readwrite').objectStore('config').put({ key, value });
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getConfig(key) {
+                await this.waitForDb();
+                return new Promise((resolve, reject) => {
+                    const request = this.db.transaction(['config'], 'readonly').objectStore('config').get(key);
+                    request.onsuccess = () => resolve(request.result ? request.result.value : null);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+        }
+
+        const dbManager = new DatabaseManager();
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                console.log('開始初始化...');
+                await dbManager.init();
+                await loadPeopleData();
+                await loadLogo();
+                setupEventListeners();
+                updatePersonalityResult();
+                updateIEScale();
+                updateDataStats();
+                renderSidebar();
+                console.log('初始化完成');
+            } catch (error) {
+                console.error('初始化失敗:', error);
+                showMessage('系統初始化失敗，請重新整理頁面', 'error');
+            }
+        });
+
+        // --- Event Listeners ---
+        function setupEventListeners() {
+             const scoreInputs = [
+                 'greenScore', 'goldScore', 'blueScore', 'orangeScore',
+                 'greenCardScore', 'goldCardScore', 'blueCardScore', 'orangeCardScore'
+             ];
+             scoreInputs.forEach(id => {
+                 document.getElementById(id)?.addEventListener('input', updatePersonalityResult);
+             });
+
+             document.getElementById('iScore')?.addEventListener('input', updateIEScale);
+             document.getElementById('eScore')?.addEventListener('input', updateIEScale);
+             document.getElementById('photoInput')?.addEventListener('change', (e) => openCropModal(e));
+             document.getElementById('personForm')?.addEventListener('submit', savePerson);
+             
+             document.getElementById('logoInput')?.addEventListener('change', async (e) => {
+                 const dataUrl = await handleFileUpload(e, 'logoPreviewContainer', 1 * 1024 * 1024, true);
+                 if (dataUrl) {
+                     try {
+                         await dbManager.saveConfig('app_logo', dataUrl);
+                         appLogo = dataUrl;
+                         showMessage('Logo 保存成功！', 'success');
+                     } catch (error) {
+                         showMessage('Logo 保存失敗', 'error');
+                     }
+                 }
+             });
+
+             document.getElementById('cropAndSave').addEventListener('click', applyCrop);
+             document.getElementById('generateTeamsBtn').addEventListener('click', () => generateGroups(currentGroupingMethod));
+         }
+        
+        // --- File & Logo Handlers ---
+        function handleFileUpload(e, previewContainerId, maxSizeMB, isLogo = false) {
+            return new Promise(resolve => {
+                const file = e.target.files[0];
+                const previewContainer = document.getElementById(previewContainerId);
+                if (!file) { resolve(null); return; }
+                if (file.size > maxSizeMB * 1024 * 1024) {
+                    alert(`檔案大小不能超過 ${maxSizeMB}MB`);
+                    resolve(null);
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const className = isLogo ? 'logo-preview' : 'photo-preview';
+                    previewContainer.innerHTML = `<img src="${event.target.result}" class="${className}" alt="預覽">`;
+                    resolve(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async function loadLogo() {
+            appLogo = await dbManager.getConfig('app_logo');
+            if (appLogo) {
+                document.getElementById('logoPreviewContainer').innerHTML = `<img src="${appLogo}" class="logo-preview" alt="Logo 預覽">`;
+            }
+        }
+        
+        // --- Cropper Modal Functions ---
+        function openCropModal(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const modal = document.getElementById('cropModal');
+                const image = document.getElementById('imageToCrop');
+                image.src = e.target.result;
+                modal.style.display = 'flex';
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                cropper = new Cropper(image, {
+                    aspectRatio: 1, 
+                    viewMode: 1, 
+                    background: false,
+                    autoCropArea: 0.8,
+                });
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ''; 
+        }
+
+        function closeCropModal() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('cropModal').style.display = 'none';
+        }
+
+        function applyCrop() {
+            if (!cropper) return;
+            const canvas = cropper.getCroppedCanvas({
+                width: 500,
+                height: 500,
+                imageSmoothingQuality: 'high',
+            });
+            const croppedImageDataURL = canvas.toDataURL('image/png');
+            const previewContainer = document.getElementById('photoPreview');
+            previewContainer.innerHTML = `<img src="${croppedImageDataURL}" class="photo-preview" alt="裁切後預覽">`;
+            
+            closeCropModal();
+        }
+
+
+        // --- Tab Switching ---
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.nav-tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+
+            setTimeout(() => {
+                if (tabName === 'manage') renderPeopleList();
+                else if (tabName === 'display') renderDisplayPage();
+                else if (tabName === 'data') updateDataStats();
+                else if (tabName === 'grouping') {
+                    document.getElementById('groupingResults').innerHTML = `
+                        <div style="text-align: center; color: #666; padding: 40px; grid-column: 1 / -1;">
+                            <h3>請選擇一種分組方式</h3>
+                            <p>點擊上方按鈕以產生團隊分組結果</p>
+                        </div>`;
+                }
+            }, 50);
+        }
+
+        // --- Personality & I/E Logic ---
+        function updateIEScale() {
+            const iScore = parseInt(document.getElementById('iScore').value) || 0;
+            const eScore = parseInt(document.getElementById('eScore').value) || 0;
+            const total = iScore + eScore;
+            let percentage = 50;
+            if (total > 0) {
+                percentage = (eScore / total) * 100;
+            }
+            const marker = document.getElementById('ieScaleMarker');
+            if (marker) {
+                marker.style.left = `${percentage}%`;
+            }
+        }
+
+        function getPersonalityOrder(scores) {
+            const scoreGroups = {};
+            Object.entries(scores).forEach(([color, score]) => {
+                if (score > 0) {
+                    if (!scoreGroups[score]) scoreGroups[score] = [];
+                    scoreGroups[score].push(color);
+                }
+            });
+            const sortedGroups = Object.entries(scoreGroups)
+                .sort(([scoreA], [scoreB]) => scoreB - scoreA)
+                .map(([score, colors]) => ({ score: parseInt(score), colors: colors.sort() }));
+            
+            const intermediateList = [];
+            sortedGroups.forEach((group) => {
+                if (group.colors.length > 1) intermediateList.push({ type: 'blank' });
+                intermediateList.push({
+                    type: group.colors.length > 1 ? 'tie' : 'single',
+                    colors: group.colors,
+                    score: group.score
+                });
+            });
+            
+            const finalOrder = intermediateList.slice(0, 4);
+            while (finalOrder.length < 4) finalOrder.push({ type: 'blank' });
+            return finalOrder;
+        }
+        
+        function renderPersonalityOrderCircles(order, options = {}) {
+            const { theme = 'light', size = '50px', fontSize = '12px', arrowSize = '24px' } = options;
+            const colorValues = { green: '#20c997', gold: '#ffb300', blue: '#0056b3', orange: '#e55100' };
+            const colorNames = { green: '綠', gold: '金', blue: '藍', orange: '橙' };
+            const blankStyle = theme === 'light' 
+                ? `background: #e9ecef; border: 2px dashed #ccc; color: #999;`
+                : `background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.5); color: rgba(255,255,255,0.8);`;
+
+            return order.map((item, index) => {
+                const arrow = index > 0 ? `<div class="arrow" style="color: ${theme === 'light' ? '#666' : 'white'}; font-size: ${arrowSize};">></div>` : '';
+                let boxHtml = '';
+                const baseStyle = `width: ${size}; height: ${size}; font-size: ${fontSize};`;
+                switch (item.type) {
+                    case 'blank':
+                        boxHtml = `<div class="order-box" style="${baseStyle} ${blankStyle}"><span>空白</span></div>`;
+                        break;
+                    case 'single':
+                        boxHtml = `<div class="order-box" style="${baseStyle} background: ${colorValues[item.colors[0]]};">${colorNames[item.colors[0]]}<br>(${item.score})</div>`;
+                        break;
+                    case 'tie':
+                        let background;
+                        const names = item.colors.map(c => colorNames[c]).join('');
+                        if (item.colors.length === 2) background = `linear-gradient(to bottom, ${colorValues[item.colors[0]]} 50%, ${colorValues[item.colors[1]]} 50%)`;
+                        else if (item.colors.length === 3) background = `conic-gradient(from -30deg, ${colorValues[item.colors[0]]} 120deg, ${colorValues[item.colors[1]]} 120deg 240deg, ${colorValues[item.colors[2]]} 240deg)`;
+                        else background = `conic-gradient(from 45deg, ${colorValues[item.colors[0]]} 90deg, ${colorValues[item.colors[1]]} 90deg 180deg, ${colorValues[item.colors[2]]} 180deg 270deg, ${colorValues[item.colors[3]]} 270deg)`;
+                        boxHtml = `<div class="order-box" style="${baseStyle} background: ${background};">${names}<br>(${item.score})</div>`;
+                        break;
+                }
+                return arrow + boxHtml;
+            }).join('');
+        }
+
+        function updatePersonalityResult() {
+            const mainScores = {
+                green: parseInt(document.getElementById('greenScore')?.value) || 0,
+                gold: parseInt(document.getElementById('goldScore')?.value) || 0,
+                blue: parseInt(document.getElementById('blueScore')?.value) || 0,
+                orange: parseInt(document.getElementById('orangeScore')?.value) || 0
+            };
+            const cardScores = {
+                green: parseInt(document.getElementById('greenCardScore')?.value) || 0,
+                gold: parseInt(document.getElementById('goldCardScore')?.value) || 0,
+                blue: parseInt(document.getElementById('blueCardScore')?.value) || 0,
+                orange: parseInt(document.getElementById('orangeCardScore')?.value) || 0
+            };
+            const deductedScores = {
+                green: mainScores.green - cardScores.green,
+                gold: mainScores.gold - cardScores.gold,
+                blue: mainScores.blue - cardScores.blue,
+                orange: mainScores.orange - cardScores.orange,
+            };
+            const mainOrderElement = document.getElementById('personalityOrder');
+            const deductedOrderElement = document.getElementById('deductedPersonalityOrder');
+            
+            const hasMainScores = Object.values(mainScores).some(score => score > 0);
+            mainOrderElement.innerHTML = hasMainScores 
+                ? renderPersonalityOrderCircles(getPersonalityOrder(mainScores), {theme: 'light'})
+                : '<span style="color: #666;">請輸入各色分數以查看排序結果</span>';
+
+            const hasAnyScore = hasMainScores || Object.values(cardScores).some(score => score > 0);
+            deductedOrderElement.innerHTML = hasAnyScore
+                ? renderPersonalityOrderCircles(getPersonalityOrder(deductedScores), {theme: 'light'})
+                : '<span style="color: #666;">輸入分數以查看扣除後結果</span>';
+        }
+
+        // --- Data CRUD ---
+        async function savePerson(e) { 
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="loading"></span> 保存中...';
+            submitBtn.disabled = true;
+            try {
+                const formData = new FormData(e.target);
+                const photoPreview = document.querySelector('#photoPreview img');
+                const person = {
+                    name: formData.get('name'),
+                    selfDescription: formData.get('selfDescription'),
+                    othersImpressions: formData.get('othersImpressions'),
+                    iScore: parseInt(document.getElementById('iScore').value) || 0,
+                    eScore: parseInt(document.getElementById('eScore').value) || 0,
+                    personalityScores: {
+                        green: parseInt(document.getElementById('greenScore').value) || 0,
+                        gold: parseInt(document.getElementById('goldScore').value) || 0,
+                        blue: parseInt(document.getElementById('blueScore').value) || 0,
+                        orange: parseInt(document.getElementById('orangeScore').value) || 0
+                    },
+                    personalityCardScores: {
+                        green: parseInt(document.getElementById('greenCardScore').value) || 0,
+                        gold: parseInt(document.getElementById('goldCardScore').value) || 0,
+                        blue: parseInt(document.getElementById('blueCardScore').value) || 0,
+                        orange: parseInt(document.getElementById('orangeCardScore').value) || 0
+                    },
+                    photo: photoPreview ? photoPreview.src : null, 
+                    createdAt: currentEditingPerson ? currentEditingPerson.createdAt : new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                if (currentEditingPerson) {
+                    person.id = currentEditingPerson.id;
+                }
+                const savedId = await dbManager.savePerson(person);
+                await loadPeopleData();
+                clearForm();
+                showMessage('資料保存成功！', 'success');
+            } catch (error) {
+                showMessage('保存失敗，請重試', 'error');
+                console.error("Save failed:", error);
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        function clearForm() {
+            document.getElementById('personForm').reset();
+            document.getElementById('photoPreview').innerHTML = '<p>📸 點擊上傳照片</p><small>支援 JPG, PNG 格式，建議大小不超過 2MB</small>';
+            currentEditingPerson = null;
+            document.querySelectorAll('.sidebar-person-item').forEach(item => item.classList.remove('active'));
+            updatePersonalityResult();
+            updateIEScale();
+        }
+        async function loadPeopleData() {
+            peopleData = await dbManager.getAllPeople();
+            renderSidebar();
+            updateDataStats(); 
+        }
+        function renderPeopleList() {
+            const listElement = document.getElementById('peopleList');
+            if (peopleData.length === 0) {
+                listElement.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;"><h3>尚無資料</h3><p>請先在「輸入資料」頁面新增人物，或從左方列表點擊同事進行編輯</p></div>';
+                return;
+            }
+            listElement.innerHTML = peopleData.map(person => `
+                <div class="person-item" onclick="editPersonFromSidebar(${person.id})">
+                    ${person.photo ? `<img src="${person.photo}" class="person-item-photo" alt="${person.name}">` : '<div class="person-item-photo" style="background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #666; font-size: 24px;">👤</div>'}
+                    <div class="person-item-name">${person.name}</div>
+                    <div class="person-item-actions">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); editPersonFromSidebar(${person.id})">✏️ 編輯</button>
+                        <button class="btn btn-danger" onclick="event.stopPropagation(); deletePerson(${person.id})">🗑️ 刪除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function editPersonFromSidebar(id) {
+            document.querySelectorAll('.sidebar-person-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(`sidebar-person-${id}`)?.classList.add('active');
+            
+            const person = peopleData.find(p => p.id === id);
+            if (!person) return;
+            
+            currentEditingPerson = person;
+            document.getElementById('personName').value = person.name || '';
+            document.getElementById('selfDescription').value = person.selfDescription || '';
+            document.getElementById('othersImpressions').value = person.othersImpressions || '';
+            document.getElementById('iScore').value = person.iScore || 0;
+            document.getElementById('eScore').value = person.eScore || 0;
+            
+            if (person.personalityScores) {
+                for (const color of ['green', 'gold', 'blue', 'orange']) {
+                    document.getElementById(`${color}Score`).value = person.personalityScores[color] || 0;
+                }
+            }
+             if (person.personalityCardScores) {
+                for (const color of ['green', 'gold', 'blue', 'orange']) {
+                    document.getElementById(`${color}CardScore`).value = person.personalityCardScores[color] || 0;
+                }
+            }
+            
+            document.getElementById('photoPreview').innerHTML = person.photo 
+                ? `<img src="${person.photo}" class="photo-preview" alt="預覽">`
+                : '<p>📸 點擊上傳照片</p><small>支援 JPG, PNG 格式，建議大小不超過 2MB</small>';
+            
+            updatePersonalityResult();
+            updateIEScale();
+            switchTab('input');
+        }
+
+        async function deletePerson(id) {
+            const person = peopleData.find(p => p.id === id);
+            if (!window.confirm(`確定要刪除「${person.name}」的資料嗎？`)) return;
+            await dbManager.deletePerson(id);
+            await loadPeopleData();
+            renderPeopleList();
+            showMessage('刪除成功！', 'success');
+        }
+        
+        // --- Sidebar Rendering ---
+        function renderSidebar() {
+            const sidebarList = document.getElementById('sidebarPersonList');
+            if (!sidebarList) return;
+
+            if (peopleData.length === 0) {
+                sidebarList.innerHTML = '<p style="text-align: center; color: #888; font-size: 14px;">尚無同事資料</p>';
+                return;
+            }
+
+            const sortedPeople = [...peopleData].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+            sidebarList.innerHTML = sortedPeople.map(person => {
+                const mainScores = person.personalityScores || {};
+                const hasScores = Object.values(mainScores).some(s => s > 0);
+                let colorHtml = '';
+                const colorValues = { green: '#20c997', gold: '#ffb300', blue: '#0056b3', orange: '#e55100' };
+
+                if (hasScores) {
+                    const order = getPersonalityOrder(mainScores);
+                    colorHtml = order.map(item => {
+                        if (item.type === 'single') {
+                            return `<div class="sidebar-color-dot" style="background-color: ${colorValues[item.colors[0]]};" title="${item.colors[0]}"></div>`;
+                        } else if (item.type === 'tie') {
+                            const background = item.colors.length === 2 
+                                ? `linear-gradient(to right, ${colorValues[item.colors[0]]} 50%, ${colorValues[item.colors[1]]} 50%)`
+                                : '#ccc';
+                            return `<div class="sidebar-color-dot" style="background: ${background};" title="Tie"></div>`;
+                        }
+                        return '<div class="sidebar-color-dot" title="Blank"></div>';
+                    }).join('');
+                } else {
+                    colorHtml = '<div class="sidebar-color-dot"></div>'.repeat(4);
+                }
+
+                return `
+                    <div class="sidebar-person-item" id="sidebar-person-${person.id}" onclick="editPersonFromSidebar(${person.id})">
+                        <span class="sidebar-person-name">${person.name}</span>
+                        <div class="sidebar-person-colors">${colorHtml}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- Display & Rendering ---
+        function renderDisplayPage() {
+            const displayContent = document.getElementById('displayContent');
+            const slideIndicator = document.getElementById('slideIndicator');
+            if (peopleData.length === 0) {
+                displayContent.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;"><h3>尚無資料可顯示</h3><p>請先新增人物資料</p></div>';
+                slideIndicator.innerHTML = '';
+                return;
+            }
+            if (currentPersonIndex >= peopleData.length) currentPersonIndex = 0;
+            const person = peopleData[currentPersonIndex];
+            displayContent.innerHTML = renderFullPageCard(person);
+            slideIndicator.innerHTML = peopleData.map((_, index) => 
+                `<div class="indicator-dot ${index === currentPersonIndex ? 'active' : ''}" onclick="goToPerson(${index})"></div>`
+            ).join('');
+        }
+        
+        function renderFullPageCard(person) {
+            return `
+            <div class="person-card active">
+                <div class="person-header">
+                    <div class="person-name">${person.name}</div>
+                </div>
+                <div class="person-content">
+                    <div class="person-content-top">
+                        <div class="person-photo-container">
+                            ${person.photo ? `<img src="${person.photo}" class="person-photo" alt="${person.name}">` : '<div class="person-photo" style="background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #666; font-size: 48px;">👤</div>'}
+                        </div>
+                        <div class="content-section">
+                            <h3>💭 自我描述</h3>
+                            <p style="white-space: pre-wrap;">${person.selfDescription || '尚未填寫'}</p>
+                        </div>
+                    </div>
+                    <div class="content-section">
+                        <h3>  同事印象</h3>
+                        <p style="white-space: pre-wrap;">${person.othersImpressions || '尚未填寫'}</p>
+                    </div>
+                </div>
+                <div class="personality-display">
+                    ${renderPersonalityDisplay(person)}
+                </div>
+            </div>`;
+        }
+        
+        function renderPersonalityDisplay(person) {
+            const mainScores = person.personalityScores || {};
+            const hasMainScores = Object.values(mainScores).some(s => s > 0);
+            
+            const iScore = person.iScore || 0;
+            const eScore = person.eScore || 0;
+            const total = iScore + eScore;
+            const percentage = total > 0 ? (eScore / total) * 100 : 50;
+
+            const mainHtml = hasMainScores 
+                ? `<div class="results-row">
+                        <div class="personality-order main-results-order">${renderPersonalityOrderCircles(getPersonalityOrder(mainScores), {theme: 'dark', size: '45px', fontSize: '10px', arrowSize: '20px'})}</div>
+                        <div class="ie-scale-visual">
+                            <span class="ie-scale-label" style="color: white;">I</span>
+                            <div class="ie-scale-bar" style="background: rgba(255,255,255,0.3);">
+                                <div class="ie-scale-track" style="background: white;">
+                                    <div class="ie-scale-marker" style="left: ${percentage}%;">X</div>
+                                </div>
+                            </div>
+                            <span class="ie-scale-label" style="color: white;">E</span>
+                        </div>
+                   </div>`
+                : `<p style="color: white; opacity: 0.8;">尚未輸入性格分數</p>`;
+
+            const cardScores = person.personalityCardScores || {green:0, gold:0, blue:0, orange:0};
+            const deductedScores = {
+                green: (mainScores.green || 0) - (cardScores.green || 0),
+                gold: (mainScores.gold || 0) - (cardScores.gold || 0),
+                blue: (mainScores.blue || 0) - (cardScores.blue || 0),
+                orange: (mainScores.orange || 0) - (cardScores.orange || 0),
+            };
+            const hasAnyScore = hasMainScores || Object.values(cardScores).some(s => s > 0);
+            const deductedHtml = hasAnyScore ? `
+                <h4 style="font-weight: normal; margin-top: 15px; margin-bottom: 15px;">補充：扣除圖片卡的分數結果</h4>
+                <div class="personality-order deducted-results-order">${renderPersonalityOrderCircles(getPersonalityOrder(deductedScores), {theme: 'dark', size: '45px', fontSize: '10px', arrowSize: '20px'})}</div>` : '';
+
+            return `<h3>🎨 性格透視結果</h3>` + mainHtml + deductedHtml;
+        }
+
+        function previousPerson() {
+            if (peopleData.length === 0) return;
+            currentPersonIndex = (currentPersonIndex - 1 + peopleData.length) % peopleData.length;
+            renderDisplayPage();
+        }
+        function nextPerson() {
+            if (peopleData.length === 0) return;
+            currentPersonIndex = (currentPersonIndex + 1) % peopleData.length;
+            renderDisplayPage();
+        }
+        function goToPerson(index) {
+            currentPersonIndex = index;
+            renderDisplayPage();
+        }
+
+        // --- Printing & Exporting ---
+        async function exportToPDF() {
+            if (peopleData.length === 0) return showMessage('沒有資料可以匯出！', 'error');
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading"></span> 匯出中...';
+            btn.disabled = true;
+
+            try {
+                const styles = Array.from(document.styleSheets).map(s => { try { return Array.from(s.cssRules).map(r => r.cssText).join('') } catch { return '' } }).join('');
+                const htmlContent = peopleData.map(person => `<div class="display-container" style="page-break-after: always; background: white; box-shadow: none; border: 1px solid #eee;">${renderFullPageCard(person)}</div>`).join('');
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`<!DOCTYPE html><html lang="zh-TW"><head><title>About Me - 全體同事報告</title><meta charset="UTF-8"><style>${styles} 
+                                @media print { 
+                                    @page { size: A4; margin: 10mm; }
+                                    html, body { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; background: white !important; font-size: 9pt; } 
+                                    .display-container { box-shadow: none !important; border: none !important; padding: 0 !important; } 
+                                    .person-header { margin-bottom: 10px; padding-bottom: 10px; }
+                                    .person-name { font-size: 28pt; }
+                                    .person-content { display: block !important; margin-bottom: 15px; } 
+                                    .person-content-top { display: grid !important; grid-template-columns: 140px 1fr !important; gap: 15px !important; align-items: start !important; margin-bottom: 15px !important; }
+                                    .person-photo-container { width: 140px; height: 140px; }
+                                    .content-section { padding: 15px; }
+                                    .content-section h3 { font-size: 14pt; margin-bottom: 8px; }
+                                    .personality-display { padding: 15px !important; margin-top: 15px; }
+                                    .personality-display h3 { font-size: 14pt; margin-bottom: 10px; }
+                                    .results-row { padding-bottom: 10px; margin-bottom: 10px; flex-wrap: nowrap; }
+                                    .results-row .personality-order { flex-basis: 65% !important; }
+                                    .results-row .ie-scale-visual { flex-basis: 35% !important; transform: scale(0.8); }
+                                    .main-results-order .order-box { width: 50px !important; height: 50px !important; min-width: 50px !important; font-size: 11px !important; }
+                                    .main-results-order .arrow { font-size: 22px !important; }
+                                    .deducted-results-order .order-box { width: 40px !important; height: 40px !important; min-width: 40px !important; font-size: 9px !important; }
+                                    .deducted-results-order .arrow { font-size: 18px !important; }
+                                    .personality-display h4 { font-size: 11pt; margin-top: 10px; margin-bottom: 10px; }
+                                }
+                            </style></head><body>${htmlContent}</body></html>`);
+                printWindow.document.close();
+                setTimeout(() => { printWindow.focus(); printWindow.print(); }, 500);
+                showMessage('請使用瀏覽器的列印功能儲存為PDF', 'success');
+            } catch (error) {
+                showMessage('PDF 匯出失敗，請重試', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        
+        async function printNameCards() {
+            if (peopleData.length === 0) return showMessage('沒有資料可以列印名牌！', 'error');
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading"></span> 產生中...';
+            btn.disabled = true;
+
+            try {
+                const styles = Array.from(document.styleSheets).map(s => { try { return Array.from(s.cssRules).map(r => r.cssText).join('') } catch { return '' } }).join('');
+                
+                let allPagesHtml = '';
+                const cardsPerPage = 8; // 4 rows * 2 columns
+
+                for (let i = 0; i < peopleData.length; i += cardsPerPage) {
+                    const pageData = peopleData.slice(i, i + cardsPerPage);
+                    const isLastPage = (i + cardsPerPage) >= peopleData.length;
+                    const pageClass = isLastPage ? 'print-page last-page' : 'print-page';
+
+                    let cardsHtml = '';
+                    pageData.forEach(person => {
+                        const mainScores = person.personalityScores || {};
+                        const hasScores = Object.values(mainScores).some(s => s > 0);
+                        const colorHtml = hasScores ? renderPersonalityOrderCircles(getPersonalityOrder(mainScores), { theme: 'light', size: '38px', fontSize: '11px', arrowSize: '18px' }) : '<div style="height: 42px;"></div>';
+                        const ieType = (person.eScore || 0) >= (person.iScore || 0) ? 'E' : 'I';
+
+                        cardsHtml += `
+                        <div class="name-card">
+                            <div class="personality-order">${colorHtml}</div>
+                            <div class="name-card-bottom">
+                                ${appLogo ? `<img src="${appLogo}" class="name-card-logo" alt="Logo">` : '<div></div>' }
+                                <div class="name-and-ie-container">
+                                    <span class="name-card-name">${person.name || ''}</span>
+                                    <span class="name-card-ie">${ieType}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+
+                    // Add placeholder divs to keep the grid structure for the last page
+                    if (pageData.length < cardsPerPage) {
+                        cardsHtml += '<div class="name-card" style="border: none; background: none;"></div>'.repeat(cardsPerPage - pageData.length);
+                    }
+
+                    allPagesHtml += `<div class="${pageClass}"><div class="name-card-grid">${cardsHtml}</div></div>`;
+                }
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`<!DOCTYPE html><html lang="zh-TW"><head><title>About Me - 列印名牌</title><meta charset="UTF-8"><style>
+                    ${styles} 
+                    
+                    /* Styles for the preview window (non-print) */
+                    body { background: #525659; }
+                    .print-page { 
+                        background: white; 
+                        margin: 1cm auto; 
+                        box-shadow: 0 0 0.5cm rgba(0,0,0,0.5); 
+                        width: 21cm; 
+                        height: 29.7cm; 
+                        padding: 1cm; 
+                        box-sizing: border-box; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center;
+                    }
+                    .name-card-grid {
+                        grid-template-rows: repeat(4, 5.3cm);
+                        align-content: start;
+                        width: 100%; /* Use full available width */
+                        padding: 0; /* Remove padding from grid itself */
+                        margin: 0; /* Remove margin from grid itself */
+                    }
+
+                    /* Styles for actual printing */
+                    @media print { 
+                        @page { size: A4 portrait; margin: 0; } 
+                        body { margin: 0; background: #fff !important; -webkit-print-color-adjust: exact !important; color-adjust: exact !important; } 
+                        .print-page { 
+                            width: 21cm; 
+                            height: 29.7cm; 
+                            padding: 1cm; 
+                            box-sizing: border-box; 
+                            page-break-after: always; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center;
+                            box-shadow: none;
+                            margin: 0;
+                        }
+                        .print-page.last-page {
+                            page-break-after: auto;
+                        }
+                        .name-card-grid { display: grid !important; } 
+                    }
+                    </style></head><body>${allPagesHtml}</body></html>`);
+                printWindow.document.close();
+                setTimeout(() => { printWindow.focus(); printWindow.print(); }, 500);
+            } catch (error) {
+                console.error("Print failed:", error);
+                showMessage('名牌列印失敗，請重試', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // --- Data Management ---
+        function exportData() {
+            if (peopleData.length === 0) return showMessage('沒有資料可以匯出！', 'error');
+            const dataStr = JSON.stringify(peopleData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `AboutMe-資料備份-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showMessage('資料匯出成功！', 'success');
+        }
+        async function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            try {
+                const importedData = JSON.parse(await file.text());
+                if (!Array.isArray(importedData)) throw new Error('檔案格式不正確');
+                if (confirm(`確定要匯入 ${importedData.length} 筆資料嗎？這將覆蓋現有資料！`)) {
+                    await dbManager.clearAll();
+                    for (const person of importedData) {
+                        delete person.id;
+                        await dbManager.savePerson(person);
+                    }
+                    await loadPeopleData();
+                    await loadLogo();
+                    updateDataStats();
+                    showMessage('資料匯入成功！', 'success');
+                }
+            } catch (error) {
+                showMessage('匯入失敗，請檢查檔案格式', 'error');
+            }
+            event.target.value = '';
+        }
+        async function clearAllData() {
+            if (!confirm('確定要清空所有資料嗎？此操作無法復原！')) return;
+            await dbManager.clearAll();
+            await loadPeopleData();
+            appLogo = null;
+            document.getElementById('logoPreviewContainer').innerHTML = '<p>🖼️ 點擊上傳 Logo</p><small>建議使用透明背景 PNG 格式</small>';
+            updateDataStats();
+            renderPeopleList();
+            renderDisplayPage();
+            showMessage('所有資料已清空！', 'success');
+        }
+        function updateDataStats() {
+            const statsElement = document.getElementById('dataStats');
+            if (!statsElement) return;
+            const totalPeople = peopleData.length;
+            const withPhotos = peopleData.filter(p => p.photo).length;
+            const withPersonality = peopleData.filter(p => p.personalityScores && Object.values(p.personalityScores).some(s => s > 0)).length;
+            statsElement.innerHTML = `<p>總人數: ${totalPeople} 人</p><p>有照片: ${withPhotos} 人</p><p>已測性格: ${withPersonality} 人</p><p>資料庫大小: ${(JSON.stringify(peopleData).length / 1024).toFixed(2)} KB</p>`;
+        }
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'success-message';
+            messageDiv.style.background = type === 'error' ? '#dc3545' : '#28a745';
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.remove(), 3000);
+        }
+
+        // --- Grouping Logic ---
+
+        const colorMap = {
+            green: { name: '綠色', value: '#20c997' },
+            gold: { name: '金色', value: '#ffb300' },
+            blue: { name: '藍色', value: '#0056b3' },
+            orange: { name: '橙色', value: '#e55100' }
+        };
+
+        function getDominantColor(person) {
+            const scores = person.personalityScores;
+            if (!scores || Object.values(scores).every(s => s === 0)) return null;
+            return Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        }
+
+        function getWeakestColor(person) {
+            const scores = person.personalityScores;
+            if (!scores) return null;
+            const nonZeroScores = Object.entries(scores).filter(([, score]) => score > 0);
+            if (nonZeroScores.length < 2) return null; // Need at least two colors to have a weakest
+            return nonZeroScores.reduce((a, b) => a[1] < b[1] ? a : b)[0];
+        }
+
+        function generateGroups(method) {
+            const inputArea = document.getElementById('groupingInputArea');
+            const groupingControls = document.querySelector('.grouping-controls');
+            
+            groupingControls.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = groupingControls.querySelector(`[onclick="generateGroups('${method}')"]`);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            currentGroupingMethod = method;
+            const methodsNeedingInput = ['random', 'balanced', 'balanced_shadow', 'minus_one'];
+            
+            if (methodsNeedingInput.includes(method)) {
+                const label = document.querySelector('#groupingInputArea > label');
+                if (method === 'minus_one') {
+                    label.textContent = "請輸入最終組數:";
+                } else {
+                    label.textContent = "請輸入組數:";
+                }
+                inputArea.style.display = 'block';
+                if (document.activeElement.id !== 'generateTeamsBtn') {
+                    return;
+                }
+            } else {
+                 inputArea.style.display = 'none';
+            }
+
+            let groups = [];
+            let peopleWithScores = peopleData.filter(p => getDominantColor(p));
+            if (peopleWithScores.length === 0 && !['random'].includes(method)) {
+                 renderGroups([], '<h3>無足夠性格資料</h3><p>請先為同事輸入性格分數</p>');
+                 return;
+            }
+
+            const numTeams = parseInt(document.getElementById('numTeamsInput').value) || 2;
+
+            switch(method) {
+                case 'brightened':
+                    groups = createBrightenedGroups(peopleWithScores, 'dominant');
+                    break;
+                case 'shadow':
+                    groups = createBrightenedGroups(peopleWithScores, 'weakest');
+                    break;
+                case 'minus_one':
+                    groups = createMixedMinusOneGroups(peopleWithScores, numTeams);
+                    break;
+                case 'random':
+                    groups = createRandomGroups(peopleData, numTeams);
+                    break;
+                case 'balanced':
+                    groups = createBalancedGroups(peopleWithScores, numTeams, 'dominant');
+                    break;
+                case 'balanced_shadow':
+                    groups = createBalancedGroups(peopleWithScores, numTeams, 'weakest');
+                    break;
+            }
+            renderGroups(groups);
+        }
+
+        function createBrightenedGroups(people, type) {
+            const getColor = type === 'dominant' ? getDominantColor : getWeakestColor;
+            const groups = {};
+            Object.keys(colorMap).forEach(color => {
+                const title = type === 'dominant' 
+                    ? `明亮小組：主色為 ${colorMap[color].name}`
+                    : `明亮陰暗小組：最弱色為 ${colorMap[color].name}`;
+                groups[color] = { title: title, members: [] };
+            });
+
+            people.forEach(person => {
+                const color = getColor(person);
+                if (color && groups[color]) {
+                    groups[color].members.push(person);
+                }
+            });
+            return Object.values(groups).filter(g => g.members.length > 0);
+        }
+        
+        function createMixedMinusOneGroups(people, numTeams) {
+            const shuffledPeople = [...people].sort(() => 0.5 - Math.random());
+            const colorCounts = { green: 0, gold: 0, blue: 0, orange: 0 };
+            people.forEach(p => {
+                const color = getDominantColor(p);
+                if (color) colorCounts[color]++;
+            });
+
+            const presentColors = Object.keys(colorCounts).filter(c => colorCounts[c] > 0);
+            if (presentColors.length === 0) return [];
+
+            const weakestColor = presentColors.reduce((a, b) => colorCounts[a] < colorCounts[b] ? a : b);
+            
+            const groups = Array.from({ length: numTeams }, (_, i) => ({
+                title: `混合減一小組 ${i + 1} (補強 ${colorMap[weakestColor].name} 組)`,
+                members: []
+            }));
+
+            shuffledPeople.forEach((person, index) => {
+                groups[index % numTeams].members.push(person);
+            });
+
+            return groups;
+        }
+
+        function createRandomGroups(people, numTeams) {
+            let shuffled = [...people].sort(() => 0.5 - Math.random());
+            const groups = Array.from({ length: numTeams }, (_, i) => ({
+                title: `隨意混合小組 ${i + 1}`,
+                members: []
+            }));
+            shuffled.forEach((person, index) => {
+                groups[index % numTeams].members.push(person);
+            });
+            return groups;
+        }
+        
+        function createBalancedGroups(people, numTeams, type) {
+            const getColor = type === 'dominant' ? getDominantColor : getWeakestColor;
+            const colorGroups = {};
+            Object.keys(colorMap).forEach(c => colorGroups[c] = []);
+
+            people.forEach(p => {
+                const color = getColor(p);
+                if(color) colorGroups[color].push(p);
+            });
+
+            Object.values(colorGroups).forEach(group => {
+                group.sort(() => 0.5 - Math.random());
+            });
+            
+            const groups = Array.from({ length: numTeams }, (_, i) => ({
+                title: `平均混合${type === 'dominant' ? '' : '陰暗'}小組 ${i + 1}`,
+                members: []
+            }));
+
+            Object.values(colorGroups).forEach(coloredPeople => {
+                coloredPeople.forEach((person, index) => {
+                    groups[index % numTeams].members.push(person);
+                });
+            });
+            return groups;
+        }
+
+
+        function renderGroups(groups, emptyMessage = '<h3>沒有符合此條件的成員</h3>') {
+            const resultsContainer = document.getElementById('groupingResults');
+            resultsContainer.innerHTML = '';
+
+            if (!groups || groups.length === 0) {
+                 resultsContainer.innerHTML = `<div style="text-align: center; color: #666; padding: 40px; grid-column: 1 / -1;">${emptyMessage}</div>`;
+                 return;
+            }
+
+            groups.forEach(group => {
+                const groupEl = document.createElement('div');
+                groupEl.className = 'group-container';
+                
+                let membersHtml = group.members.map(person => {
+                    const dominantColor = getDominantColor(person);
+                    return `
+                    <div class="group-member-card">
+                        <img src="${person.photo || 'https://placehold.co/50x50/e9ecef/666?text=👤'}" class="group-member-photo" alt="${person.name}">
+                        <div class="group-member-info">
+                            <div class="group-member-name">${person.name}</div>
+                            ${dominantColor ? `<div class="group-member-color">
+                                <span class="color-name-icon" style="background-color: ${colorMap[dominantColor].value};"></span>
+                                主色: ${colorMap[dominantColor].name}
+                            </div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('');
+
+                if(group.members.length === 0) {
+                    membersHtml = '<p style="text-align:center; color: #888; font-size: 14px;">此組無成員</p>';
+                }
+
+                groupEl.innerHTML = `
+                    <h3>${group.title}</h3>
+                    <div class="group-members">${membersHtml}</div>
+                `;
+                resultsContainer.appendChild(groupEl);
+            });
+        }
+
+    </script>
+</body>
+</html>
