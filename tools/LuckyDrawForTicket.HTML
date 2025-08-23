@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿牛抽獎機器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8eeff 50%, #d8e4ff 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .tech-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: 0;
+            background-image: 
+                linear-gradient(rgba(44, 62, 80, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(44, 62, 80, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(44, 62, 80, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 3;
+        }
+
+        @keyframes titleGlow {
+            from { 
+                filter: drop-shadow(0 0 10px rgba(52, 152, 219, 0.4));
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), 0 0 20px rgba(52, 152, 219, 0.3);
+            }
+            to { 
+                filter: drop-shadow(0 0 25px rgba(52, 152, 219, 0.6));
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1), 0 0 30px rgba(52, 152, 219, 0.5);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            font-weight: 400;
+            position: relative;
+            z-index: 3;
+        }
+
+        .input-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        .input-label {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-label::before {
+            content: '🎯';
+            font-size: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            border-radius: 15px;
+            color: #2c3e50;
+            padding: 20px;
+            font-size: 1.1rem;
+            resize: vertical;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            padding: 18px 35px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 600;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            color: white;
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(149, 165, 166, 0.4);
+        }
+
+        .btn-export {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(231, 76, 60, 0.4);
+        }
+
+        .animation-area {
+            text-align: center;
+            margin: 50px 0;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(52, 152, 219, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .lottery-balls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .ball {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 
+                0 10px 25px rgba(52, 152, 219, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            animation: ballFloat 3s ease-in-out infinite;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ball.spinning .ball-text {
+            animation: spinText 0.1s infinite;
+        }
+
+        .ball.countdown-effect {
+            animation: countdownPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes ballFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(180deg); }
+        }
+
+        @keyframes spinText {
+            0% { transform: translateY(0) rotateX(0deg); }
+            100% { transform: translateY(-100%) rotateX(360deg); }
+        }
+
+        @keyframes countdownPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4); }
+            50% { transform: scale(1.1); box-shadow: 0 15px 35px rgba(231, 76, 60, 0.6); }
+        }
+
+        .countdown {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(231, 76, 60, 0.5);
+            margin: 30px 0;
+            animation: countdownBeat 1s ease-in-out infinite;
+        }
+
+        @keyframes countdownBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .participant-count {
+            font-size: 1.6rem;
+            color: #2c3e50;
+            margin: 20px 0;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+            padding: 15px 30px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+
+        .atmosphere-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #f1c40f, #f39c12);
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                transform: scale(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: scale(1) rotate(180deg); 
+                opacity: 1; 
+            }
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            color: #2c3e50;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            display: none;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(52, 152, 219, 0.1);
+            page-break-inside: avoid;
+            position: relative;
+            z-index: 2;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 25px;
+        }
+
+        .results-title {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .results-date {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .result-item {
+            background: linear-gradient(135deg, #ecf0f1 0%, #ffffff 100%);
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .result-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #3498db;
+            margin-bottom: 8px;
+        }
+
+        .result-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 1rem;
+            color: #95a5a6;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 25px;
+        }
+
+        .footer-export {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(52, 152, 219, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-export h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #3498db, #2980b9);
+            border-radius: 50%;
+            animation: particleFloat 8s infinite ease-in-out;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 1; }
+            50% { transform: translateY(-10vh) rotate(360deg); opacity: 1; }
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* PDF匯出對話框樣式 */
+        .pdf-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .pdf-modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .pdf-modal h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .pdf-options {
+            margin: 30px 0;
+        }
+
+        .pdf-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-option:hover {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.15);
+        }
+
+        .pdf-option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.3);
+        }
+
+        .pdf-option-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            flex: 1;
+            text-align: left;
+        }
+
+        .pdf-option-desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .custom-pages-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .pdf-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-modal {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-modal-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-modal-secondary {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .btn-modal:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.5rem; }
+            .ball { width: 70px; height: 70px; font-size: 1rem; }
+            .countdown { font-size: 3.5rem; }
+            .results-grid { grid-template-columns: repeat(2, 1fr); }
+            .controls { gap: 15px; }
+            .btn { padding: 15px 25px; font-size: 1rem; }
+            .pdf-modal-content { padding: 25px; }
+        }
+
+        @media print {
+            body { 
+                background: white !important; 
+                color: black !important;
+                font-size: 10pt;
+                line-height: 1.2;
+            }
+            .tech-grid, .particles, .pdf-modal { display: none !important; }
+            .container { max-width: none; margin: 0; padding: 8mm; }
+            .input-section, .controls, .animation-area, .footer-export, .header { display: none !important; }
+            .results-section { 
+                display: block !important; 
+                background: white !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+            .results-header {
+                border-bottom: 2px solid #000;
+                margin-bottom: 12pt;
+                page-break-after: avoid;
+                padding-bottom: 12pt;
+            }
+            .results-title {
+                color: #000 !important;
+                font-size: 16pt;
+                margin-bottom: 6pt;
+            }
+            .results-date {
+                color: #000 !important;
+                font-size: 9pt;
+            }
+            .results-footer {
+                color: #000 !important;
+                border-top: 1pt solid #000;
+                font-size: 7pt;
+                page-break-inside: avoid;
+                margin-top: 15pt;
+                padding-top: 8pt;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+            
+            /* 動態調整的網格樣式 */
+            .results-grid.grid-1-page { grid-template-columns: repeat(8, 1fr); gap: 3pt; }
+            .results-grid.grid-2-pages { grid-template-columns: repeat(6, 1fr); gap: 4pt; }
+            .results-grid.grid-3-pages { grid-template-columns: repeat(5, 1fr); gap: 5pt; }
+            .results-grid.grid-4-pages { grid-template-columns: repeat(4, 1fr); gap: 6pt; }
+            .results-grid.grid-custom { grid-template-columns: repeat(var(--grid-columns), 1fr); gap: var(--grid-gap); }
+            
+            /* 對應的結果項目樣式 */
+            .results-grid.grid-1-page .result-item { padding: 3pt; font-size: 6pt; min-height: 25pt; }
+            .results-grid.grid-2-pages .result-item { padding: 4pt; font-size: 7pt; min-height: 30pt; }
+            .results-grid.grid-3-pages .result-item { padding: 5pt; font-size: 8pt; min-height: 35pt; }
+            .results-grid.grid-4-pages .result-item { padding: 6pt; font-size: 9pt; min-height: 40pt; }
+            
+            .results-grid.grid-1-page .result-number { font-size: 8pt !important; margin-bottom: 1pt !important; }
+            .results-grid.grid-2-pages .result-number { font-size: 9pt !important; margin-bottom: 1pt !important; }
+            .results-grid.grid-3-pages .result-number { font-size: 10pt !important; margin-bottom: 2pt !important; }
+            .results-grid.grid-4-pages .result-number { font-size: 11pt !important; margin-bottom: 2pt !important; }
+            
+            .results-grid.grid-1-page .result-name { font-size: 5pt !important; }
+            .results-grid.grid-2-pages .result-name { font-size: 6pt !important; }
+            .results-grid.grid-3-pages .result-name { font-size: 7pt !important; }
+            .results-grid.grid-4-pages .result-name { font-size: 8pt !important; }
+            
+            .result-item {
+                background: #f8f9fa !important;
+                border: 1pt solid #000 !important;
+                color: #000 !important;
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+                box-shadow: none !important;
+                border-radius: 2pt !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-grid"></div>
+    <div class="particles" id="particles"></div>
+    
+    <!-- PDF匯出選項對話框 -->
+    <div class="pdf-modal" id="pdfModal">
+        <div class="pdf-modal-content">
+            <h3>📄 PDF匯出設定</h3>
+            <p style="color: #7f8c8d; margin-bottom: 20px;">請選擇PDF分頁方式</p>
+            
+            <div class="pdf-options">
+                <div class="pdf-option" onclick="selectPdfOption(this, 1)">
+                    <input type="radio" name="pdfPages" value="1" id="pages1">
+                    <div>
+                        <div class="pdf-option-label">📋 全部放在一頁</div>
+                        <div class="pdf-option-desc">所有結果緊密排列在單頁中</div>
+                    </div>
+                </div>
+                
+                <div class="pdf-option" onclick="selectPdfOption(this, 2)">
+                    <input type="radio" name="pdfPages" value="2" id="pages2">
+                    <div>
+                        <div class="pdf-option-label">📑 分成兩頁</div>
+                        <div class="pdf-option-desc">結果平均分配到兩頁，版面較寬鬆</div>
+                    </div>
+                </div>
+                
+                <div class="pdf-option" onclick="selectPdfOption(this, 3)">
+                    <input type="radio" name="pdfPages" value="3" id="pages3">
+                    <div>
+                        <div class="pdf-option-label">📚 分成三頁</div>
+                        <div class="pdf-option-desc">結果分配到三頁，字體較大易讀</div>
+                    </div>
+                </div>
+                
+                <div class="pdf-option" onclick="selectPdfOption(this, 'custom')">
+                    <input type="radio" name="pdfPages" value="custom" id="pagesCustom">
+                    <div>
+                        <div class="pdf-option-label">⚙️ 自訂頁數</div>
+                        <div class="pdf-option-desc">自由設定分頁數量</div>
+                    </div>
+                    <input type="number" class="custom-pages-input" id="customPages" min="1" max="20" value="4" onclick="event.stopPropagation(); selectPdfOption(this.parentNode, 'custom');">
+                </div>
+            </div>
+            
+            <div class="pdf-modal-buttons">
+                <button class="btn-modal btn-modal-primary" onclick="confirmPdfExport()">🖨️ 確認匯出</button>
+                <button class="btn-modal btn-modal-secondary" onclick="closePdfModal()">❌ 取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🐮 阿牛抽獎機器 🎰</h1>
+            <p class="subtitle">專業科技抽獎系統 | 精美PDF匯出功能</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-label">請輸入參與者名單（每行一個名字）</div>
+            <textarea id="participantInput" placeholder="請輸入參與者名單，每行一個名字，例如：&#10;張三&#10;李四&#10;王五&#10;趙六&#10;..."></textarea>
+            <div class="participant-count" id="participantCount">等待輸入參與者...</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="startLottery()">🎯 開始抽獎</button>
+            <button class="btn btn-secondary" onclick="resetLottery()">🔄 重新開始</button>
+            <button class="btn btn-export" onclick="showPdfModal()">📄 匯出PDF</button>
+        </div>
+
+        <div class="animation-area" id="animationArea">
+            <div id="lotteryContent">
+                <p style="font-size: 1.8rem; color: #2c3e50; font-weight: 600;">✨ 阿牛抽獎機器已就緒，請輸入名單後點擊開始抽獎！</p>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <!-- 動態生成的結果將放在這裡 -->
+        </div>
+
+        <div class="footer-export">
+            <h3>📋 便民服務</h3>
+            <p style="color: #7f8c8d; margin-bottom: 20px;">同事們可以隨時點擊下方按鈕匯出PDF檔案</p>
+            <button class="btn btn-export" onclick="showPdfModal()">📄 立即匯出PDF</button>
+        </div>
+    </div>
+
+    <script>
+        let participants = [];
+        let isDrawing = false;
+        let selectedPdfPages = 3; // 默認3頁
+
+        // 創建粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 創建火花效果
+        function createSparks(container) {
+            for (let i = 0; i < 20; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                spark.style.left = Math.random() * 100 + '%';
+                spark.style.top = Math.random() * 100 + '%';
+                spark.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(spark);
+                
+                setTimeout(() => {
+                    spark.remove();
+                }, 3000);
+            }
+        }
+
+        // 顯示PDF匯出選項對話框
+        function showPdfModal() {
+            const resultsSection = document.getElementById('resultsSection');
+            if (resultsSection.style.display === 'none') {
+                alert('請先進行抽獎！');
+                return;
+            }
+            
+            document.getElementById('pdfModal').style.display = 'flex';
+            
+            // 預設選擇3頁選項
+            document.getElementById('pages3').checked = true;
+            const defaultOption = document.querySelector('.pdf-option:nth-child(3)');
+            selectPdfOption(defaultOption, 3);
+        }
+
+        // 關閉PDF對話框
+        function closePdfModal() {
+            document.getElementById('pdfModal').style.display = 'none';
+        }
+
+        // 選擇PDF選項
+        function selectPdfOption(element, pages) {
+            // 清除其他選項的選中狀態
+            document.querySelectorAll('.pdf-option').forEach(option => {
+                option.style.borderColor = 'transparent';
+                option.style.background = 'rgba(52, 152, 219, 0.1)';
+            });
+            
+            // 高亮當前選項
+            element.style.borderColor = '#3498db';
+            element.style.background = 'rgba(52, 152, 219, 0.2)';
+            
+            // 設置對應的radio按鈕
+            const radio = element.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
+            
+            selectedPdfPages = pages;
+        }
+
+        // 確認PDF匯出
+        function confirmPdfExport() {
+            let pages = selectedPdfPages;
+            
+            if (pages === 'custom') {
+                pages = parseInt(document.getElementById('customPages').value) || 4;
+                if (pages < 1) pages = 1;
+                if (pages > 20) pages = 20;
+            }
+            
+            // 重新生成結果with指定頁數
+            generateResultsForPDF(pages);
+            
+            closePdfModal();
+            
+            // 延遲執行列印，確保頁面渲染完成
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+
+        // 為PDF生成結果
+        function generateResultsForPDF(targetPages) {
+            const resultsSection = document.getElementById('resultsSection');
+            const shuffledParticipants = [...participants].sort(() => Math.random() - 0.5);
+
+            // 設置日期和時間
+            const now = new Date();
+            const dateString = now.toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            const timeString = now.toLocaleString('zh-TW');
+
+            // 計算每頁項目數
+            const totalParticipants = shuffledParticipants.length;
+            const itemsPerPage = Math.ceil(totalParticipants / targetPages);
+
+            let resultsHTML = '';
+            let gridClass = '';
+            let gridColumns = 6;
+            let gridGap = '4pt';
+
+            // 根據頁數決定網格佈局
+            if (targetPages === 1) {
+                gridClass = 'grid-1-page';
+                gridColumns = Math.min(8, Math.ceil(Math.sqrt(totalParticipants * 1.2)));
+            } else if (targetPages === 2) {
+                gridClass = 'grid-2-pages';
+                gridColumns = 6;
+            } else if (targetPages === 3) {
+                gridClass = 'grid-3-pages';
+                gridColumns = 5;
+            } else if (targetPages === 4) {
+                gridClass = 'grid-4-pages';
+                gridColumns = 4;
+            } else {
+                gridClass = 'grid-custom';
+                // 自訂頁數的動態計算
+                gridColumns = Math.max(3, Math.min(8, Math.ceil(Math.sqrt(itemsPerPage * 1.5))));
+                gridGap = Math.max(2, 8 - targetPages) + 'pt';
+            }
+
+            for (let page = 0; page < targetPages; page++) {
+                const startIndex = page * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, shuffledParticipants.length);
+                const pageParticipants = shuffledParticipants.slice(startIndex, endIndex);
+
+                if (pageParticipants.length === 0) break;
+
+                // 添加分頁標記（除了第一頁）
+                if (page > 0) {
+                    resultsHTML += '<div class="page-break"></div>';
+                }
+
+                resultsHTML += `
+                    <div class="results-header">
+                        <h2 class="results-title">🏆 阿牛抽獎機器 - 抽獎結果</h2>
+                        <div class="results-date">${dateString}</div>
+                        <div style="margin-top: 15px; font-size: 1.2rem; font-weight: 600;">
+                            總參與人數：${participants.length} 人 | 第 ${page + 1} 頁，共 ${targetPages} 頁
+                        </div>
+                    </div>
+                    <div class="results-grid ${gridClass}" style="--grid-columns: ${gridColumns}; --grid-gap: ${gridGap};">
+                `;
+
+                pageParticipants.forEach((participant, index) => {
+                    const globalIndex = startIndex + index + 1;
+                    resultsHTML += `
+                        <div class="result-item" style="animation-delay: ${(index * 0.1)}s;">
+                            <div class="result-number">${globalIndex}</div>
+                            <div class="result-name">${participant}</div>
+                        </div>
+                    `;
+                });
+
+                resultsHTML += '</div>';
+
+                // 只在最後一頁添加footer
+                if (page === targetPages - 1 || endIndex >= shuffledParticipants.length) {
+                    resultsHTML += `
+                        <div class="results-footer">
+                            <p><strong>阿牛抽獎機器</strong> | 生成時間：${timeString}</p>
+                            <p>本系統採用科學隨機演算法，確保抽獎結果公平公正</p>
+                        </div>
+                    `;
+                    break;
+                }
+            }
+
+            resultsSection.innerHTML = resultsHTML;
+        }
+
+        // 更新參與者數量
+        function updateParticipantCount() {
+            const input = document.getElementById('participantInput').value.trim();
+            participants = input ? input.split('\n').filter(name => name.trim()) : [];
+            const count = participants.length;
+            document.getElementById('participantCount').textContent = 
+                count > 0 ? `✅ 已輸入 ${count} 位參與者` : '等待輸入參與者...';
+        }
+
+        // 開始抽獎
+        async function startLottery() {
+            if (isDrawing) return;
+            
+            updateParticipantCount();
+            if (participants.length === 0) {
+                alert('請先輸入參與者名單！');
+                return;
+            }
+
+            isDrawing = true;
+            const animationArea = document.getElementById('animationArea');
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.style.display = 'none';
+
+            // 創建氣氛效果容器
+            const atmosphereContainer = document.createElement('div');
+            atmosphereContainer.className = 'atmosphere-effects';
+            animationArea.appendChild(atmosphereContainer);
+
+            // 顯示參與者數量和抽獎界面
+            animationArea.innerHTML = `
+                <div class="atmosphere-effects"></div>
+                <div class="participant-count">🎲 本次抽獎參與人數：${participants.length} 人</div>
+                <div class="lottery-balls" id="lotteryBalls"></div>
+                <div class="countdown" id="countdown"></div>
+                <p style="font-size: 1.3rem; color: #2c3e50; margin-top: 20px;">阿牛抽獎機器運轉中...</p>
+            `;
+
+            // 重新獲取氣氛效果容器
+            const newAtmosphereContainer = animationArea.querySelector('.atmosphere-effects');
+
+            // 創建滾動球
+            const ballsContainer = document.getElementById('lotteryBalls');
+            const ballCount = Math.min(8, participants.length);
+            
+            for (let i = 0; i < ballCount; i++) {
+                const ball = document.createElement('div');
+                ball.className = 'ball spinning';
+                ball.innerHTML = '<div class="ball-text">🎲</div>';
+                ballsContainer.appendChild(ball);
+            }
+
+            // 開始滾動動畫
+            const balls = document.querySelectorAll('.ball');
+            balls.forEach(ball => {
+                const ballText = ball.querySelector('.ball-text');
+                let spinInterval = setInterval(() => {
+                    ballText.textContent = participants[Math.floor(Math.random() * participants.length)].substring(0, 3);
+                }, 100);
+                ball.spinInterval = spinInterval;
+            });
+
+            // 倒數計時
+            let countdown = 10;
+            const countdownElement = document.getElementById('countdown');
+            
+            const countdownInterval = setInterval(() => {
+                countdownElement.textContent = countdown;
+                
+                // 根據倒數時間創建不同氣氛效果
+                if (countdown <= 5) {
+                    balls.forEach(ball => ball.classList.add('countdown-effect'));
+                    createSparks(newAtmosphereContainer);
+                }
+                
+                if (countdown <= 3) {
+                    // 更頻繁的火花效果
+                    createSparks(newAtmosphereContainer);
+                    animationArea.style.background = 'linear-gradient(135deg, #fff3e0 0%, #ffe0e0 100%)';
+                }
+                
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    stopDrawingAndShowResults();
+                }
+            }, 1000);
+        }
+
+        // 停止抽獎並顯示結果
+        function stopDrawingAndShowResults() {
+            const balls = document.querySelectorAll('.ball');
+            const animationArea = document.getElementById('animationArea');
+            
+            balls.forEach(ball => {
+                clearInterval(ball.spinInterval);
+                ball.classList.remove('spinning', 'countdown-effect');
+            });
+
+            // 恢復原始背景
+            animationArea.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)';
+
+            setTimeout(() => {
+                showResults();
+                isDrawing = false;
+            }, 1500);
+        }
+
+        // 顯示結果（網頁版本，使用預設分頁）
+        function showResults() {
+            generateResultsForDisplay();
+        }
+
+        // 為網頁顯示生成結果
+        function generateResultsForDisplay() {
+            const resultsSection = document.getElementById('resultsSection');
+            const shuffledParticipants = [...participants].sort(() => Math.random() - 0.5);
+
+            // 設置日期和時間
+            const now = new Date();
+            const dateString = now.toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            const timeString = now.toLocaleString('zh-TW');
+
+            // 網頁顯示使用默認分頁（每30個一頁）
+            let resultsHTML = '';
+            const itemsPerPage = 30;
+            const totalPages = Math.ceil(shuffledParticipants.length / itemsPerPage);
+
+            for (let page = 0; page < totalPages; page++) {
+                const startIndex = page * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, shuffledParticipants.length);
+                const pageParticipants = shuffledParticipants.slice(startIndex, endIndex);
+
+                // 添加分頁標記（除了第一頁）
+                if (page > 0) {
+                    resultsHTML += '<div class="page-break"></div>';
+                }
+
+                resultsHTML += `
+                    <div class="results-header">
+                        <h2 class="results-title">🏆 阿牛抽獎機器 - 抽獎結果</h2>
+                        <div class="results-date">${dateString}</div>
+                        <div style="margin-top: 15px; font-size: 1.2rem; font-weight: 600;">
+                            總參與人數：${participants.length} 人 | 第 ${page + 1} 頁，共 ${totalPages} 頁
+                        </div>
+                    </div>
+                    <div class="results-grid">
+                `;
+
+                pageParticipants.forEach((participant, index) => {
+                    const globalIndex = startIndex + index + 1;
+                    resultsHTML += `
+                        <div class="result-item" style="animation-delay: ${(index * 0.1)}s;">
+                            <div class="result-number">${globalIndex}</div>
+                            <div class="result-name">${participant}</div>
+                        </div>
+                    `;
+                });
+
+                resultsHTML += '</div>';
+
+                // 只在最後一頁添加footer
+                if (page === totalPages - 1) {
+                    resultsHTML += `
+                        <div class="results-footer">
+                            <p><strong>阿牛抽獎機器</strong> | 生成時間：${timeString}</p>
+                            <p>本系統採用科學隨機演算法，確保抽獎結果公平公正</p>
+                        </div>
+                    `;
+                }
+            }
+
+            resultsSection.innerHTML = resultsHTML;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 重新開始
+        function resetLottery() {
+            if (isDrawing) return;
+            
+            document.getElementById('participantInput').value = '';
+            document.getElementById('participantCount').textContent = '等待輸入參與者...';
+            
+            const animationArea = document.getElementById('animationArea');
+            animationArea.innerHTML = 
+                '<div id="lotteryContent"><p style="font-size: 1.8rem; color: #2c3e50; font-weight: 600;">✨ 阿牛抽獎機器已就緒，請輸入名單後點擊開始抽獎！</p></div>';
+            animationArea.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)';
+            
+            document.getElementById('resultsSection').style.display = 'none';
+            participants = [];
+        }
+
+        // 監聽輸入變化
+        document.getElementById('participantInput').addEventListener('input', updateParticipantCount);
+
+        // 點擊對話框外部關閉
+        document.getElementById('pdfModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePdfModal();
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
