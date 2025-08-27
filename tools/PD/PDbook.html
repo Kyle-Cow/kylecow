@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-translate-key="title">性格透視®自我認識工作坊</title>
+<style>
+/* Enhanced CSS Styles for a more beautiful interface */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f4f7f6 0%, #e8f4fd 100%);
+    color: #333;
+}
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #27ae60, #f39c12, #3498db, #e67e22);
+}
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 2.5em;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+h2 {
+    color: #34495e;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-weight: 400;
+    font-size: 1.5em;
+}
+h3 {
+    color: #2980b9;
+    border-bottom: 3px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    position: relative;
+}
+h3::after {
+    content: '✨';
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 1.2em;
+}
+h4 {
+    color: #555;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    border-left: 5px solid #7f8c8d;
+    padding-left: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+h4:hover {
+    border-left-color: #3498db;
+    transform: translateX(5px);
+    color: #2980b9;
+}
+.section {
+    margin-bottom: 50px;
+    animation: fadeIn 0.5s ease-in;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.personality-type {
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+.personality-type:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+.green { background-color: #e6ffe6; border-left: 8px solid #27ae60; }
+.gold { background-color: #fffacd; border-left: 8px solid #f39c12; }
+.blue { background-color: #e0f2f7; border-left: 8px solid #3498db; }
+.orange { background-color: #ffeadb; border-left: 8px solid #e67e22; }
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 10px;
+}
+li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+li::before {
+    content: '🌟';
+    position: absolute;
+    left: 0;
+    font-size: 0.8em;
+}
+p {
+    margin-bottom: 15px;
+}
+.translate-button-container {
+    text-align: center;
+    margin-bottom: 40px;
+}
+#translateButton {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+#translateButton:hover {
+    background: linear-gradient(45deg, #45a049, #4CAF50);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+.accordion {
+    background-color: #f9f9f9;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.accordion:hover {
+    background-color: #e7e7e7;
+}
+.accordion.active {
+    background-color: #ddd;
+}
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    border-radius: 0 0 8px 8px;
+}
+.table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    h1 { font-size: 2em; }
+    h2 { font-size: 1.3em; }
+    body { padding: 10px; }
+    .personality-type { padding: 15px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1 data-translate-key="main_title">性格透視®自我認識工作坊</h1>
+<h2 data-translate-key="sub_title">探索你的獨特之處</h2>
+
+<div class="translate-button-container">
+    <button id="translateButton" data-current-lang="zh-Hant">翻譯成中文</button>
+</div>
+
+<div class="section">
+    <h3 data-translate-key="sec_purpose_title">性格透視的用途</h3>
+    <p data-translate-key="purpose_para1">瞭解性格的基本原則，如其份地表達自己，尊重每個人在性格上的差異，建立個人風格，邁向成功之路！</p>
+    <ul>
+        <li data-translate-key="purpose_list1">賞識自己與別人</li>
+        <li data-translate-key="purpose_list2">學習提昇溝通技巧的方法</li>
+        <li data-translate-key="purpose_list3">及早找出潛在問題</li>
+        <li data-translate-key="purpose_list4">採取措施避免產生問題或用以舒解問題</li>
+        <li data-translate-key="purpose_list5">提昇士氣與工作熱誠</li>
+        <li data-translate-key="purpose_list6">加強人際關係</li>
+        <li data-translate-key="purpose_list7">支持與鼓勵他人</li>
+        <li data-translate-key="purpose_list8">對他人造成正面影響</li>
+        <li data-translate-key="purpose_list9">使團隊做到最好</li>
+        <li data-translate-key="purpose_list10">縮短差距及差異</li>
+        <li data-translate-key="purpose_list11">建立有效率的團隊</li>
+        <li data-translate-key="purpose_list12">以有效率的方式進行磋商</li>
+        <li data-translate-key="purpose_list13">提高生產力</li>
+        <li data-translate-key="purpose_list14">分配合適工作</li>
+        <li data-translate-key="purpose_list15">善於與人溝通</li>
+        <li data-translate-key="purpose_list16">建立有效率的管理層</li>
+    </ul>
+    <p data-translate-key="purpose_para2">建立個人風格，從容邁向成功之路！！</p>
+    <p data-translate-key="purpose_para3">性格透視® Personality DIMENSIONS®</p>
+    <p data-translate-key="purpose_para4">瞭解你的性格取向，付諸行動 (PDaction)</p>
+</div>
+
+<div class="section">
+    <h3 data-translate-key="sec_overview_title">總覽與原則</h3>
+    <p data-translate-key="overview_para1">差異是好事</p>
+    <p data-translate-key="overview_para2">性格透視®只是一種工具！</p>
+    <p data-translate-key="overview_para3">它不能完全描述你。</p>
+    <p data-translate-key="overview_para4">若它能幫助你了解自己與別人，使用它。</p>
+    <p data-translate-key="overview_para5">使用它來改善你在人際方面的溝通技巧。</p>
+    <p data-translate-key="overview_para6">使用它來激發這些使他人合作。</p>
+    <p data-translate-key="overview_para7">當它不能幫助你時，把它擱置在一旁。</p>
+    <p data-translate-key="overview_para8">了解你的性格特質</p>
+    <p data-translate-key="overview_para9">付諸行動</p>
+    <p data-translate-key="overview_para10">我們衷心希望性格透視®為你而設的性格特質。</p>
+    <p data-translate-key="overview_para11">向工作坊。</p>
+    <p data-translate-key="overview_para12">相信你特別對自己有更進一步的了解。</p>
+    <p data-translate-key="overview_para13">亦同時學會欣賞別人。</p>
+    <p data-translate-key="overview_para14">我們有信心這項性格特質的測試給你一次。</p>
+    <p data-translate-key="overview_para15">有助你認識不同的性格。</p>
+    <p data-translate-key="overview_para16">我們樂意協助你參考這份指引。</p>
+    <p data-translate-key="overview_para17">目的是助你重溫工作坊內容。</p>
+    <p data-translate-key="overview_para18">同時，請你參考這份指引，讓你的性格特質發揮出來。</p>
+    <p data-translate-key="overview_para19">無論工作、家庭、朋友還是社交生活。</p>
+    <p data-translate-key="overview_para20">勇敢地在各方面付諸行動。</p>
+    <p data-translate-key="overview_para21">建立一個豐富人生。</p>
+    <p data-translate-key="overview_para22">每個人的性格包含多個影子圖案。</p>
+    <p data-translate-key="overview_para23">假若你已經做過性格測試或其他個人認識工具，你便會知道這些測試並不能完全描述你。</p>
+    <p data-translate-key="overview_para24">因此，不能因為性格測試而改變。</p>
+    <p data-translate-key="overview_para25">你可從其他測試中獲得更多資訊，補充你對自己的新認知。</p>
+    <p data-translate-key="overview_para26">但記住，沒有一個工具能完全描述你，每個人的性格都包含多個影子圖案。</p>
+</div>
+
+<div class="section">
+    <h3 data-translate-key="sec_personality_types_title">性格類型</h3>
+
+    <div class="personality-type green">
+        <h4 data-translate-key="green_type_name">綠色探究型 (Inquiring Green) 🟢</h4>
+        <button class="accordion" data-translate-key="green_core_needs_title">核心需要</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_core_needs1">知識與能力</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_traits_title">特質</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_traits1">重邏輯、具理性</li>
+                <li data-translate-key="green_traits2">注重質量</li>
+                <li data-translate-key="green_traits3">力求進步</li>
+                <li data-translate-key="green_traits4">愛分析、有系統</li>
+                <li data-translate-key="green_traits5">查根究柢，喜好發問</li>
+                <li data-translate-key="green_traits6">宏觀著眼</li>
+                <li data-translate-key="green_traits7">懂得控制情緒</li>
+                <li data-translate-key="green_traits8">策略型思考者</li>
+                <li data-translate-key="green_traits9">具創意、頭腦靈活</li>
+                <li data-translate-key="green_traits10">需要獨立自主</li>
+                <li data-translate-key="green_traits11">要有私人時間</li>
+                <li data-translate-key="green_traits12">高期望、高標準</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_strengths_title">長處</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_strengths1">決斷力</li>
+                <li data-translate-key="green_strengths2">概念能力</li>
+                <li data-translate-key="green_strengths3">從整體上思考、作出策略性的思考</li>
+                <li data-translate-key="green_strengths4">吸收及儲備知識</li>
+                <li data-translate-key="green_strengths5">思維清晰、語言精煉</li>
+                <li data-translate-key="green_strengths6">追求全面的資訊</li>
+                <li data-translate-key="green_strengths7">能從複雜的資訊中作出深刻總結</li>
+                <li data-translate-key="green_strengths8">分析能力</li>
+                <li data-translate-key="green_strengths9">訂立標準</li>
+                <li data-translate-key="green_strengths10">宏觀著眼</li>
+                <li data-translate-key="green_strengths11">盡心盡力</li>
+                <li data-translate-key="green_strengths12">採取有系統及具邏輯性的處事方式</li>
+                <li data-translate-key="green_strengths13">蒐集數據與資料</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_practical_skills_title">實用技能</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_practical_skills1">遠見與創意</li>
+                <li data-translate-key="green_practical_skills2">分析力、解決問題的能力</li>
+                <li data-translate-key="green_practical_skills3">研究開發能力</li>
+                <li data-translate-key="green_practical_skills4">觀察力及判斷力</li>
+                <li data-translate-key="green_practical_skills5">重概念、具理性</li>
+                <li data-translate-key="green_practical_skills6">規劃及組織能力</li>
+                <li data-translate-key="green_practical_skills7">能夠找到複雜事情的核心</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_weaknesses_title">潛在弱點</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_weaknesses1">缺乏闡釋詳盡資料的能力</li>
+                <li data-translate-key="green_weaknesses2">不關心別人的感受</li>
+                <li data-translate-key="green_weaknesses3">缺貫徹始終的能力</li>
+                <li data-translate-key="green_weaknesses4">資訊泛濫</li>
+                <li data-translate-key="green_weaknesses5">不能理解感性論據/請求</li>
+                <li data-translate-key="green_weaknesses6">對於不感興趣的事，無法專心</li>
+                <li data-translate-key="green_weaknesses7">可以變得毫無耐性、傲慢自大</li>
+                <li data-translate-key="green_weaknesses8">分析力癱瘓</li>
+                <li data-translate-key="green_weaknesses9">好爭論</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_needs_preferences_title">需要 | 喜好</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th data-translate-key="needs">需要</th>
+                        <th data-translate-key="preferences">喜好</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li data-translate-key="green_needs1">知識與能力</li>
+                                <li data-translate-key="green_needs2">求知慾</li>
+                                <li data-translate-key="green_needs3">清晰的質量標準</li>
+                                <li data-translate-key="green_needs4">凡事追求細緻精確</li>
+                                <li data-translate-key="green_needs5">可自由地發問：「為甚麼？」</li>
+                                <li data-translate-key="green_needs6">個人自主權</li>
+                                <li data-translate-key="green_needs7">有時間靜下來思考及處理資料</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li data-translate-key="green_preferences1">探索未知事物</li>
+                                <li data-translate-key="green_preferences2">發掘新的可能性</li>
+                                <li data-translate-key="green_preferences3">設計概念性的模式</li>
+                                <li data-translate-key="green_preferences4">改善質量/提高效率</li>
+                                <li data-translate-key="green_preferences5">訂策略</li>
+                                <li data-translate-key="green_preferences6">得到同事認同</li>
+                                <li data-translate-key="green_preferences7">解決複雜問題</li>
+                                <li data-translate-key="green_preferences8">闡釋繁複事情</li>
+                                <li data-translate-key="green_preferences9">大量數據與資訊</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <button class="accordion" data-translate-key="green_cooperation_title">獲得他們的合作</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_cooperation1">鼓勵他們提出意見/認同他們的意見</li>
+                <li data-translate-key="green_cooperation2">指派關鍵性及富挑戰性的工作</li>
+                <li data-translate-key="green_cooperation3">在可能的情況下，使用政策作為指引</li>
+                <li data-translate-key="green_cooperation4">就事實作出爭論，非意氣之爭</li>
+                <li data-translate-key="green_cooperation5">給予研究及工作時間、空間</li>
+                <li data-translate-key="green_cooperation6">為所作決定提供理據</li>
+                <li data-translate-key="green_cooperation7">傳達從大處著眼的訊息</li>
+                <li data-translate-key="green_cooperation8">在最初階段要求他們參與</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_problems_title">產生問題的原因</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_problems1">欠缺自主獨立</li>
+                <li data-translate-key="green_problems2">不稱職</li>
+                <li data-translate-key="green_problems3">厭倦</li>
+                <li data-translate-key="green_problems4">別人表現的情緒</li>
+                <li data-translate-key="green_problems5">在沒有充分資料的情況下，草率作決定</li>
+                <li data-translate-key="green_problems6">處於不知情的情況下</li>
+                <li data-translate-key="green_problems7">意見被全面拒絕</li>
+                <li data-translate-key="green_problems8">受到負面批評</li>
+                <li data-translate-key="green_problems9">在沒有機會仔細思考情況下，被迫發言</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="green_rewards_title">獎勵綠色探究型的隊員</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="green_rewards1">提供專業發展的機會</li>
+                <li data-translate-key="green_rewards2">聆聽他們的構思及創見</li>
+                <li data-translate-key="green_rewards3">稱讚他們的創意及靈活見解</li>
+                <li data-translate-key="green_rewards4">開通並接受他們的觀察及意見</li>
+                <li data-translate-key="green_rewards5">認同他們的處事精確及他們的工作素質</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="personality-type gold">
+        <h4 data-translate-key="gold_type_name">金色組織型 (Organized Gold) 🟡</h4>
+        <button class="accordion" data-translate-key="gold_core_needs_title">核心需要</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_core_needs1">通過職責與責任獲得歸屬感</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_traits_title">特質</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_traits1">組織有序</li>
+                <li data-translate-key="gold_traits2">遵循傳統</li>
+                <li data-translate-key="gold_traits3">負責任及講求實際</li>
+                <li data-translate-key="gold_traits4">可靠及可信賴</li>
+                <li data-translate-key="gold_traits5">忠於組織的目標</li>
+                <li data-translate-key="gold_traits6">時刻處於準備好的狀態</li>
+                <li data-translate-key="gold_traits7">服務至上</li>
+                <li data-translate-key="gold_traits8">樂於助人、值得信賴</li>
+                <li data-translate-key="gold_traits9">按時完成任務</li>
+                <li data-translate-key="gold_traits10">堅信政策與程序</li>
+                <li data-translate-key="gold_traits11">尊重權力及條規</li>
+                <li data-translate-key="gold_traits12">有耐性及肯合作</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_strengths_title">長處</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_strengths1">可靠及堅定</li>
+                <li data-translate-key="gold_strengths2">尋求事情的圓滿解決、貫徹始終</li>
+                <li data-translate-key="gold_strengths3">很會分清對錯</li>
+                <li data-translate-key="gold_strengths4">重視生產能力</li>
+                <li data-translate-key="gold_strengths5">專心、著重細節</li>
+                <li data-translate-key="gold_strengths6">在機構中擔當穩定者的角色</li>
+                <li data-translate-key="gold_strengths7">按時間表行事</li>
+                <li data-translate-key="gold_strengths8">創造並維持秩序</li>
+                <li data-translate-key="gold_strengths9">肯合作、樂於助人</li>
+                <li data-translate-key="gold_strengths10">工作質量佳</li>
+                <li data-translate-key="gold_strengths11">照顧團隊</li>
+                <li data-translate-key="gold_strengths12">行事前先衡量後果</li>
+                <li data-translate-key="gold_strengths13">具備常識</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_practical_skills_title">實用技能</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_practical_skills1">規劃及組織能力</li>
+                <li data-translate-key="gold_practical_skills2">處理細節能力</li>
+                <li data-translate-key="gold_practical_skills3">監督及協調能力</li>
+                <li data-translate-key="gold_practical_skills4">遵從指示</li>
+                <li data-translate-key="gold_practical_skills5">數據蒐集及分類</li>
+                <li data-translate-key="gold_practical_skills6">訂下及跟從程序</li>
+                <li data-translate-key="gold_practical_skills7">制訂預算、懂得計算</li>
+                <li data-translate-key="gold_practical_skills8">評估能力及行動迅速</li>
+                <li data-translate-key="gold_practical_skills9">管理及監管能力</li>
+                <li data-translate-key="gold_practical_skills10">助人及執行能力</li>
+                <li data-translate-key="gold_practical_skills11">良好的資訊聆聽者</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_weaknesses_title">潛在弱點</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_weaknesses1">防範、欠缺遠見</li>
+                <li data-translate-key="gold_weaknesses2">短視</li>
+                <li data-translate-key="gold_weaknesses3">依自己的主張行事，沒有其他選擇</li>
+                <li data-translate-key="gold_weaknesses4">一旦遭人背信棄義，永不寬恕</li>
+                <li data-translate-key="gold_weaknesses5">刻板，抗拒轉變</li>
+                <li data-translate-key="gold_weaknesses6">有時候為人悲觀或有負面想法</li>
+                <li data-translate-key="gold_weaknesses7">對自己及別人過份嚴苛</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_needs_preferences_title">需要 | 喜好</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th data-translate-key="needs">需要</th>
+                        <th data-translate-key="preferences">喜好</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li data-translate-key="gold_needs1">安全感、安穩、秩序、有計劃</li>
+                                <li data-translate-key="gold_needs2">規條、標準、程序</li>
+                                <li data-translate-key="gold_needs3">連貫性、精確、生產力</li>
+                                <li data-translate-key="gold_needs4">有時間完成任務</li>
+                                <li data-translate-key="gold_needs5">要求的具體詳情</li>
+                                <li data-translate-key="gold_needs6">認同已付出的努力及所完成的工作</li>
+                                <li data-translate-key="gold_needs7">歸屬感</li>
+                                <li data-translate-key="gold_needs8">感到被人需要及有用</li>
+                                <li data-translate-key="gold_needs9">有始有終；事情的圓滿結束</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li data-translate-key="gold_preferences1">井然有序、結構</li>
+                                <li data-translate-key="gold_preferences2">從處理得宜的工作中獲得滿足感</li>
+                                <li data-translate-key="gold_preferences3">在團隊中獲得認同</li>
+                                <li data-translate-key="gold_preferences4">為他人服務、享受與別人一起的時光</li>
+                                <li data-translate-key="gold_preferences5">準備妥當，講求效率</li>
+                                <li data-translate-key="gold_preferences6">有形的回報</li>
+                                <li data-translate-key="gold_preferences7">穩定/建立程序</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <button class="accordion" data-translate-key="gold_cooperation_title">獲得他們的合作</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_cooperation1">有組織、守時</li>
+                <li data-translate-key="gold_cooperation2">期望/程序清晰明確；訂下期限</li>
+                <li data-translate-key="gold_cooperation3">提出需要改變的理據；不操之過急</li>
+                <li data-translate-key="gold_cooperation4">事情一旦不對，提出其他可行的方法</li>
+                <li data-translate-key="gold_cooperation5">作出明確的要求</li>
+                <li data-translate-key="gold_cooperation6">遵守諾言、信守承諾</li>
+                <li data-translate-key="gold_cooperation7">提供足夠資源來完成工作</li>
+                <li data-translate-key="gold_cooperation8">訂下議程、依從時間表</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_problems_title">產生問題的原因</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_problems1">角色/責任混淆</li>
+                <li data-translate-key="gold_problems2">無條理的工作間</li>
+                <li data-translate-key="gold_problems3">時間不足或更改時間表</li>
+                <li data-translate-key="gold_problems4">不清晰或變更規則</li>
+                <li data-translate-key="gold_problems5">無計劃/預料之外的改變</li>
+                <li data-translate-key="gold_problems6">一時間出現太多優先任務</li>
+                <li data-translate-key="gold_problems7">頻密的破壞性干擾</li>
+                <li data-translate-key="gold_problems8">模糊不清的權限</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="gold_rewards_title">獎勵金色組織型的隊員</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="gold_rewards1">稱讚他們的工作質量</li>
+                <li data-translate-key="gold_rewards2">讓他們知道他們備受賞識</li>
+                <li data-translate-key="gold_rewards3">獎勵他們的忠心、效率及可靠</li>
+                <li data-translate-key="gold_rewards4">重視他們有條理的風格</li>
+                <li data-translate-key="gold_rewards5">認同他們在團隊或機構中的價值（歸屬感）</li>
+                <li data-translate-key="gold_rewards6">給予實質的回報 - 金錢、獎章、賀咭等</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="personality-type blue">
+        <h4 data-translate-key="blue_type_name">藍色真我型 (Authentic Blue) 🔵</h4>
+        <button class="accordion" data-translate-key="blue_core_needs_title">核心需要</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_core_needs1">人際關係與自我實踐</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_traits_title">特質</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_traits1">以人為本</li>
+                <li data-translate-key="blue_traits2">與他人建立良好關係</li>
+                <li data-translate-key="blue_traits3">製造良好印象</li>
+                <li data-translate-key="blue_traits4">締造團結環境</li>
+                <li data-translate-key="blue_traits5">熱誠、激勵</li>
+                <li data-translate-key="blue_traits6">關注別人的需要</li>
+                <li data-translate-key="blue_traits7">給予支持、富同情心、鼓舞人心</li>
+                <li data-translate-key="blue_traits8">善於表達、朝氣勃勃</li>
+                <li data-translate-key="blue_traits9">追求並重視和諧</li>
+                <li data-translate-key="blue_traits10">重視道德觀念、誠實、真摯</li>
+                <li data-translate-key="blue_traits11">為他人著想</li>
+                <li data-translate-key="blue_traits12">樂觀</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_strengths_title">長處</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_strengths1">具說服力、肯合作</li>
+                <li data-translate-key="blue_strengths2">表現同情心</li>
+                <li data-translate-key="blue_strengths3">迅速給予讚許及支持</li>
+                <li data-translate-key="blue_strengths4">創意思想家</li>
+                <li data-translate-key="blue_strengths5">獻身於關乎人的事情</li>
+                <li data-translate-key="blue_strengths6">調解並解決衝突</li>
+                <li data-translate-key="blue_strengths7">促進個人及機構成長和發展</li>
+                <li data-translate-key="blue_strengths8">天生的團隊建設者/成員</li>
+                <li data-translate-key="blue_strengths9">看到/引發別人的潛能</li>
+                <li data-translate-key="blue_strengths10">表達想法及感受</li>
+                <li data-translate-key="blue_strengths11">良好的直覺及想像力</li>
+                <li data-translate-key="blue_strengths12">助長和諧氣氛</li>
+                <li data-translate-key="blue_strengths13">感染及激發他人</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_practical_skills_title">實用技能</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_practical_skills1">激發他人、說服力、領導才能</li>
+                <li data-translate-key="blue_practical_skills2">公開演說及表達能力</li>
+                <li data-translate-key="blue_practical_skills3">諮詢、指導能力及導師角色</li>
+                <li data-translate-key="blue_practical_skills4">團體流程中的照顧者</li>
+                <li data-translate-key="blue_practical_skills5">招募及培訓能力</li>
+                <li data-translate-key="blue_practical_skills6">聆聽者、善於溝通</li>
+                <li data-translate-key="blue_practical_skills7">結合並保持和諧局面</li>
+                <li data-translate-key="blue_practical_skills8">起催化劑的作用</li>
+                <li data-translate-key="blue_practical_skills9">創造力、具審美眼光</li>
+                <li data-translate-key="blue_practical_skills10">調解衝突</li>
+                <li data-translate-key="blue_practical_skills11">迅速給予讚許及鼓勵</li>
+                <li data-translate-key="blue_practical_skills12">運用靈活變通的方法達致目標</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_weaknesses_title">潛在弱點</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_weaknesses1">訂立目標及時間管理</li>
+                <li data-translate-key="blue_weaknesses2">太過投入過程中</li>
+                <li data-translate-key="blue_weaknesses3">對批評及爭論很敏感</li>
+                <li data-translate-key="blue_weaknesses4">或會逃避面對問題</li>
+                <li data-translate-key="blue_weaknesses5">在試圖助人的過程中制造依賴性</li>
+                <li data-translate-key="blue_weaknesses6">不會說「不」；承擔太多</li>
+                <li data-translate-key="blue_weaknesses7">決策及行動緩慢</li>
+                <li data-translate-key="blue_weaknesses8">可能太順從</li>
+                <li data-translate-key="blue_weaknesses9">可能表現出偏袒情形</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_needs_preferences_title">需要 | 喜好</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th data-translate-key="needs">需要</th>
+                        <th data-translate-key="preferences">喜好</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li data-translate-key="blue_needs1">與他人互動</li>
+                                <li data-translate-key="blue_needs2">免受控制、不受細節束縛</li>
+                                <li data-translate-key="blue_needs3">認可及獲公開認同</li>
+                                <li data-translate-key="blue_needs4">無條件支持</li>
+                                <li data-translate-key="blue_needs5">鼓勵及再肯定</li>
+                                <li data-translate-key="blue_needs6">理解、廣受歡迎</li>
+                                <li data-translate-key="blue_needs7">確認個人價值</li>
+                                <li data-translate-key="blue_needs8">注意力、接納、賞識</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li data-translate-key="blue_preferences1">認識新朋友</li>
+                                <li data-translate-key="blue_preferences2">誠懇、和諧</li>
+                                <li data-translate-key="blue_preferences3">鼓舞人心的引述說話及演說</li>
+                                <li data-translate-key="blue_preferences4">自我幫助與個人成長</li>
+                                <li data-translate-key="blue_preferences5">影響/娛樂別人</li>
+                                <li data-translate-key="blue_preferences6">運用想像力及創造力</li>
+                                <li data-translate-key="blue_preferences7">個人確認</li>
+                                <li data-translate-key="blue_preferences8">觀察及「閱讀」別人</li>
+                                <li data-translate-key="blue_preferences9">改變以迎合他人需要</li>
+                                <li data-translate-key="blue_preferences10">工作中的樂趣及友誼</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <button class="accordion" data-translate-key="blue_cooperation_title">獲得他們的合作</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_cooperation1">締造一個輕鬆兼以人為中心的環境</li>
+                <li data-translate-key="blue_cooperation2">鼓勵合作/公平</li>
+                <li data-translate-key="blue_cooperation3">鼓勵/支持創作</li>
+                <li data-translate-key="blue_cooperation4">認同感受是令人信服的</li>
+                <li data-translate-key="blue_cooperation5">肯定他們的能力</li>
+                <li data-translate-key="blue_cooperation6">就意見及感受作出爭論，不光是事實</li>
+                <li data-translate-key="blue_cooperation7">在解決團隊衝突時要求他們的幫助</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_problems_title">產生問題的原因</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_problems1">記著太多個別數據</li>
+                <li data-translate-key="blue_problems2">太多同時進行的項目</li>
+                <li data-translate-key="blue_problems3">缺乏個人認同</li>
+                <li data-translate-key="blue_problems4">直言/不誠實的溝通</li>
+                <li data-translate-key="blue_problems5">不贊成及不鼓勵的意見</li>
+                <li data-translate-key="blue_problems6">不切實的期望</li>
+                <li data-translate-key="blue_problems7">對有關人的事情的冷漠</li>
+                <li data-translate-key="blue_problems8">不誠實及不道德行為</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="blue_rewards_title">獎勵藍色真我型的隊員</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="blue_rewards1">提供人際關係方面的專業發展機會</li>
+                <li data-translate-key="blue_rewards2">承認他們的獨特性、人事技巧及激發他人的能力</li>
+                <li data-translate-key="blue_rewards3">公開讚揚他們或給他們送便條</li>
+                <li data-translate-key="blue_rewards4">認同他們對創造一個和諧環境所作出的貢獻</li>
+                <li data-translate-key="blue_rewards5">稱讚他們的想像力、創造力、參與和合作</li>
+                <li data-translate-key="blue_rewards6">對他們的感受和構想表示理解及欣賞</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="personality-type orange">
+        <h4 data-translate-key="orange_type_name">橙色多謀型 (Resourceful Orange) 🟠</h4>
+        <button class="accordion" data-translate-key="orange_core_needs_title">核心需要</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_core_needs1">自由、活動及多元化</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_traits_title">特質</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_traits1">尋求轉變及多元化</li>
+                <li data-translate-key="orange_traits2">行動主義派</li>
+                <li data-translate-key="orange_traits3">迅速作出決定</li>
+                <li data-translate-key="orange_traits4">獨立和有競爭力</li>
+                <li data-translate-key="orange_traits5">極其慷慨</li>
+                <li data-translate-key="orange_traits6">機智風趣</li>
+                <li data-translate-key="orange_traits7">尋求辦事的新方法</li>
+                <li data-translate-key="orange_traits8">採取主動</li>
+                <li data-translate-key="orange_traits9">現實、實際的風險承擔者</li>
+                <li data-translate-key="orange_traits10">渴望嘗試新事物</li>
+                <li data-translate-key="orange_traits11">開通、不批判</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_strengths_title">長處</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_strengths1">靈活、易於適應、復原力強</li>
+                <li data-translate-key="orange_strengths2">調停糾紛、解決問題</li>
+                <li data-translate-key="orange_strengths3">清晰及直接的溝通者</li>
+                <li data-translate-key="orange_strengths4">果斷、具推動力</li>
+                <li data-translate-key="orange_strengths5">決斷、行動迅速</li>
+                <li data-translate-key="orange_strengths6">在處境中好好思考</li>
+                <li data-translate-key="orange_strengths7">促使事件辦成</li>
+                <li data-translate-key="orange_strengths8">欣賞並迅速取得成效</li>
+                <li data-translate-key="orange_strengths9">危機處理能力極高</li>
+                <li data-translate-key="orange_strengths10">忍耐、持久</li>
+                <li data-translate-key="orange_strengths11">在壓力下表現良好</li>
+                <li data-translate-key="orange_strengths12">天生愛尋求機會</li>
+                <li data-translate-key="orange_strengths13">看到的是事實和現實情況</li>
+                <li data-translate-key="orange_strengths14">為人隨和、使人愉快</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_practical_skills_title">實用技能</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_practical_skills1">做出成效</li>
+                <li data-translate-key="orange_practical_skills2">領導及激發他人</li>
+                <li data-translate-key="orange_practical_skills3">善於推銷、有說服力</li>
+                <li data-translate-key="orange_practical_skills4">協商及應付能力</li>
+                <li data-translate-key="orange_practical_skills5">公開演說及表達能力</li>
+                <li data-translate-key="orange_practical_skills6">創造及設計能力</li>
+                <li data-translate-key="orange_practical_skills7">應變能力</li>
+                <li data-translate-key="orange_practical_skills8">糾正錯誤</li>
+                <li data-translate-key="orange_practical_skills9">管理多個項目</li>
+                <li data-translate-key="orange_practical_skills10">甚麼事都能幫上忙</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_weaknesses_title">潛在弱點</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_weaknesses1">對理論及語義符號顯得不耐煩</li>
+                <li data-translate-key="orange_weaknesses2">在尋求決定時或會有點莽撞</li>
+                <li data-translate-key="orange_weaknesses3">或會對抗和容易衝動</li>
+                <li data-translate-key="orange_weaknesses4">歪曲/破壞規則來完成事情</li>
+                <li data-translate-key="orange_weaknesses5">對於抽象素材興趣不大</li>
+                <li data-translate-key="orange_weaknesses6">或會太快行動，未看清整體形勢</li>
+                <li data-translate-key="orange_weaknesses7">可能對細節不著緊</li>
+                <li data-translate-key="orange_weaknesses8">未必可貫徹始終</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_needs_preferences_title">需要 | 喜好</button>
+        <div class="panel">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th data-translate-key="needs">需要</th>
+                        <th data-translate-key="preferences">喜好</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li data-translate-key="orange_needs1">獨立和自我控制</li>
+                                <li data-translate-key="orange_needs2">迅速行動的自由</li>
+                                <li data-translate-key="orange_needs3">成效及即時的反饋</li>
+                                <li data-translate-key="orange_needs4">創造及表現的機會</li>
+                                <li data-translate-key="orange_needs5">對技能及表現的認同</li>
+                                <li data-translate-key="orange_needs6">挑戰及多元化</li>
+                                <li data-translate-key="orange_needs7">發表意見的自由及可監控如何將工作完成</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li data-translate-key="orange_preferences1">冒險、測試極限</li>
+                                <li data-translate-key="orange_preferences2">處理問題/危機</li>
+                                <li data-translate-key="orange_preferences3">「救火」</li>
+                                <li data-translate-key="orange_preferences4">掌管（最起碼是自己）</li>
+                                <li data-translate-key="orange_preferences5">從經驗中學習</li>
+                                <li data-translate-key="orange_preferences6">競爭及比賽</li>
+                                <li data-translate-key="orange_preferences7">迅速完成任務</li>
+                                <li data-translate-key="orange_preferences8">處理多項任務（較有成果）</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <button class="accordion" data-translate-key="orange_cooperation_title">獲得他們的合作</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_cooperation1">指派關鍵性及富挑戰性的任務</li>
+                <li data-translate-key="orange_cooperation2">讓他們作領導者或親自參與任務</li>
+                <li data-translate-key="orange_cooperation3">給予他們多元化的任務</li>
+                <li data-translate-key="orange_cooperation4">配合他們對競爭的喜愛</li>
+                <li data-translate-key="orange_cooperation5">有限度的控制、監督</li>
+                <li data-translate-key="orange_cooperation6">別告訴他們「如何」去做</li>
+                <li data-translate-key="orange_cooperation7">讓他們從工作中獲得樂趣</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_problems_title">產生問題的原因</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_problems1">感覺被利用或不獲欣賞</li>
+                <li data-translate-key="orange_problems2">受規條制肘的環境</li>
+                <li data-translate-key="orange_problems3">嚴苛地強制執行的程序</li>
+                <li data-translate-key="orange_problems4">過多不必要的架構</li>
+                <li data-translate-key="orange_problems5">冗長的會議及過量的文書工作</li>
+                <li data-translate-key="orange_problems6">溝通不清晰、受操縱</li>
+                <li data-translate-key="orange_problems7">欠缺正面的認同</li>
+                <li data-translate-key="orange_problems8">理論性或抽象性素材</li>
+            </ul>
+        </div>
+        <button class="accordion" data-translate-key="orange_rewards_title">獎勵橙色多謀型的隊員</button>
+        <div class="panel">
+            <ul>
+                <li data-translate-key="orange_rewards1">給予實質的回報 - 金錢、獎章、補假等</li>
+                <li data-translate-key="orange_rewards2">讚揚他們對問題及解決問題時採取的靈巧方法</li>
+                <li data-translate-key="orange_rewards3">對他們的表現即時給予正面及具體的回應</li>
+                <li data-translate-key="orange_rewards4">承認他們的靈活變通、適應力、活力和忍耐力</li>
+                <li data-translate-key="orange_rewards5">認同他們的危機處理能力及處理危機時表現良好</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3 data-translate-key="sec_ie_title">內向性格與外向性格</h3>
+    <h4 data-translate-key="introvert_title">內向型 (Introvert) 🔄</h4>
+    <p data-translate-key="introvert_para1">傾向內向型抑或是傾向外向型的性格屬於個性理論的元素，而非氣質理論的一部份，然而，對於瞭解我們及別人卻起著相當重要的作用。由於這項指標影響四種性格類型，因此，我們需要留意這個元素，在人際溝通方面顧及此元素是十分重要的。下文將簡單闡釋何謂內向型與外向型的性格。</p>
+    <p data-translate-key="introvert_para2">依一般的說法，內向型的性格或會被形容為害羞或保守，而外向型的性格則是好動或合群。不過，Jung (1923) 與 Myers-Briggs (1960) 使用上述詞語來形容一個人如何使自己充滿活力。外向型的人從外界尋求激勵因子，傾向於將他們的能量向外伸展，付諸行動。因此，當外向型的人與他人共同工作了一天後會感到振奮。而當他們須花時間單獨從事靜態沉思的工作或計劃，在當天完結時卻可能會感到頗為疲累。內向型的人則剛好相反。</p>
+    <p data-translate-key="introvert_para3">內向型的人從內在尋求激勵因子，內藏他們的能量，將之放于沉思的工作中。他們可以與他人有效率地工作整天，但當他們回到家中，卻可能會感到筋疲力竭，並希望靜下來恢復活力。若內向型的人整天從事單獨的任務，沒有太多干擾的話，他們回到家中會感到活力充沛。</p>
+    <p data-translate-key="introvert_para4">內向型的人透過靜態沉思及個別研究能在最佳狀態下思考、學習及作出決定。而外向型的人則在與人商討及分享構思時處於最佳狀態。外向型的人認為集體自由討論模式對於激發創意極為有效，反而內向型的人會覺得這種模式擾人及混亂，因為沒有時間讓他們在內心處理有關資料。外向型的人很多時會高聲思考，有時候他們對於自己所說的話，也吃驚不已。他們可以有一個真正的「啊呀」（驚愕時所發的聲音）經驗，一個真正的「尷尬大錯」，因為他們隨口說出心中所想。至於內向型的人，他們往往經過仔細思量才與人分享他們的想法，因此，「尷尬大錯」對他們算不上是問題。可是，他們在內心處理資料時所用的時間，有時候或會被其他人誤解為對於現時進行的事情不感興趣或不贊同。內向型的人有時候會選擇不與人分享他們的想法。</p>
+    <p data-translate-key="introvert_para5">本文中對於內向型和外向型性格所作的定義，跟慣用法中的定義不同。不像大家一般所認為的，其實，內向型的人也能善於與人溝通，為人相當熱情及好動。同樣地，外向型的人或會有時候在首次會面時採取較為保守的態度。我們可從討論及觀察中得知內向型的人可以是保守卻好動，而外向型的人亦可以是保守卻好動。這一點對於學習「性格特質取向」（性格透視®）的人來說，是不是很有意義？</p>
+    <p data-translate-key="introvert_para6">「性格特質取向」（性格透視®）教授四種性格類型，不過，若要真正有效地瞭解並與人溝通，你同時需要認識內向型與外向型的性格。你需要意識到外向型的人高聲所說的話未必是他/她的最終決定。他們只是一想到甚麼便衝口而出。你亦需要意識到內向型的人在靜下來及不與人溝通時，也未必表示他們不感興趣⋯.他們或者只是在理解並處理所聽到的說話。給他們一點時間，然後要求他們發表意見，你往往會發現他們讓你吃驚的見解。</p>
+
+    <h4 data-translate-key="extravert_title">外向型 (Extravert) 🔄</h4>
+    <p data-translate-key="extravert_para1">從內在尋求激勵，用於沉思工作；最佳狀態是透過靜態沉思和個別研究；需要獨處時間閱讀思考；傾向深度思考和建立概念；偏好私密空間工作，常感時間不夠用；習慣先仔細思考再行動；在安靜無干擾環境中更自在。</p>
+</div>
+
+<div class="section">
+    <h3 data-translate-key="sec_key_reminders_title">記著重要提示</h3>
+    <ul>
+        <li data-translate-key="reminder_list1">每個人的性格就像多彩的格子圖案</li>
+        <li data-translate-key="reminder_list2">假如你把本書中學會的知識用作將他人定型或標籤他人，你便是極不公平地對待這工具。</li>
+        <li data-translate-key="reminder_list3">記著，我們可以而且亦能夠從多個角度做事，只是有些人不必費太多力氣並可能較其他人感到更自在。</li>
+        <li data-translate-key="reminder_list4">每個人都是不一樣的。</li>
+    </ul>
+    <p data-translate-key="reminder_para1">性格透視®差異是好事</p>
+    <p data-translate-key="reminder_para2">性格透視®只是工具而已！</p>
+    <p data-translate-key="reminder_para3">它不能亦不闡釋所有的人類行為。</p>
+    <p data-translate-key="reminder_para4">若它可幫助你瞭解自己與別人，使用它。</p>
+    <p data-translate-key="reminder_para5">使用它來改善你在人際方面的溝通技巧。</p>
+    <p data-translate-key="reminder_para6">使用它來激發並致使他人與你合作。</p>
+    <p data-translate-key="reminder_para7">當它不能幫助你時，把它擱在一旁。</p>
+    <p data-translate-key="reminder_para8">我們衷心希望你喜歡性格透視為你而設的性格特質取向工作坊，相信你現時對自己有更進一步的瞭解，亦同時學會欣賞別人。我們有信心這項性格特質取向測試給你上了寶貴的一課，有助你提昇個人的溝通技巧。</p>
+    <p data-translate-key="reminder_para9">我們推出這本參考指引，目的是與你重溫工作坊內提及的重點和內容。期望你善用此參考指引，讓你的性格特質發揮出來，不論是工作、家庭、朋友還是社交生活圈子，務求在生活各方面付諸行動，達致一個豐盛人生！</p>
+    <p data-translate-key="reminder_para10">©2004 Career/LifeSkills Resources Inc., 116 Viceroy Road, Unit B1, Concord, ON L4K 2M2, Canada</p>
+    <p data-translate-key="reminder_para11">版權所有。在未經出版商事先書面許可下，不得將本刊物複製、儲存在檢索系統中、或以任何形式或媒體或以任何方式、電子、機動、影印、記錄或其他方式傳送。於加拿大印製。</p>
+    <p data-translate-key="reminder_para12">性格透視®之版權屬 Career/LifeSkills Resources Inc. 所有。</p>
+    <p data-translate-key="reminder_para13">透過本刊物展示的所有其他商標、標誌和服務標記屬其他第三方的財物。</p>
+</div>
+</div>
+
+<script>
+    // Enhanced JavaScript for translation and accordion interactivity
+    const translations = {
+        "zh-Hant": {
+            // Original and new keys for zh-Hant (all content as provided)
+            "title": "性格透視®自我認識工作坊",
+            "main_title": "性格透視®自我認識工作坊",
+            "sub_title": "探索你的獨特之處",
+            "translateButton": "翻譯成中文",
+            "sec_purpose_title": "性格透視的用途",
+            "purpose_para1": "瞭解性格的基本原則，如其份地表達自己，尊重每個人在性格上的差異，建立個人風格，邁向成功之路！",
+            "purpose_list1": "賞識自己與別人",
+            "purpose_list2": "學習提昇溝通技巧的方法",
+            "purpose_list3": "及早找出潛在問題",
+            "purpose_list4": "採取措施避免產生問題或用以舒解問題",
+            "purpose_list5": "提昇士氣與工作熱誠",
+            "purpose_list6": "加強人際關係",
+            "purpose_list7": "支持與鼓勵他人",
+            "purpose_list8": "對他人造成正面影響",
+            "purpose_list9": "使團隊做到最好",
+            "purpose_list10": "縮短差距及差異",
+            "purpose_list11": "建立有效率的團隊",
+            "purpose_list12": "以有效率的方式進行磋商",
+            "purpose_list13": "提高生產力",
+            "purpose_list14": "分配合適工作",
+            "purpose_list15": "善於與人溝通",
+            "purpose_list16": "建立有效率的管理層",
+            "purpose_para2": "建立個人風格，從容邁向成功之路！！",
+            "purpose_para3": "性格透視® Personality DIMENSIONS®",
+            "purpose_para4": "瞭解你的性格取向，付諸行動 (PDaction)",
+            "sec_overview_title": "總覽與原則",
+            "overview_para1": "差異是好事",
+            "overview_para2": "性格透視®只是一種工具！",
+            "overview_para3": "它不能完全描述你。",
+            "overview_para4": "若它能幫助你了解自己與別人，使用它。",
+            "overview_para5": "使用它來改善你在人際方面的溝通技巧。",
+            "overview_para6": "使用它來激發這些使他人合作。",
+            "overview_para7": "當它不能幫助你時，把它擱置在一旁。",
+            "overview_para8": "了解你的性格特質",
+            "overview_para9": "付諸行動",
+            "overview_para10": "我們衷心希望性格透視®為你而設的性格特質。",
+            "overview_para11": "向工作坊。",
+            "overview_para12": "相信你特別對自己有更進一步的了解。",
+            "overview_para13": "亦同時學會欣賞別人。",
+            "overview_para14": "我們有信心這項性格特質的測試給你一次。",
+            "overview_para15": "有助你認識不同的性格。",
+            "overview_para16": "我們樂意協助你參考這份指引。",
+            "overview_para17": "目的是助你重溫工作坊內容。",
+            "overview_para18": "同時，請你參考這份指引，讓你的性格特質發揮出來。",
+            "overview_para19": "無論工作、家庭、朋友還是社交生活。",
+            "overview_para20": "勇敢地在各方面付諸行動。",
+            "overview_para21": "建立一個豐富人生。",
+            "overview_para22": "每個人的性格包含多個影子圖案。",
+            "overview_para23": "假若你已經做過性格測試或其他個人認識工具，你便會知道這些測試並不能完全描述你。",
+            "overview_para24": "因此，不能因為性格測試而改變。",
+            "overview_para25": "你可從其他測試中獲得更多資訊，補充你對自己的新認知。",
+            "overview_para26": "但記住，沒有一個工具能完全描述你，每個人的性格都包含多個影子圖案。",
+            "sec_personality_types_title": "性格類型",
+            "green_type_name": "綠色探究型 (Inquiring Green) 🟢",
+            "green_core_needs_title": "核心需要",
+            "green_core_needs1": "知識與能力",
+            "green_traits_title": "特質",
+            "green_traits1": "重邏輯、具理性",
+            "green_traits2": "注重質量",
+            "green_traits3": "力求進步",
+            "green_traits4": "愛分析、有系統",
+            "green_traits5": "查根究柢，喜好發問",
+            "green_traits6": "宏觀著眼",
+            "green_traits7": "懂得控制情緒",
+            "green_traits8": "策略型思考者",
+            "green_traits9": "具創意、頭腦靈活",
+            "green_traits10": "需要獨立自主",
+            "green_traits11": "要有私人時間",
+            "green_traits12": "高期望、高標準",
+            "green_strengths_title": "長處",
+            "green_strengths1": "決斷力",
+            "green_strengths2": "概念能力",
+            "green_strengths3": "從整體上思考、作出策略性的思考",
+            "green_strengths4": "吸收及儲備知識",
+            "green_strengths5": "思維清晰、語言精煉",
+            "green_strengths6": "追求全面的資訊",
+            "green_strengths7": "能從複雜的資訊中作出深刻總結",
+            "green_strengths8": "分析能力",
+            "green_strengths9": "訂立標準",
+            "green_strengths10": "宏觀著眼",
+            "green_strengths11": "盡心盡力",
+            "green_strengths12": "採取有系統及具邏輯性的處事方式",
+            "green_strengths13": "蒐集數據與資料",
+            "green_practical_skills_title": "實用技能",
+            "green_practical_skills1": "遠見與創意",
+            "green_practical_skills2": "分析力、解決問題的能力",
+            "green_practical_skills3": "研究開發能力",
+            "green_practical_skills4": "觀察力及判斷力",
+            "green_practical_skills5": "重概念、具理性",
+            "green_practical_skills6": "規劃及組織能力",
+            "green_practical_skills7": "能夠找到複雜事情的核心",
+            "green_weaknesses_title": "潛在弱點",
+            "green_weaknesses1": "缺乏闡釋詳盡資料的能力",
+            "green_weaknesses2": "不關心別人的感受",
+            "green_weaknesses3": "缺貫徹始終的能力",
+            "green_weaknesses4": "資訊泛濫",
+            "green_weaknesses5": "不能理解感性論據/請求",
+            "green_weaknesses6": "對於不感興趣的事，無法專心",
+            "green_weaknesses7": "可以變得毫無耐性、傲慢自大",
+            "green_weaknesses8": "分析力癱瘓",
+            "green_weaknesses9": "好爭論",
+            "green_needs_preferences_title": "需要 | 喜好",
+            "needs": "需要",
+            "preferences": "喜好",
+            "green_needs1": "知識與能力",
+            "green_needs2": "求知慾",
+            "green_needs3": "清晰的質量標準",
+            "green_needs4": "凡事追求細緻精確",
+            "green_needs5": "可自由地發問：「為甚麼？」",
+            "green_needs6": "個人自主權",
+            "green_needs7": "有時間靜下來思考及處理資料",
+            "green_preferences1": "探索未知事物",
+            "green_preferences2": "發掘新的可能性",
+            "green_preferences3": "設計概念性的模式",
+            "green_preferences4": "改善質量/提高效率",
+            "green_preferences5": "訂策略",
+            "green_preferences6": "得到同事認同",
+            "green_preferences7": "解決複雜問題",
+            "green_preferences8": "闡釋繁複事情",
+            "green_preferences9": "大量數據與資訊",
+            "green_cooperation_title": "獲得他們的合作",
+            "green_cooperation1": "鼓勵他們提出意見/認同他們的意見",
+            "green_cooperation2": "指派關鍵性及富挑戰性的工作",
+            "green_cooperation3": "在可能的情況下，使用政策作為指引",
+            "green_cooperation4": "就事實作出爭論，非意氣之爭",
+            "green_cooperation5": "給予研究及工作時間、空間",
+            "green_cooperation6": "為所作決定提供理據",
+            "green_cooperation7": "傳達從大處著眼的訊息",
+            "green_cooperation8": "在最初階段要求他們參與",
+            "green_problems_title": "產生問題的原因",
+            "green_problems1": "欠缺自主獨立",
+            "green_problems2": "不稱職",
+            "green_problems3": "厭倦",
+            "green_problems4": "別人表現的情緒",
+            "green_problems5": "在沒有充分資料的情況下，草率作決定",
+            "green_problems6": "處於不知情的情況下",
+            "green_problems7": "意見被全面拒絕",
+            "green_problems8": "受到負面批評",
+            "green_problems9": "在沒有機會仔細思考情況下，被迫發言",
+            "green_rewards_title": "獎勵綠色探究型的隊員",
+            "green_rewards1": "提供專業發展的機會",
+            "green_rewards2": "聆聽他們的構思及創見",
+            "green_rewards3": "稱讚他們的創意及靈活見解",
+            "green_rewards4": "開通並接受他們的觀察及意見",
+            "green_rewards5": "認同他們的處事精確及他們的工作素質",
+            "gold_type_name": "金色組織型 (Organized Gold) 🟡",
+            "gold_core_needs_title": "核心需要",
+            "gold_core_needs1": "通過職責與責任獲得歸屬感",
+            "gold_traits_title": "特質",
+            "gold_traits1": "組織有序",
+            "gold_traits2": "遵循傳統",
+            "gold_traits3": "負責任及講求實際",
+            "gold_traits4": "可靠及可信賴",
+            "gold_traits5": "忠於組織的目標",
+            "gold_traits6": "時刻處於準備好的狀態",
+            "gold_traits7": "服務至上",
+            "gold_traits8": "樂於助人、值得信賴",
+            "gold_traits9": "按時完成任務",
+            "gold_traits10": "堅信政策與程序",
+            "gold_traits11": "尊重權力及條規",
+            "gold_traits12": "有耐性及肯合作",
+            "gold_strengths_title": "長處",
+            "gold_strengths1": "可靠及堅定",
+            "gold_strengths2": "尋求事情的圓滿解決、貫徹始終",
+            "gold_strengths3": "很會分清對錯",
+            "gold_strengths4": "重視生產能力",
+            "gold_strengths5": "專心、著重細節",
+            "gold_strengths6": "在機構中擔當穩定者的角色",
+            "gold_strengths7": "按時間表行事",
+            "gold_strengths8": "創造並維持秩序",
+            "gold_strengths9": "肯合作、樂於助人",
+            "gold_strengths10": "工作質量佳",
+            "gold_strengths11": "照顧團隊",
+            "gold_strengths12": "行事前先衡量後果",
+            "gold_strengths13": "具備常識",
+            "gold_practical_skills_title": "實用技能",
+            "gold_practical_skills1": "規劃及組織能力",
+            "gold_practical_skills2": "處理細節能力",
+            "gold_practical_skills3": "監督及協調能力",
+            "gold_practical_skills4": "遵從指示",
+            "gold_practical_skills5": "數據蒐集及分類",
+            "gold_practical_skills6": "訂下及跟從程序",
+            "gold_practical_skills7": "制訂預算、懂得計算",
+            "gold_practical_skills8": "評估能力及行動迅速",
+            "gold_practical_skills9": "管理及監管能力",
+            "gold_practical_skills10": "助人及執行能力",
+            "gold_practical_skills11": "良好的資訊聆聽者",
+            "gold_weaknesses_title": "潛在弱點",
+            "gold_weaknesses1": "防範、欠缺遠見",
+            "gold_weaknesses2": "短視",
+            "gold_weaknesses3": "依自己的主張行事，沒有其他選擇",
+            "gold_weaknesses4": "一旦遭人背信棄義，永不寬恕",
+            "gold_weaknesses5": "刻板，抗拒轉變",
+            "gold_weaknesses6": "有時候為人悲觀或有負面想法",
+            "gold_weaknesses7": "對自己及別人過份嚴苛",
+            "gold_needs_preferences_title": "需要 | 喜好",
+            "gold_needs1": "安全感、安穩、秩序、有計劃",
+            "gold_needs2": "規條、標準、程序",
+            "gold_needs3": "連貫性、精確、生產力",
+            "gold_needs4": "有時間完成任務",
+            "gold_needs5": "要求的具體詳情",
+            "gold_needs6": "認同已付出的努力及所完成的工作",
+            "gold_needs7": "歸屬感",
+            "gold_needs8": "感到被人需要及有用",
+            "gold_needs9": "有始有終；事情的圓滿結束",
+            "gold_preferences1": "井然有序、結構",
+            "gold_preferences2": "從處理得宜的工作中獲得滿足感",
+            "gold_preferences3": "在團隊中獲得認同",
+            "gold_preferences4": "為他人服務、享受與別人一起的時光",
+            "gold_preferences5": "準備妥當，講求效率",
+            "gold_preferences6": "有形的回報",
+            "gold_preferences7": "穩定/建立程序",
+            "gold_cooperation_title": "獲得他們的合作",
+            "gold_cooperation1": "有組織、守時",
+            "gold_cooperation2": "期望/程序清晰明確；訂下期限",
+            "gold_cooperation3": "提出需要改變的理據；不操之過急",
+            "gold_cooperation4": "事情一旦不對，提出其他可行的方法",
+            "gold_cooperation5": "作出明確的要求",
+            "gold_cooperation6": "遵守諾言、信守承諾",
+            "gold_cooperation7": "提供足夠資源來完成工作",
+            "gold_cooperation8": "訂下議程、依從時間表",
+            "gold_problems_title": "產生問題的原因",
+            "gold_problems1": "角色/責任混淆",
+            "gold_problems2": "無條理的工作間",
+            "gold_problems3": "時間不足或更改時間表",
+            "gold_problems4": "不清晰或變更規則",
+            "gold_problems5": "無計劃/預料之外的改變",
+            "gold_problems6": "一時間出現太多優先任務",
+            "gold_problems7": "頻密的破壞性干擾",
+            "gold_problems8": "模糊不清的權限",
+            "gold_rewards_title": "獎勵金色組織型的隊員",
+            "gold_rewards1": "稱讚他們的工作質量",
+            "gold_rewards2": "讓他們知道他們備受賞識",
+            "gold_rewards3": "獎勵他們的忠心、效率及可靠",
+            "gold_rewards4": "重視他們有條理的風格",
+            "gold_rewards5": "認同他們在團隊或機構中的價值（歸屬感）",
+            "gold_rewards6": "給予實質的回報 - 金錢、獎章、賀咭等",
+            "blue_type_name": "藍色真我型 (Authentic Blue) 🔵",
+            "blue_core_needs_title": "核心需要",
+            "blue_core_needs1": "人際關係與自我實踐",
+            "blue_traits_title": "特質",
+            "blue_traits1": "以人為本",
+            "blue_traits2": "與他人建立良好關係",
+            "blue_traits3": "製造良好印象",
+            "blue_traits4": "締造團結環境",
+            "blue_traits5": "熱誠、激勵",
+            "blue_traits6": "關注別人的需要",
+            "blue_traits7": "給予支持、富同情心、鼓舞人心",
+            "blue_traits8": "善於表達、朝氣勃勃",
+            "blue_traits9": "追求並重視和諧",
+            "blue_traits10": "重視道德觀念、誠實、真摯",
+            "blue_traits11": "為他人著想",
+            "blue_traits12": "樂觀",
+            "blue_strengths_title": "長處",
+            "blue_strengths1": "具說服力、肯合作",
+            "blue_strengths2": "表現同情心",
+            "blue_strengths3": "迅速給予讚許及支持",
+            "blue_strengths4": "創意思想家",
+            "blue_strengths5": "獻身於關乎人的事情",
+            "blue_strengths6": "調解並解決衝突",
+            "blue_strengths7": "促進個人及機構成長和發展",
+            "blue_strengths8": "天生的團隊建設者/成員",
+            "blue_strengths9": "看到/引發別人的潛能",
+            "blue_strengths10": "表達想法及感受",
+            "blue_strengths11": "良好的直覺及想像力",
+            "blue_strengths12": "助長和諧氣氛",
+            "blue_strengths13": "感染及激發他人",
+            "blue_practical_skills_title": "實用技能",
+            "blue_practical_skills1": "激發他人、說服力、領導才能",
+            "blue_practical_skills2": "公開演說及表達能力",
+            "blue_practical_skills3": "諮詢、指導能力及導師角色",
+            "blue_practical_skills4": "團體流程中的照顧者",
+            "blue_practical_skills5": "招募及培訓能力",
+            "blue_practical_skills6": "聆聽者、善於溝通",
+            "blue_practical_skills7": "結合並保持和諧局面",
+            "blue_practical_skills8": "起催化劑的作用",
+            "blue_practical_skills9": "創造力、具審美眼光",
+            "blue_practical_skills10": "調解衝突",
+            "blue_practical_skills11": "迅速給予讚許及鼓勵",
+            "blue_practical_skills12": "運用靈活變通的方法達致目標",
+            "blue_weaknesses_title": "潛在弱點",
+            "blue_weaknesses1": "訂立目標及時間管理",
+            "blue_weaknesses2": "太過投入過程中",
+            "blue_weaknesses3": "對批評及爭論很敏感",
+            "blue_weaknesses4": "或會逃避面對問題",
+            "blue_weaknesses5": "在試圖助人的過程中制造依賴性",
+            "blue_weaknesses6": "不會說「不」；承擔太多",
+            "blue_weaknesses7": "決策及行動緩慢",
+            "blue_weaknesses8": "可能太順從",
+            "blue_weaknesses9": "可能表現出偏袒情形",
+            "blue_needs_preferences_title": "需要 | 喜好",
+            "blue_needs1": "與他人互動",
+            "blue_needs2": "免受控制、不受細節束縛",
+            "blue_needs3": "認可及獲公開認同",
+            "blue_needs4": "無條件支持",
+            "blue_needs5": "鼓勵及再肯定",
+            "blue_needs6": "理解、廣受歡迎",
+            "blue_needs7": "確認個人價值",
+            "blue_needs8": "注意力、接納、賞識",
+            "blue_preferences1": "認識新朋友",
+            "blue_preferences2": "誠懇、和諧",
+            "blue_preferences3": "鼓舞人心的引述說話及演說",
+            "blue_preferences4": "自我幫助與個人成長",
+            "blue_preferences5": "影響/娛樂別人",
+            "blue_preferences6": "運用想像力及創造力",
+            "blue_preferences7": "個人確認",
+            "blue_preferences8": "觀察及「閱讀」別人",
+            "blue_preferences9": "改變以迎合他人需要",
+            "blue_preferences10": "工作中的樂趣及友誼",
+            "blue_cooperation_title": "獲得他們的合作",
+            "blue_cooperation1": "締造一個輕鬆兼以人為中心的環境",
+            "blue_cooperation2": "鼓勵合作/公平",
+            "blue_cooperation3": "鼓勵/支持創作",
+            "blue_cooperation4": "認同感受是令人信服的",
+            "blue_cooperation5": "肯定他們的能力",
+            "blue_cooperation6": "就意見及感受作出爭論，不光是事實",
+            "blue_cooperation7": "在解決團隊衝突時要求他們的幫助",
+            "blue_problems_title": "產生問題的原因",
+            "blue_problems1": "記著太多個別數據",
+            "blue_problems2": "太多同時進行的項目",
+            "blue_problems3": "缺乏個人認同",
+            "blue_problems4": "直言/不誠實的溝通",
+            "blue_problems5": "不贊成及不鼓勵的意見",
+            "blue_problems6": "不切實的期望",
+            "blue_problems7": "對有關人的事情的冷漠",
+            "blue_problems8": "不誠實及不道德行為",
+            "blue_rewards_title": "獎勵藍色真我型的隊員",
+            "blue_rewards1": "提供人際關係方面的專業發展機會",
+            "blue_rewards2": "承認他們的獨特性、人事技巧及激發他人的能力",
+            "blue_rewards3": "公開讚揚他們或給他們送便條",
+            "blue_rewards4": "認同他們對創造一個和諧環境所作出的貢獻",
+            "blue_rewards5": "稱讚他們的想像力、創造力、參與和合作",
+            "blue_rewards6": "對他們的感受和構想表示理解及欣賞",
+            "orange_type_name": "橙色多謀型 (Resourceful Orange) 🟠",
+            "orange_core_needs_title": "核心需要",
+            "orange_core_needs1": "自由、活動及多元化",
+            "orange_traits_title": "特質",
+            "orange_traits1": "尋求轉變及多元化",
+            "orange_traits2": "行動主義派",
+            "orange_traits3": "迅速作出決定",
+            "orange_traits4": "獨立和有競爭力",
+            "orange_traits5": "極其慷慨",
+            "orange_traits6": "機智風趣",
+            "orange_traits7": "尋求辦事的新方法",
+            "orange_traits8": "採取主動",
+            "orange_traits9": "現實、實際的風險承擔者",
+            "orange_traits10": "渴望嘗試新事物",
+            "orange_traits11": "開通、不批判",
+            "orange_strengths_title": "長處",
+            "orange_strengths1": "靈活、易於適應、復原力強",
+            "orange_strengths2": "調停糾紛、解決問題",
+            "orange_strengths3": "清晰及直接的溝通者",
+            "orange_strengths4": "果斷、具推動力",
+            "orange_strengths5": "決斷、行動迅速",
+            "orange_strengths6": "在處境中好好思考",
+            "orange_strengths7": "促使事件辦成",
+            "orange_strengths8": "欣賞並迅速取得成效",
+            "orange_strengths9": "危機處理能力極高",
+            "orange_strengths10": "忍耐、持久",
+            "orange_strengths11": "在壓力下表現良好",
+            "orange_strengths12": "天生愛尋求機會",
+            "orange_strengths13": "看到的是事實和現實情況",
+            "orange_strengths14": "為人隨和、使人愉快",
+            "orange_practical_skills_title": "實用技能",
+            "orange_practical_skills1": "做出成效",
+            "orange_practical_skills2": "領導及激發他人",
+            "orange_practical_skills3": "善於推銷、有說服力",
+            "orange_practical_skills4": "協商及應付能力",
+            "orange_practical_skills5": "公開演說及表達能力",
+            "orange_practical_skills6": "創造及設計能力",
+            "orange_practical_skills7": "應變能力",
+            "orange_practical_skills8": "糾正錯誤",
+            "orange_practical_skills9": "管理多個項目",
+            "orange_practical_skills10": "甚麼事都能幫上忙",
+            "orange_weaknesses_title": "潛在弱點",
+            "orange_weaknesses1": "對理論及語義符號顯得不耐煩",
+            "orange_weaknesses2": "在尋求決定時或會有點莽撞",
+            "orange_weaknesses3": "或會對抗和容易衝動",
+            "orange_weaknesses4": "歪曲/破壞規則來完成事情",
+            "orange_weaknesses5": "對於抽象素材興趣不大",
+            "orange_weaknesses6": "或會太快行動，未看清整體形勢",
+            "orange_weaknesses7": "可能對細節不著緊",
+            "orange_weaknesses8": "未必可貫徹始終",
+            "orange_needs_preferences_title": "需要 | 喜好",
+            "orange_needs1": "獨立和自我控制",
+            "orange_needs2": "迅速行動的自由",
+            "orange_needs3": "成效及即時的反饋",
+            "orange_needs4": "創造及表現的機會",
+            "orange_needs5": "對技能及表現的認同",
+            "orange_needs6": "挑戰及多元化",
+            "orange_needs7": "發表意見的自由及可監控如何將工作完成",
+            "orange_preferences1": "冒險、測試極限",
+            "orange_preferences2": "處理問題/危機",
+            "orange_preferences3": "「救火」",
+            "orange_preferences4": "掌管（最起碼是自己）",
+            "orange_preferences5": "從經驗中學習",
+            "orange_preferences6": "競爭及比賽",
+            "orange_preferences7": "迅速完成任務",
+            "orange_preferences8": "處理多項任務（較有成果）",
+            "orange_cooperation_title": "獲得他們的合作",
+            "orange_cooperation1": "指派關鍵性及富挑戰性的任務",
+            "orange_cooperation2": "讓他們作領導者或親自參與任務",
+            "orange_cooperation3": "給予他們多元化的任務",
+            "orange_cooperation4": "配合他們對競爭的喜愛",
+            "orange_cooperation5": "有限度的控制、監督",
+            "orange_cooperation6": "別告訴他們「如何」去做",
+            "orange_cooperation7": "讓他們從工作中獲得樂趣",
+            "orange_problems_title": "產生問題的原因",
+            "orange_problems1": "感覺被利用或不獲欣賞",
+            "orange_problems2": "受規條制肘的環境",
+            "orange_problems3": "嚴苛地強制執行的程序",
+            "orange_problems4": "過多不必要的架構",
+            "orange_problems5": "冗長的會議及過量的文書工作",
+            "orange_problems6": "溝通不清晰、受操縱",
+            "orange_problems7": "欠缺正面的認同",
+            "orange_problems8": "理論性或抽象性素材",
+            "orange_rewards_title": "獎勵橙色多謀型的隊員",
+            "orange_rewards1": "給予實質的回報 - 金錢、獎章、補假等",
+            "orange_rewards2": "讚揚他們對問題及解決問題時採取的靈巧方法",
+            "orange_rewards3": "對他們的表現即時給予正面及具體的回應",
+            "orange_rewards4": "承認他們的靈活變通、適應力、活力和忍耐力",
+            "orange_rewards5": "認同他們的危機處理能力及處理危機時表現良好",
+            "sec_ie_title": "內向性格與外向性格",
+            "introvert_title": "內向型 (Introvert) 🔄",
+            "introvert_para1": "傾向內向型抑或是傾向外向型的性格屬於個性理論的元素，而非氣質理論的一部份，然而，對於瞭解我們及別人卻起著相當重要的作用。由於這項指標影響四種性格類型，因此，我們需要留意這個元素，在人際溝通方面顧及此元素是十分重要的。下文將簡單闡釋何謂內向型與外向型的性格。",
+            "introvert_para2": "依一般的說法，內向型的性格或會被形容為害羞或保守，而外向型的性格則是好動或合群。不過，Jung (1923) 與 Myers-Briggs (1960) 使用上述詞語來形容一個人如何使自己充滿活力。外向型的人從外界尋求激勵因子，傾向於將他們的能量向外伸展，付諸行動。因此，當外向型的人與他人共同工作了一天後會感到振奮。而當他們須花時間單獨從事靜態沉思的工作或計劃，在當天完結時卻可能會感到頗為疲累。內向型的人則剛好相反。",
+            "introvert_para3": "內向型的人從內在尋求激勵因子，內藏他們的能量，將之放于沉思的工作中。他們可以與他人有效率地工作整天，但當他們回到家中，卻可能會感到筋疲力竭，並希望靜下來恢復活力。若內向型的人整天從事單獨的任務，沒有太多干擾的話，他們回到家中會感到活力充沛。",
+            "introvert_para4": "內向型的人透過靜態沉思及個別研究能在最佳狀態下思考、學習及作出決定。而外向型的人則在與人商討及分享構思時處於最佳狀態。外向型的人認為集體自由討論模式對於激發創意極為有效，反而內向型的人會覺得這種模式擾人及混亂，因為沒有時間讓他們在內心處理有關資料。外向型的人很多時會高聲思考，有時候他們對於自己所說的話，也吃驚不已。他們可以有一個真正的「啊呀」（驚愕時所發的聲音）經驗，一個真正的「尷尬大錯」，因為他們隨口說出心中所想。至於內向型的人，他們往往經過仔細思量才與人分享他們的想法，因此，「尷尬大錯」對他們算不上是問題。可是，他們在內心處理資料時所用的時間，有時候或會被其他人誤解為對於現時進行的事情不感興趣或不贊同。內向型的人有時候會選擇不與人分享他們的想法。",
+            "introvert_para5": "本文中對於內向型和外向型性格所作的定義，跟慣用法中的定義不同。不像大家一般所認為的，其實，內向型的人也能善於與人溝通，為人相當熱情及好動。同樣地，外向型的人或會有時候在首次會面時採取較為保守的態度。我們可從討論及觀察中得知內向型的人可以是保守卻好動，而外向型的人亦可以是保守卻好動。這一點對於學習「性格特質取向」（性格透視®）的人來說，是不是很有意義？",
+            "introvert_para6": "「性格特質取向」（性格透視®）教授四種性格類型，不過，若要真正有效地瞭解並與人溝通，你同時需要認識內向型與外向型的性格。你需要意識到外向型的人高聲所說的話未必是他/她的最終決定。他們只是一想到甚麼便衝口而出。你亦需要意識到內向型的人在靜下來及不與人溝通時，也未必表示他們不感興趣⋯.他們或者只是在理解並處理所聽到的說話。給他們一點時間，然後要求他們發表意見，你往往會發現他們讓你吃驚的見解。",
+            "extravert_title": "外向型 (Extravert) 🔄",
+            "extravert_para1": "尋求外界激勵，能量向外伸展付諸行動；最佳狀態是與人商討分享構思；喜歡與人互動，交流時興奮；偏好公開場合工作，互動時精力充沛；喜歡透過討論和腦力激盪產生新想法；樂於應變，即時行動；決定事情時迅速考慮所有方案；重視與他人互動，認為能快速有效地完成工作。",
+            "sec_key_reminders_title": "記著重要提示",
+            "reminder_list1": "每個人的性格就像多彩的格子圖案",
+            "reminder_list2": "假如你把本書中學會的知識用作將他人定型或標籤他人，你便是極不公平地對待這工具。",
+            "reminder_list3": "記著，我們可以而且亦能夠從多個角度做事，只是有些人不必費太多力氣並可能較其他人感到更自在。",
+            "reminder_list4": "每個人都是不一樣的。",
+            "reminder_para1": "性格透視®差異是好事",
+            "reminder_para2": "性格透視®只是工具而已！",
+            "reminder_para3": "它不能亦不闡釋所有的人類行為。",
+            "reminder_para4": "若它可幫助你瞭解自己與別人，使用它。",
+            "reminder_para5": "使用它來改善你在人際方面的溝通技巧。",
+            "reminder_para6": "使用它來激發並致使他人與你合作。",
+            "reminder_para7": "當它不能幫助你時，把它擱在一旁。",
+            "reminder_para8": "我們衷心希望你喜歡性格透視為你而設的性格特質取向工作坊，相信你現時對自己有更進一步的瞭解，亦同時學會欣賞別人。我們有信心這項性格特質取向測試給你上了寶貴的一課，有助你提昇個人的溝通技巧。",
+            "reminder_para9": "我們推出這本參考指引，目的是與你重溫工作坊內提及的重點和內容。期望你善用此參考指引，讓你的性格特質發揮出來，不論是工作、家庭、朋友還是社交生活圈子，務求在生活各方面付諸行動，達致一個豐盛人生！",
+            "reminder_para10": "©2004 Career/LifeSkills Resources Inc., 116 Viceroy Road, Unit B1, Concord, ON L4K 2M2, Canada",
+            "reminder_para11": "版權所有。在未經出版商事先書面許可下，不得將本刊物複製、儲存在檢索系統中、或以任何形式或媒體或以任何方式、電子、機動、影印、記錄或其他方式傳送。於加拿大印製。",
+            "reminder_para12": "性格透視®之版權屬 Career/LifeSkills Resources Inc. 所有。",
+            "reminder_para13": "透過本刊物展示的所有其他商標、標誌和服務標記屬其他第三方的財物。"
+        },
+        "en": {
+            // Updated English translations for consistency, word-for-word where possible
+            "title": "Personality Dimensions® Self-understanding Workshop",
+            "main_title": "Personality Dimensions® Self-understanding Workshop",
+            "sub_title": "Explore Your Unique Self",
+            "translateButton": "Translate to English",
+            "sec_purpose_title": "Uses of Personality Dimensions",
+            "purpose_para1": "Understand the basic principles of personality, such as how to express yourself appropriately, respect differences in personality among individuals, establish personal style, and move towards the path to success!",
+            "purpose_list1": "Appreciate yourself and others",
+            "purpose_list2": "Learn methods to improve communication skills",
+            "purpose_list3": "Identify potential problems early",
+            "purpose_list4": "Take measures to avoid problems or to alleviate them",
+            "purpose_list5": "Boost morale and work enthusiasm",
+            "purpose_list6": "Strengthen interpersonal relationships",
+            "purpose_list7": "Support and encourage others",
+            "purpose_list8": "Have a positive impact on others",
+            "purpose_list9": "Make the team perform at its best",
+            "purpose_list10": "Bridge gaps and differences",
+            "purpose_list11": "Build efficient teams",
+            "purpose_list12": "Conduct consultations in an efficient manner",
+            "purpose_list13": "Increase productivity",
+            "purpose_list14": "Assign suitable work",
+            "purpose_list15": "Good at communicating with people",
+            "purpose_list16": "Establish an efficient management layer",
+            "purpose_para2": "Establish personal style and move towards the path to success with ease!!",
+            "purpose_para3": "Personality Dimensions® Personality DIMENSIONS®",
+            "purpose_para4": "Understand your personality orientation and put it into action (PDaction)",
+            "sec_overview_title": "Overview & Principles",
+            "overview_para1": "Differences are good",
+            "overview_para2": "Personality Dimensions® is just a tool!",
+            "overview_para3": "It cannot fully describe you.",
+            "overview_para4": "If it helps you understand yourself and others, use it.",
+            "overview_para5": "Use it to improve your interpersonal communication skills.",
+            "overview_para6": "Use it to inspire cooperation among others.",
+            "overview_para7": "When it's not helping you, put it aside.",
+            "overview_para8": "Understand Your Personality Traits",
+            "overview_para9": "Put It Into Action",
+            "overview_para10": "We sincerely hope Personality Dimensions® is designed for your personality traits.",
+            "overview_para11": "Towards the workshop.",
+            "overview_para12": "Believe you will gain a deeper understanding of yourself.",
+            "overview_para13": "And also learn to appreciate others.",
+            "overview_para14": "We are confident that this personality test will serve you well.",
+            "overview_para15": "It helps you understand different personalities.",
+            "overview_para16": "We are happy to assist you in referencing this guideline.",
+            "overview_para17": "The purpose is to help you review the workshop content.",
+            "overview_para18": "At the same time, please refer to this guideline to unleash your personality traits.",
+            "overview_para19": "Whether in work, family, friendships, or social life.",
+            "overview_para20": "Act boldly in all aspects.",
+            "overview_para21": "Build a rich life.",
+            "overview_para22": "Everyone's personality includes multiple shadow patterns.",
+            "overview_para23": "If you have already taken personality tests or used other self-understanding tools, you will know that these tests cannot fully describe you.",
+            "overview_para24": "Therefore, do not change yourself because of a personality test.",
+            "overview_para25": "You can gain more information from other tests to supplement your new self-awareness.",
+            "overview_para26": "But remember, no single tool can completely describe you; everyone's personality contains multiple shadow patterns.",
+            "sec_personality_types_title": "Personality Types",
+            "green_type_name": "Inquiring Green (Green - Inquiring Type) 🟢",
+            "green_core_needs_title": "Core Needs",
+            "green_core_needs1": "Knowledge and ability",
+            "green_traits_title": "Traits",
+            "green_traits1": "Emphasizes logic, rational",
+            "green_traits2": "Pays attention to quality",
+            "green_traits3": "Strives for progress",
+            "green_traits4": "Loves analysis, systematic",
+            "green_traits5": "Investigates to the root, likes to ask questions",
+            "green_traits6": "Focuses on the big picture",
+            "green_traits7": "Knows how to control emotions",
+            "green_traits8": "Strategic thinker",
+            "green_traits9": "Creative, flexible mind",
+            "green_traits10": "Needs independence and autonomy",
+            "green_traits11": "Needs personal time",
+            "green_traits12": "High expectations, high standards",
+            "green_strengths_title": "Strengths",
+            "green_strengths1": "Decisiveness",
+            "green_strengths2": "Conceptual ability",
+            "green_strengths3": "Thinks holistically, makes strategic thinking",
+            "green_strengths4": "Absorbs and reserves knowledge",
+            "green_strengths5": "Clear thinking, concise language",
+            "green_strengths6": "Pursues comprehensive information",
+            "green_strengths7": "Can make profound summaries from complex information",
+            "green_strengths8": "Analytical ability",
+            "green_strengths9": "Sets standards",
+            "green_strengths10": "Focuses on the big picture",
+            "green_strengths11": "Wholehearted effort",
+            "green_strengths12": "Adopts systematic and logical approaches",
+            "green_strengths13": "Collects data and information",
+            "green_practical_skills_title": "Practical Skills",
+            "green_practical_skills1": "Vision and creativity",
+            "green_practical_skills2": "Analytical power, problem-solving ability",
+            "green_practical_skills3": "Research and development ability",
+            "green_practical_skills4": "Observation and judgment",
+            "green_practical_skills5": "Emphasizes concepts, rational",
+            "green_practical_skills6": "Planning and organizational ability",
+            "green_practical_skills7": "Able to find the core of complex matters",
+            "green_weaknesses_title": "Potential Weaknesses",
+            "green_weaknesses1": "Lacks ability to explain detailed information",
+            "green_weaknesses2": "Does not care about others' feelings",
+            "green_weaknesses3": "Lacks follow-through ability",
+            "green_weaknesses4": "Information overload",
+            "green_weaknesses5": "Cannot understand emotional arguments/requests",
+            "green_weaknesses6": "Cannot focus on things of no interest",
+            "green_weaknesses7": "Can become impatient, arrogant",
+            "green_weaknesses8": "Analysis paralysis",
+            "green_weaknesses9": "Argumentative",
+            "green_needs_preferences_title": "Needs | Preferences",
+            "needs": "Needs",
+            "preferences": "Preferences",
+            "green_needs1": "Knowledge and ability",
+            "green_needs2": "Thirst for knowledge",
+            "green_needs3": "Clear quality standards",
+            "green_needs4": "Pursues detail and precision in everything",
+            "green_needs5": "Freedom to ask: 'Why?'",
+            "green_needs6": "Personal autonomy",
+            "green_needs7": "Time to sit quietly and think and process information",
+            "green_preferences1": "Exploring the unknown",
+            "green_preferences2": "Discovering new possibilities",
+            "green_preferences3": "Designing conceptual models",
+            "green_preferences4": "Improving quality/increasing efficiency",
+            "green_preferences5": "Setting strategies",
+            "green_preferences6": "Getting recognition from colleagues",
+            "green_preferences7": "Solving complex problems",
+            "green_preferences8": "Interpreting complex matters",
+            "green_preferences9": "Large amounts of data and information",
+            "green_cooperation_title": "Gaining Their Cooperation",
+            "green_cooperation1": "Encourage them to express opinions/acknowledge their opinions",
+            "green_cooperation2": "Assign key and challenging work",
+            "green_cooperation3": "Use policies as guidelines where possible",
+            "green_cooperation4": "Argue on facts, not personal feelings",
+            "green_cooperation5": "Provide time and space for research and work",
+            "green_cooperation6": "Provide reasons for decisions made",
+            "green_cooperation7": "Convey messages from a big-picture perspective",
+            "green_cooperation8": "Involve them in the initial stages",
+            "green_problems_title": "Causes of Problems",
+            "green_problems1": "Lack of independence",
+            "green_problems2": "Incompetence",
+            "green_problems3": "Boredom",
+            "green_problems4": "Others' emotional expressions",
+            "green_problems5": "Making hasty decisions without sufficient information",
+            "green_problems6": "Being uninformed",
+            "green_problems7": "Opinions completely rejected",
+            "green_problems8": "Receiving negative criticism",
+            "green_problems9": "Forced to speak without time to think carefully",
+            "green_rewards_title": "Rewarding Inquiring Green Team Members",
+            "green_rewards1": "Provide opportunities for professional development",
+            "green_rewards2": "Listen to their ideas and insights",
+            "green_rewards3": "Praise their creativity and flexible insights",
+            "green_rewards4": "Be open and accept their observations and opinions",
+            "green_rewards5": "Acknowledge their precise handling and work quality",
+            "gold_type_name": "Organized Gold (Gold - Organizing Type) 🟡",
+            "gold_core_needs_title": "Core Needs",
+            "gold_core_needs1": "Gain a sense of belonging through duties and responsibilities",
+            "gold_traits_title": "Traits",
+            "gold_traits1": "Organized and orderly",
+            "gold_traits2": "Follows traditions",
+            "gold_traits3": "Responsible and practical",
+            "gold_traits4": "Reliable and trustworthy",
+            "gold_traits5": "Loyal to organizational goals",
+            "gold_traits6": "Always in a state of readiness",
+            "gold_traits7": "Service-oriented",
+            "gold_traits8": "Enjoys helping others, trustworthy",
+            "gold_traits9": "Completes tasks on time",
+            "gold_traits10": "Believes in policies and procedures",
+            "gold_traits11": "Respects authority and regulations",
+            "gold_traits12": "Patient and cooperative",
+            "gold_strengths_title": "Strengths",
+            "gold_strengths1": "Reliable and steadfast",
+            "gold_strengths2": "Seeks complete resolution of matters, follows through",
+            "gold_strengths3": "Good at distinguishing right from wrong",
+            "gold_strengths4": "Values productivity",
+            "gold_strengths5": "Focused, detail-oriented",
+            "gold_strengths6": "Plays the role of stabilizer in organizations",
+            "gold_strengths7": "Acts according to schedule",
+            "gold_strengths8": "Creates and maintains order",
+            "gold_strengths9": "Cooperative, enjoys helping",
+            "gold_strengths10": "High work quality",
+            "gold_strengths11": "Cares for the team",
+            "gold_strengths12": "Considers consequences before acting",
+            "gold_strengths13": "Has common sense",
+            "gold_practical_skills_title": "Practical Skills",
+            "gold_practical_skills1": "Planning and organizational ability",
+            "gold_practical_skills2": "Detail handling ability",
+            "gold_practical_skills3": "Supervision and coordination ability",
+            "gold_practical_skills4": "Follows instructions",
+            "gold_practical_skills5": "Data collection and classification",
+            "gold_practical_skills6": "Sets and follows procedures",
+            "gold_practical_skills7": "Budget formulation, good at calculations",
+            "gold_practical_skills8": "Evaluation ability and quick action",
+            "gold_practical_skills9": "Management and supervision ability",
+            "gold_practical_skills10": "Helping and execution ability",
+            "gold_practical_skills11": "Good listener for information",
+            "gold_weaknesses_title": "Potential Weaknesses",
+            "gold_weaknesses1": "Defensive, lacks foresight",
+            "gold_weaknesses2": "Short-sighted",
+            "gold_weaknesses3": "Insists on own way, no other choices",
+            "gold_weaknesses4": "Once betrayed, never forgives",
+            "gold_weaknesses5": "Rigid, resists change",
+            "gold_weaknesses6": "Sometimes pessimistic or has negative thoughts",
+            "gold_weaknesses7": "Overly harsh on self and others",
+            "gold_needs_preferences_title": "Needs | Preferences",
+            "gold_needs1": "Sense of security, stability, order, planning",
+            "gold_needs2": "Rules, standards, procedures",
+            "gold_needs3": "Consistency, precision, productivity",
+            "gold_needs4": "Time to complete tasks",
+            "gold_needs5": "Specific details of requirements",
+            "gold_needs6": "Recognition of efforts and completed work",
+            "gold_needs7": "Sense of belonging",
+            "gold_needs8": "Feeling needed and useful",
+            "gold_needs9": "Beginning and end; complete closure of matters",
+            "gold_preferences1": "Orderly, structured",
+            "gold_preferences2": "Gains satisfaction from well-handled work",
+            "gold_preferences3": "Gains recognition in the team",
+            "gold_preferences4": "Serving others, enjoying time with others",
+            "gold_preferences5": "Well-prepared, seeks efficiency",
+            "gold_preferences6": "Tangible rewards",
+            "gold_preferences7": "Stability/establishing procedures",
+            "gold_cooperation_title": "Gaining Their Cooperation",
+            "gold_cooperation1": "Organized, punctual",
+            "gold_cooperation2": "Clear expectations/procedures; set deadlines",
+            "gold_cooperation3": "Provide reasons for changes; not too hasty",
+            "gold_cooperation4": "If something goes wrong, suggest other feasible methods",
+            "gold_cooperation5": "Make clear requests",
+            "gold_cooperation6": "Keep promises, honor commitments",
+            "gold_cooperation7": "Provide sufficient resources to complete work",
+            "gold_cooperation8": "Set agenda, follow schedule",
+            "gold_problems_title": "Causes of Problems",
+            "gold_problems1": "Role/responsibility confusion",
+            "gold_problems2": "Disorganized work environment",
+            "gold_problems3": "Insufficient time or schedule changes",
+            "gold_problems4": "Unclear or changing rules",
+            "gold_problems5": "Unplanned/unexpected changes",
+            "gold_problems6": "Too many priority tasks at once",
+            "gold_problems7": "Frequent disruptive interruptions",
+            "gold_problems8": "Unclear authority",
+            "gold_rewards_title": "Rewarding Organized Gold Team Members",
+            "gold_rewards1": "Praise their work quality",
+            "gold_rewards2": "Let them know they are appreciated",
+            "gold_rewards3": "Reward their loyalty, efficiency, and reliability",
+            "gold_rewards4": "Value their organized style",
+            "gold_rewards5": "Acknowledge their value in the team or organization (sense of belonging)",
+            "gold_rewards6": "Provide tangible rewards - money, medals, cards, etc.",
+            "blue_type_name": "Authentic Blue (Blue - Authentic Type) 🔵",
+            "blue_core_needs_title": "Core Needs",
+            "blue_core_needs1": "Interpersonal relationships and self-realization",
+            "blue_traits_title": "Traits",
+            "blue_traits1": "People-oriented",
+            "blue_traits2": "Builds good relationships with others",
+            "blue_traits3": "Creates good impressions",
+            "blue_traits4": "Creates a united environment",
+            "blue_traits5": "Enthusiastic, motivating",
+            "blue_traits6": "Attentive to others' needs",
+            "blue_traits7": "Provides support, empathetic, inspiring",
+            "blue_traits8": "Good at expression, energetic",
+            "blue_traits9": "Pursues and values harmony",
+            "blue_traits10": "Values moral concepts, honesty, sincerity",
+            "blue_traits11": "Considers others",
+            "blue_traits12": "Optimistic",
+            "blue_strengths_title": "Strengths",
+            "blue_strengths1": "Persuasive, cooperative",
+            "blue_strengths2": "Shows empathy",
+            "blue_strengths3": "Quickly gives praise and support",
+            "blue_strengths4": "Creative thinker",
+            "blue_strengths5": "Dedicated to people-related matters",
+            "blue_strengths6": "Mediates and resolves conflicts",
+            "blue_strengths7": "Promotes personal and organizational growth and development",
+            "blue_strengths8": "Natural team builder/member",
+            "blue_strengths9": "Sees/triggers others' potential",
+            "blue_strengths10": "Expresses ideas and feelings",
+            "blue_strengths11": "Good intuition and imagination",
+            "blue_strengths12": "Fosters harmonious atmosphere",
+            "blue_strengths13": "Infects and inspires others",
+            "blue_practical_skills_title": "Practical Skills",
+            "blue_practical_skills1": "Inspires others, persuasive, leadership",
+            "blue_practical_skills2": "Public speaking and expression ability",
+            "blue_practical_skills3": "Consulting, coaching ability and mentor role",
+            "blue_practical_skills4": "Caregiver in group processes",
+            "blue_practical_skills5": "Recruitment and training ability",
+            "blue_practical_skills6": "Listener, good communicator",
+            "blue_practical_skills7": "Combines and maintains harmony",
+            "blue_practical_skills8": "Acts as a catalyst",
+            "blue_practical_skills9": "Creativity, aesthetic sense",
+            "blue_practical_skills10": "Mediates conflicts",
+            "blue_practical_skills11": "Quickly gives praise and encouragement",
+            "blue_practical_skills12": "Uses flexible methods to achieve goals",
+            "blue_weaknesses_title": "Potential Weaknesses",
+            "blue_weaknesses1": "Setting goals and time management",
+            "blue_weaknesses2": "Too involved in the process",
+            "blue_weaknesses3": "Sensitive to criticism and arguments",
+            "blue_weaknesses4": "May avoid facing problems",
+            "blue_weaknesses5": "Creates dependency in the process of helping",
+            "blue_weaknesses6": "Cannot say 'no'; takes on too much",
+            "blue_weaknesses7": "Slow in decision-making and action",
+            "blue_weaknesses8": "May be too compliant",
+            "blue_weaknesses9": "May show favoritism",
+            "blue_needs_preferences_title": "Needs | Preferences",
+            "blue_needs1": "Interaction with others",
+            "blue_needs2": "Free from control, not bound by details",
+            "blue_needs3": "Recognition and public acknowledgment",
+            "blue_needs4": "Unconditional support",
+            "blue_needs5": "Encouragement and reaffirmation",
+            "blue_needs6": "Understanding, popularity",
+            "blue_needs7": "Confirmation of personal value",
+            "blue_needs8": "Attention, acceptance, appreciation",
+            "blue_preferences1": "Meeting new friends",
+            "blue_preferences2": "Sincerity, harmony",
+            "blue_preferences3": "Inspiring quotes, speeches, and presentations",
+            "blue_preferences4": "Self-help and personal growth",
+            "blue_preferences5": "Influencing/entertaining others",
+            "blue_preferences6": "Using imagination and creativity",
+            "blue_preferences7": "Personal confirmation",
+            "blue_preferences8": "Observing and 'reading' others",
+            "blue_preferences9": "Changing to meet others' needs",
+            "blue_preferences10": "Fun and friendship in work",
+            "blue_cooperation_title": "Gaining Their Cooperation",
+            "blue_cooperation1": "Create a relaxed, people-centered environment",
+            "blue_cooperation2": "Encourage cooperation/fairness",
+            "blue_cooperation3": "Encourage/support creativity",
+            "blue_cooperation4": "Acknowledge feelings as convincing",
+            "blue_cooperation5": "Affirm their abilities",
+            "blue_cooperation6": "Argue on opinions and feelings, not just facts",
+            "blue_cooperation7": "Seek their help in resolving team conflicts",
+            "blue_problems_title": "Causes of Problems",
+            "blue_problems1": "Remembering too many individual data",
+            "blue_problems2": "Too many simultaneous projects",
+            "blue_problems3": "Lack of personal recognition",
+            "blue_problems4": "Blunt/dishonest communication",
+            "blue_problems5": "Disapproving and discouraging opinions",
+            "blue_problems6": "Unrealistic expectations",
+            "blue_problems7": "Indifference to people-related matters",
+            "blue_problems8": "Dishonest and immoral behavior",
+            "blue_rewards_title": "Rewarding Authentic Blue Team Members",
+            "blue_rewards1": "Provide professional development opportunities in interpersonal relationships",
+            "blue_rewards2": "Acknowledge their uniqueness, people skills, and ability to inspire others",
+            "blue_rewards3": "Publicly praise them or send notes",
+            "blue_rewards4": "Acknowledge their contribution to creating a harmonious environment",
+            "blue_rewards5": "Praise their imagination, creativity, participation, and cooperation",
+            "blue_rewards6": "Express understanding and appreciation for their feelings and ideas",
+            "orange_type_name": "Resourceful Orange (Orange - Resourceful Type) 🟠",
+            "orange_core_needs_title": "Core Needs",
+            "orange_core_needs1": "Freedom, activity, and diversity",
+            "orange_traits_title": "Traits",
+            "orange_traits1": "Seeks change and diversity",
+            "orange_traits2": "Action-oriented",
+            "orange_traits3": "Makes quick decisions",
+            "orange_traits4": "Independent and competitive",
+            "orange_traits5": "Extremely generous",
+            "orange_traits6": "Witty and humorous",
+            "orange_traits7": "Seeks new ways to get things done",
+            "orange_traits8": "Takes initiative",
+            "orange_traits9": "Realistic, practical risk-taker",
+            "orange_traits10": "Eager to try new things",
+            "orange_traits11": "Open-minded, non-judgmental",
+            "orange_strengths_title": "Strengths",
+            "orange_strengths1": "Flexible, adaptable, resilient",
+            "orange_strengths2": "Mediates disputes, solves problems",
+            "orange_strengths3": "Clear and direct communicator",
+            "orange_strengths4": "Decisive, driving force",
+            "orange_strengths5": "Determined, quick to act",
+            "orange_strengths6": "Thinks well in situations",
+            "orange_strengths7": "Gets things done",
+            "orange_strengths8": "Appreciates and achieves results quickly",
+            "orange_strengths9": "Excellent crisis management ability",
+            "orange_strengths10": "Patient, persistent",
+            "orange_strengths11": "Performs well under pressure",
+            "orange_strengths12": "Naturally seeks opportunities",
+            "orange_strengths13": "Sees facts and reality",
+            "orange_strengths14": "Easygoing, pleasant",
+            "orange_practical_skills_title": "Practical Skills",
+            "orange_practical_skills1": "Achieves results",
+            "orange_practical_skills2": "Leads and inspires others",
+            "orange_practical_skills3": "Good at sales, persuasive",
+            "orange_practical_skills4": "Negotiation and coping ability",
+            "orange_practical_skills5": "Public speaking and expression ability",
+            "orange_practical_skills6": "Creative and design ability",
+            "orange_practical_skills7": "Adaptability",
+            "orange_practical_skills8": "Corrects errors",
+            "orange_practical_skills9": "Manages multiple projects",
+            "orange_practical_skills10": "Can help with anything",
+            "orange_weaknesses_title": "Potential Weaknesses",
+            "orange_weaknesses1": "Impatient with theory and semantics",
+            "orange_weaknesses2": "May be reckless when seeking decisions",
+            "orange_weaknesses3": "May confront and be impulsive",
+            "orange_weaknesses4": "Distorts/breaks rules to get things done",
+            "orange_weaknesses5": "Little interest in abstract material",
+            "orange_weaknesses6": "May act too quickly without seeing the big picture",
+            "orange_weaknesses7": "May not pay attention to details",
+            "orange_weaknesses8": "May not follow through",
+            "orange_needs_preferences_title": "Needs | Preferences",
+            "orange_needs1": "Independence and self-control",
+            "orange_needs2": "Freedom for quick action",
+            "orange_needs3": "Results and immediate feedback",
+            "orange_needs4": "Opportunities for creation and expression",
+            "orange_needs5": "Recognition of skills and performance",
+            "orange_needs6": "Challenges and diversity",
+            "orange_needs7": "Freedom to express opinions and monitor how work is completed",
+            "orange_preferences1": "Adventure, testing limits",
+            "orange_preferences2": "Handling problems/crises",
+            "orange_preferences3": " 'Firefighting'",
+            "orange_preferences4": "In control (at least of oneself)",
+            "orange_preferences5": "Learning from experience",
+            "orange_preferences6": "Competition and contests",
+            "orange_preferences7": "Quick task completion",
+            "orange_preferences8": "Handling multiple tasks (more productive)",
+            "orange_cooperation_title": "Gaining Their Cooperation",
+            "orange_cooperation1": "Assign key and challenging tasks",
+            "orange_cooperation2": "Let them be leaders or personally involved in tasks",
+            "orange_cooperation3": "Give them diversified tasks",
+            "orange_cooperation4": "Accommodate their love for competition",
+            "orange_cooperation5": "Limited control, supervision",
+            "orange_cooperation6": "Don't tell them 'how' to do it",
+            "orange_cooperation7": "Let them find fun in work",
+            "orange_problems_title": "Causes of Problems",
+            "orange_problems1": "Feeling used or unappreciated",
+            "orange_problems2": "Environment constrained by rules",
+            "orange_problems3": "Strictly enforced procedures",
+            "orange_problems4": "Too much unnecessary structure",
+            "orange_problems5": "Lengthy meetings and excessive paperwork",
+            "orange_problems6": "Unclear, manipulative communication",
+            "orange_problems7": "Lack of positive recognition",
+            "orange_problems8": "Theoretical or abstract material",
+            "orange_rewards_title": "Rewarding Resourceful Orange Team Members",
+            "orange_rewards1": "Give tangible rewards - money, medals, extra leave, etc.",
+            "orange_rewards2": "Praise their clever methods in handling and solving problems",
+            "orange_rewards3": "Give immediate positive and specific feedback on their performance",
+            "orange_rewards4": "Acknowledge their flexibility, adaptability, vitality, and endurance",
+            "orange_rewards5": "Acknowledge their crisis management ability and good performance in crises",
+            "sec_ie_title": "Introverted and Extraverted Personalities",
+            "introvert_title": "Introvert 🔄",
+            "introvert_para1": "Tendency towards introversion or extraversion is an element of personality theory, not part of temperament theory, but it plays a significant role in understanding ourselves and others. Since this indicator affects the four personality types, we need to pay attention to this element; it is very important to consider it in interpersonal communication. The following briefly explains what introverted and extraverted personalities are.",
+            "introvert_para2": "In general terms, introverted personality may be described as shy or reserved, while extraverted is active or sociable. However, Jung (1923) and Myers-Briggs (1960) used these terms to describe how a person energizes themselves. Extraverts seek motivational factors from the outside, tend to extend their energy outward into action. Therefore, after working with others all day, extraverts feel energized. But when they have to spend time alone on static contemplative work or planning, they may feel quite tired by the end of the day. Introverts are the opposite.",
+            "introvert_para3": "Introverts seek motivational factors from within, conserve their energy, and put it into contemplative work. They can work efficiently with others all day, but when they return home, they may feel exhausted and want to quiet down to recharge. If introverts spend the whole day on solitary tasks without much interruption, they will feel full of energy when they return home.",
+            "introvert_para4": "Introverts can think, learn, and make decisions in their best state through quiet contemplation and individual study. Extraverts, on the other hand, are in their best state when discussing and sharing ideas with people. Extraverts believe that collective free discussion mode is extremely effective for stimulating creativity, while introverts find this mode disturbing and chaotic because there is no time for them to process the information internally. Extraverts often think aloud, and sometimes they are surprised by what they say. They can have a real 'aha' experience or a real 'embarrassing mistake' because they blurt out what's on their mind. As for introverts, they often share their ideas only after careful consideration, so 'embarrassing mistakes' are not a problem for them. However, the time they take to process information internally may sometimes be misunderstood by others as disinterest or disagreement with the current matter. Introverts sometimes choose not to share their ideas.",
+            "introvert_para5": "The definitions of introverted and extraverted personalities in this article differ from common usage. Unlike what people generally think, introverts can also be good at communicating, quite enthusiastic and active. Similarly, extraverts may sometimes take a more reserved attitude at first meetings. From discussions and observations, we learn that introverts can be reserved yet active, and extraverts can also be reserved yet active. Doesn't this make sense for those learning 'Personality Traits Orientation' (Personality Dimensions®)?",
+            "introvert_para6": "'Personality Traits Orientation' (Personality Dimensions®) teaches four personality types, but to truly understand and communicate effectively with people, you also need to recognize introverted and extraverted personalities. You need to realize that what extraverts say aloud may not be their final decision. They just blurt out whatever comes to mind. You also need to realize that when introverts quiet down and do not communicate, it does not necessarily mean they are not interested... they may just be understanding and processing what they heard. Give them some time, then ask for their opinions, and you will often find their surprising insights.",
+            "extravert_title": "Extravert 🔄",
+            "extravert_para1": "Seeks motivation from the external world, energy extends outward into action; best state is discussing and sharing ideas with people; enjoys interacting with people, gets excited during exchanges; prefers public work settings, feels energetic during interactions; enjoys generating new ideas through discussion and brainstorming; adaptable and takes immediate action; considers all possible solutions quickly when making decisions; values interaction with others, believing it leads to quick and effective work.",
+            "sec_key_reminders_title": "Remember Important Tips",
+            "reminder_list1": "Everyone's personality is like a colorful plaid pattern",
+            "reminder_list2": "If you use the knowledge learned in this book to stereotype or label others, you are treating this tool extremely unfairly.",
+            "reminder_list3": "Remember, we can and do things from multiple angles, but some people do not need to expend much effort and may feel more comfortable than others.",
+            "reminder_list4": "Everyone is different.",
+            "reminder_para1": "Personality Dimensions® Differences are good",
+            "reminder_para2": "Personality Dimensions® is just a tool!",
+            "reminder_para3": "It cannot and does not explain all human behavior.",
+            "reminder_para4": "If it can help you understand yourself and others, use it.",
+            "reminder_para5": "Use it to improve your interpersonal communication skills.",
+            "reminder_para6": "Use it to inspire and cause others to cooperate with you.",
+            "reminder_para7": "When it cannot help you, put it aside.",
+            "reminder_para8": "We sincerely hope you enjoy the Personality Dimensions personality traits orientation workshop designed for you, believe that you now have a deeper understanding of yourself, and also learn to appreciate others. We are confident that this personality traits orientation test has given you a valuable lesson, helping you improve your personal communication skills.",
+            "reminder_para9": "We have launched this reference guide to review the key points and content mentioned in the workshop with you. We hope you make good use of this reference guide to unleash your personality traits, whether in work, family, friends, or social circles, striving to put them into action in all aspects of life to achieve an abundant life!",
+            "reminder_para10": "©2004 Career/LifeSkills Resources Inc., 116 Viceroy Road, Unit B1, Concord, ON L4K 2M2, Canada",
+            "reminder_para11": "All rights reserved. Without prior written permission from the publisher, this publication may not be reproduced, stored in a retrieval system, or transmitted in any form or by any means, electronic, mechanical, photocopying, recording, or otherwise. Printed in Canada.",
+            "reminder_para12": "Copyright of Personality Dimensions® belongs to Career/LifeSkills Resources Inc.",
+            "reminder_para13": "All other trademarks, logos, and service marks displayed in this publication belong to other third parties."
+        }
+    };
+
+    function updateContent(lang) {
+        document.querySelectorAll('[data-translate-key]').forEach(element => {
+            const key = element.getAttribute('data-translate-key');
+            if (translations[lang] && translations[lang][key]) {
+                element.textContent = translations[lang][key];
+            }
+        });
+        document.querySelector('html').lang = lang;
+        document.getElementById('translateButton').textContent = translations[lang === 'zh-Hant' ? 'en' : 'zh-Hant']['translateButton'];
+        document.getElementById('translateButton').setAttribute('data-current-lang', lang);
+    }
+
+    // Accordion functionality
+    document.addEventListener('DOMContentLoaded', () => {
+        updateContent('zh-Hant');
+        const accordions = document.querySelectorAll('.accordion');
+        accordions.forEach(accordion => {
+            accordion.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                }
+            });
+        });
+    });
+
+    document.getElementById('translateButton').addEventListener('click', () => {
+        const currentLang = document.getElementById('translateButton').getAttribute('data-current-lang');
+        const newLang = currentLang === 'zh-Hant' ? 'en' : 'zh-Hant';
+        updateContent(newLang);
+    });
+</script>
+</body>
+</html>
