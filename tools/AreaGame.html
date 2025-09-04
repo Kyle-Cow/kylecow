@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陣地搶奪戰 - 戰場統制中心</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(45deg, #0f0f23, #1a1a2e, #16213e);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 戰場背景動畫 */
+        .battlefield-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            z-index: -1;
+            animation: battlegroundShake 8s infinite;
+        }
+
+        @keyframes battlegroundShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-1px, 1px) rotate(0.1deg); }
+            50% { transform: translate(1px, -1px) rotate(-0.1deg); }
+            75% { transform: translate(-1px, -1px) rotate(0.1deg); }
+        }
+
+        .battlefield-bg::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 0, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 255, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 60% 40%, rgba(0, 255, 0, 0.3) 0%, transparent 50%);
+            animation: battlePulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes battlePulse {
+            0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+            100% { transform: scale(1.2) rotate(5deg); filter: hue-rotate(360deg); }
+        }
+
+        /* 飛機動畫 */
+        .aircraft {
+            position: fixed;
+            width: 60px;
+            height: 30px;
+            background: linear-gradient(45deg, #666, #999);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .aircraft::before {
+            content: '✈';
+            position: absolute;
+            font-size: 24px;
+            color: #fff;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 爆彈效果 */
+        .bomb {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff4757, #ff3838);
+            border-radius: 50%;
+            z-index: 99;
+            box-shadow: 0 0 30px #ff4757;
+            animation: bombFall 2s linear forwards;
+        }
+
+        @keyframes bombFall {
+            0% { transform: translateY(-100px) scale(0.5); }
+            100% { transform: translateY(100vh) scale(1.5); }
+        }
+
+        /* 爆炸效果 */
+        .explosion {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            z-index: 98;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                background: radial-gradient(circle, #ffff00, #ff4757);
+                box-shadow: 0 0 0 rgba(255, 255, 255, 1);
+            }
+            50% {
+                transform: scale(2);
+                background: radial-gradient(circle, #ff4757, #ff6b7a);
+                box-shadow: 0 0 100px rgba(255, 255, 255, 0.8);
+            }
+            100% {
+                transform: scale(4);
+                background: radial-gradient(circle, transparent, transparent);
+                box-shadow: 0 0 200px rgba(255, 255, 255, 0);
+            }
+        }
+
+        /* 閃電效果 */
+        .lightning {
+            position: fixed;
+            width: 4px;
+            height: 100vh;
+            background: linear-gradient(to bottom, #fff, #00ffff, transparent);
+            z-index: 97;
+            opacity: 0;
+            animation: lightning-flash 0.3s ease-out;
+        }
+
+        @keyframes lightning-flash {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; box-shadow: 0 0 50px #00ffff; }
+        }
+
+        /* 標題區域 */
+        .header {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            backdrop-filter: blur(15px);
+            border-bottom: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: headerScan 4s infinite;
+        }
+
+        @keyframes headerScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-shadow: 
+                0 0 20px rgba(255,255,255,1), 
+                0 0 40px rgba(0,255,255,0.8),
+                0 0 60px rgba(255,0,0,0.6);
+            margin-bottom: 0.5rem;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { 
+                text-shadow: 
+                    0 0 20px rgba(255,255,255,1), 
+                    0 0 40px rgba(0,255,255,0.8),
+                    0 0 60px rgba(255,0,0,0.6);
+                transform: scale(1);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 30px rgba(255,255,255,1), 
+                    0 0 60px rgba(0,255,255,1),
+                    0 0 90px rgba(255,0,0,0.8);
+                transform: scale(1.05);
+            }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            animation: subtitleFlicker 3s infinite;
+        }
+
+        @keyframes subtitleFlicker {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 0.6; }
+        }
+
+        /* 戰況統計 */
+        .battle-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            animation: statPulse 2s infinite alternate;
+        }
+
+        @keyframes statPulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+            100% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.6); }
+        }
+
+        /* 連線狀態指示 */
+        .connection-status {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: statusBlink 1s infinite;
+        }
+
+        .status-dot.connected { background: #2ed573; }
+        .status-dot.disconnected { background: #ff4757; }
+        .status-dot.connecting { background: #ffa502; }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 戰區容器 - 使用全版面 */
+        .battlefield {
+            width: 100%;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* 陣地卡片 */
+        .territory-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-5px) rotateX(2deg); }
+        }
+
+        .territory-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+
+        .territory-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 20px;
+            z-index: -1;
+            animation: borderGlow 3s infinite;
+        }
+
+        .territory-card.red::before { 
+            background: linear-gradient(45deg, #ff4757, #ff6b7a, #ff4757);
+            animation: redBorderGlow 2s infinite;
+        }
+        .territory-card.blue::before { 
+            background: linear-gradient(45deg, #3742fa, #5352ed, #3742fa);
+            animation: blueBorderGlow 2s infinite;
+        }
+        .territory-card.yellow::before { 
+            background: linear-gradient(45deg, #ffa502, #ff9f43, #ffa502);
+            animation: yellowBorderGlow 2s infinite;
+        }
+        .territory-card.green::before { 
+            background: linear-gradient(45deg, #2ed573, #1dd1a1, #2ed573);
+            animation: greenBorderGlow 2s infinite;
+        }
+
+        @keyframes redBorderGlow {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(1.5) saturate(1.5); }
+        }
+
+        @keyframes blueBorderGlow {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(1.5) saturate(1.5); }
+        }
+
+        @keyframes yellowBorderGlow {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(1.5) saturate(1.5); }
+        }
+
+        @keyframes greenBorderGlow {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(1.5) saturate(1.5); }
+        }
+
+        /* 陣地名稱 */
+        .territory-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: nameFlash 3s infinite;
+        }
+
+        @keyframes nameFlash {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .red .territory-name { 
+            color: #ff4757; 
+            text-shadow: 0 0 15px rgba(255, 71, 87, 1), 0 0 30px rgba(255, 71, 87, 0.5);
+        }
+        .blue .territory-name { 
+            color: #3742fa; 
+            text-shadow: 0 0 15px rgba(55, 66, 250, 1), 0 0 30px rgba(55, 66, 250, 0.5);
+        }
+        .yellow .territory-name { 
+            color: #ffa502; 
+            text-shadow: 0 0 15px rgba(255, 165, 2, 1), 0 0 30px rgba(255, 165, 2, 0.5);
+        }
+        .green .territory-name { 
+            color: #2ed573; 
+            text-shadow: 0 0 15px rgba(46, 213, 115, 1), 0 0 30px rgba(46, 213, 115, 0.5);
+        }
+
+        /* 分數顯示 */
+        .score-display {
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .score-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            animation: scoreFlicker 1.5s infinite;
+        }
+
+        @keyframes scoreFlicker {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            25% { 
+                opacity: 0.8; 
+                transform: scale(1.1);
+                filter: brightness(1.2);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(0.95);
+                filter: brightness(0.9);
+            }
+            75% { 
+                opacity: 0.9; 
+                transform: scale(1.05);
+                filter: brightness(1.1);
+            }
+        }
+
+        /* 進度條容器 */
+        .progress-container {
+            position: relative;
+            height: 25px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 15px;
+            position: relative;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            animation: progressPulse 2s infinite;
+        }
+
+        @keyframes progressPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: progressShine 1.5s infinite;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+            animation: progressGlint 3s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes progressGlint {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .red .progress-bar { 
+            background: linear-gradient(45deg, #ff4757, #ff6b7a, #ff4757);
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
+        }
+        .blue .progress-bar { 
+            background: linear-gradient(45deg, #3742fa, #5352ed, #3742fa);
+            box-shadow: 0 0 30px rgba(55, 66, 250, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
+        }
+        .yellow .progress-bar { 
+            background: linear-gradient(45deg, #ffa502, #ff9f43, #ffa502);
+            box-shadow: 0 0 30px rgba(255, 165, 2, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
+        }
+        .green .progress-bar { 
+            background: linear-gradient(45deg, #2ed573, #1dd1a1, #2ed573);
+            box-shadow: 0 0 30px rgba(46, 213, 115, 0.8), inset 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        /* 狀態標籤 */
+        .status {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            animation: statusBlink 2s infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .status.active {
+            background: rgba(46, 213, 115, 0.3);
+            color: #2ed573;
+            border: 2px solid #2ed573;
+            box-shadow: 0 0 20px rgba(46, 213, 115, 0.5);
+        }
+
+        .status.locked {
+            background: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+            border: 2px solid #ff4757;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+        }
+
+        /* 勝利特效 */
+        .victory-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .fireworks {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            animation: firework 1.5s ease-out forwards;
+        }
+
+        @keyframes firework {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+                box-shadow: 0 0 0 rgba(255,255,255,1);
+            }
+            50% {
+                transform: scale(10) rotate(180deg);
+                opacity: 0.8;
+                box-shadow: 0 0 50px rgba(255,255,255,0.8);
+            }
+            100% {
+                transform: scale(25) rotate(360deg);
+                opacity: 0;
+                box-shadow: 0 0 100px rgba(255,255,255,0);
+            }
+        }
+
+        /* 戰鬥更新提示 */
+        .battle-update {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
+            color: #fff;
+            padding: 1.5rem 3rem;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            z-index: 1001;
+            opacity: 0;
+            border: 2px solid rgba(255,255,255,0.5);
+            box-shadow: 0 0 50px rgba(255,255,255,0.8);
+            animation: battleUpdateFade 4s ease-in-out;
+        }
+
+        @keyframes battleUpdateFade {
+            0%, 100% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); 
+            }
+            20%, 80% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+            }
+        }
+
+        /* 屏幕震動效果 */
+        .screen-shake {
+            animation: screenShake 0.5s infinite;
+        }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-2px, 2px) rotate(0.5deg); }
+            50% { transform: translate(2px, -2px) rotate(-0.5deg); }
+            75% { transform: translate(-2px, -2px) rotate(0.5deg); }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 1200px) {
+            .battlefield { grid-template-columns: repeat(2, 1fr); }
+            .territory-card { padding: 1rem; }
+            .score-number { font-size: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .battlefield { 
+                grid-template-columns: 1fr; 
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+            .battle-stats { flex-direction: column; align-items: center; }
+            .territory-name { font-size: 1rem; }
+            .score-number { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="battlefield-bg"></div>
+    
+    <header class="header">
+        <h1 class="title">陣地搶奪戰</h1>
+        <p class="subtitle">戰場統制中心 - 實時戰況監控</p>
+        <div class="battle-stats">
+            <div class="stat-item">
+                <div>總戰鬥點數</div>
+                <div id="totalRounds">0</div>
+            </div>
+            <div class="stat-item">
+                <div>活躍戰區</div>
+                <div id="activeZones">2</div>
+            </div>
+            <div class="stat-item">
+                <div>最後更新</div>
+                <div id="lastUpdate">--:--</div>
+            </div>
+            <div class="connection-status">
+                <div class="status-dot connecting" id="statusDot"></div>
+                <span id="connectionText">連接中...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="battlefield">
+        <div class="territory-card red" data-territory="red">
+            <div class="territory-name">紅色戰區</div>
+            <div class="score-display">
+                <div class="score-number" id="redScore">0</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="redProgress"></div>
+            </div>
+            <div class="status active">戰鬥中</div>
+        </div>
+
+        <div class="territory-card blue" data-territory="blue">
+            <div class="territory-name">藍色戰區</div>
+            <div class="score-display">
+                <div class="score-number" id="blueScore">0</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="blueProgress"></div>
+            </div>
+            <div class="status active">戰鬥中</div>
+        </div>
+
+        <div class="territory-card yellow" data-territory="yellow">
+            <div class="territory-name">黃色戰區</div>
+            <div class="score-display">
+                <div class="score-number" id="yellowScore">0</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="yellowProgress"></div>
+            </div>
+            <div class="status locked">未開放</div>
+        </div>
+
+        <div class="territory-card green" data-territory="green">
+            <div class="territory-name">綠色戰區</div>
+            <div class="score-display">
+                <div class="score-number" id="greenScore">0</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="greenProgress"></div>
+            </div>
+            <div class="status locked">未開放</div>
+        </div>
+    </main>
+
+    <div class="victory-effect" id="victoryEffect"></div>
+
+    <script>
+        class BattlefieldController {
+            constructor() {
+                this.maxScore = 100;
+                this.updateInterval = 5000; // 5秒更新一次
+                this.previousScores = { red: 0, blue: 0, yellow: 0, green: 0 };
+                this.currentScores = { red: 0, blue: 0, yellow: 0, green: 0 };
+                this.effectsEnabled = true;
+                this.connectionStatus = 'connecting';
+                this.retryCount = 0;
+                this.maxRetries = 3;
+                
+                // 您的 Google Sheets 連結
+                this.SHEET_ID = '1sMWO2wl5SOCoxppSJg0x-s9Qpl_USUQXqcC8Qf84tKU';
+                this.SHEET_GID = '82671967';
+                
+                this.init();
+            }
+
+            init() {
+                this.updateLastUpdateTime();
+                this.updateConnectionStatus('connecting');
+                this.startDataPolling();
+                this.startEffects();
+                this.fetchInitialData();
+            }
+
+            updateConnectionStatus(status) {
+                this.connectionStatus = status;
+                const statusDot = document.getElementById('statusDot');
+                const connectionText = document.getElementById('connectionText');
+                
+                statusDot.className = `status-dot ${status}`;
+                
+                switch(status) {
+                    case 'connected':
+                        connectionText.textContent = '已連接';
+                        break;
+                    case 'disconnected':
+                        connectionText.textContent = '連接失敗';
+                        break;
+                    case 'connecting':
+                        connectionText.textContent = '連接中...';
+                        break;
+                }
+            }
+
+            // 多種獲取數據的方法
+            async fetchBattleData() {
+                const methods = [
+                    () => this.fetchViaGoogleAPI(),
+                    () => this.fetchViaProxy(),
+                    () => this.fetchDirectly(),
+                    () => this.fetchViaJSONP()
+                ];
+
+                for (let i = 0; i < methods.length; i++) {
+                    try {
+                        console.log(`嘗試方法 ${i + 1}`);
+                        const data = await methods[i]();
+                        if (data && Object.keys(data).length > 0) {
+                            this.updateConnectionStatus('connected');
+                            this.retryCount = 0;
+                            return data;
+                        }
+                    } catch (error) {
+                        console.log(`方法 ${i + 1} 失敗:`, error);
+                        if (i === methods.length - 1) {
+                            this.updateConnectionStatus('disconnected');
+                        }
+                    }
+                }
+                
+                // 所有方法都失敗時使用備用數據
+                console.log('所有方法都失敗，使用備用數據');
+                return this.getBackupData();
+            }
+
+            // 方法1: 使用 Google Sheets API（建議）
+            async fetchViaGoogleAPI() {
+                // 注意：這需要您的 Google Sheets 設為「任何人都可查看」
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${this.SHEET_ID}/values/A1:D1?key=YOUR_API_KEY`;
+                
+                // 如果您沒有 API Key，這個方法會失敗
+                throw new Error('需要 Google API Key');
+            }
+
+            // 方法2: 使用 CORS 代理
+            async fetchViaProxy() {
+                const proxyUrls = [
+                    'https://api.allorigins.win/raw?url=',
+                    'https://cors-anywhere.herokuapp.com/',
+                    'https://api.codetabs.com/v1/proxy?quest='
+                ];
+                
+                const sheetUrl = `https://docs.google.com/spreadsheets/d/${this.SHEET_ID}/export?format=csv&gid=${this.SHEET_GID}`;
+                
+                for (const proxy of proxyUrls) {
+                    try {
+                        const response = await fetch(proxy + encodeURIComponent(sheetUrl), {
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            const csvText = await response.text();
+                            return this.parseCSVData(csvText);
+                        }
+                    } catch (error) {
+                        console.log(`代理 ${proxy} 失敗:`, error);
+                    }
+                }
+                throw new Error('所有代理都失敗');
+            }
+
+            // 方法3: 直接訪問（可能被 CORS 阻止）
+            async fetchDirectly() {
+                const sheetUrl = `https://docs.google.com/spreadsheets/d/${this.SHEET_ID}/export?format=csv&gid=${this.SHEET_GID}&t=${Date.now()}`;
+                
+                const response = await fetch(sheetUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'text/csv,text/plain,*/*',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const csvText = await response.text();
+                return this.parseCSVData(csvText);
+            }
+
+            // 方法4: JSONP（如果 Google 支持）
+            async fetchViaJSONP() {
+                return new Promise((resolve, reject) => {
+                    const callbackName = 'googleCallback' + Date.now();
+                    const script = document.createElement('script');
+                    
+                    window[callbackName] = (data) => {
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        resolve(this.parseJSONPData(data));
+                    };
+                    
+                    script.onerror = () => {
+                        document.head.removeChild(script);
+                        delete window[callbackName];
+                        reject(new Error('JSONP 失敗'));
+                    };
+                    
+                    script.src = `https://docs.google.com/spreadsheets/d/${this.SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*&gid=${this.SHEET_GID}&callback=${callbackName}`;
+                    document.head.appendChild(script);
+                    
+                    setTimeout(() => {
+                        if (window[callbackName]) {
+                            script.onerror();
+                        }
+                    }, 10000);
+                });
+            }
+
+            // 解析 CSV 數據
+            parseCSVData(csvText) {
+                try {
+                    console.log('原始 CSV 數據:', csvText);
+                    
+                    const lines = csvText.trim().split('\n');
+                    if (lines.length === 0) {
+                        throw new Error('CSV 數據為空');
+                    }
+                    
+                    // 取得第一行數據
+                    const firstLine = lines[0].replace(/"/g, ''); // 移除引號
+                    const values = firstLine.split(',');
+                    
+                    console.log('解析的數值:', values);
+                    
+                    const data = {
+                        red: Math.max(0, parseInt(values[0]) || 0),
+                        blue: Math.max(0, parseInt(values[1]) || 0),
+                        yellow: Math.max(0, parseInt(values[2]) || 0),
+                        green: Math.max(0, parseInt(values[3]) || 0)
+                    };
+                    
+                    console.log('解析後的數據:', data);
+                    return data;
+                    
+                } catch (error) {
+                    console.log('解析 CSV 失敗:', error);
+                    throw error;
+                }
+            }
+
+            // 解析 JSONP 數據
+            parseJSONPData(jsonpData) {
+                try {
+                    // Google Sheets JSONP 回應的結構可能複雜
+                    const rows = jsonpData.table.rows;
+                    if (rows && rows.length > 0) {
+                        const firstRow = rows[0].c;
+                        return {
+                            red: Math.max(0, parseInt(firstRow[0]?.v) || 0),
+                            blue: Math.max(0, parseInt(firstRow[1]?.v) || 0),
+                            yellow: Math.max(0, parseInt(firstRow[2]?.v) || 0),
+                            green: Math.max(0, parseInt(firstRow[3]?.v) || 0)
+                        };
+                    }
+                    throw new Error('JSONP 數據格式錯誤');
+                } catch (error) {
+                    console.log('解析 JSONP 失敗:', error);
+                    throw error;
+                }
+            }
+
+            // 備用數據（模擬數據增長）
+            getBackupData() {
+                console.log('使用備用數據');
+                
+                // 漸進式增長，避免太快達到最大值
+                const increment = 0.5 + Math.random() * 1.5;
+                
+                Object.keys(this.currentScores).forEach(territory => {
+                    if (territory === 'red' || territory === 'blue') {
+                        this.currentScores[territory] = Math.min(
+                            this.maxScore, 
+                            this.currentScores[territory] + increment
+                        );
+                    } else {
+                        // 黃色和綠色增長較慢
+                        this.currentScores[territory] = Math.min(
+                            this.maxScore, 
+                            this.currentScores[territory] + increment * 0.3
+                        );
+                    }
+                });
+                
+                return { ...this.currentScores };
+            }
+
+            // 獲取初始數據
+            async fetchInitialData() {
+                try {
+                    const initialData = await this.fetchBattleData();
+                    this.currentScores = { ...initialData };
+                    this.previousScores = { ...initialData };
+                    this.updateUI(initialData);
+                    console.log('初始數據載入成功:', initialData);
+                } catch (error) {
+                    console.log('初始數據載入失敗:', error);
+                    this.updateConnectionStatus('disconnected');
+                }
+            }
+
+            // 開始數據輪詢
+            startDataPolling() {
+                setInterval(async () => {
+                    try {
+                        const newData = await this.fetchBattleData();
+                        this.updateBattlefield(newData);
+                        this.updateLastUpdateTime();
+                    } catch (error) {
+                        console.log('數據更新失敗:', error);
+                        this.retryCount++;
+                        if (this.retryCount > this.maxRetries) {
+                            this.updateConnectionStatus('disconnected');
+                        }
+                    }
+                }, this.updateInterval);
+            }
+
+            // 開始特效系統
+            startEffects() {
+                // 飛機效果
+                setInterval(() => {
+                    if (this.effectsEnabled) {
+                        this.createAircraft();
+                    }
+                }, 8000);
+
+                // 閃電效果
+                setInterval(() => {
+                    if (this.effectsEnabled) {
+                        this.createLightning();
+                    }
+                }, 12000);
+
+                // 隨機爆炸效果
+                setInterval(() => {
+                    if (this.effectsEnabled && Math.random() > 0.7) {
+                        this.createRandomExplosion();
+                    }
+                }, 6000);
+            }
+
+            // 創建飛機
+            createAircraft() {
+                const aircraft = document.createElement('div');
+                aircraft.className = 'aircraft';
+                aircraft.style.left = '-60px';
+                aircraft.style.top = Math.random() * 300 + 50 + 'px';
+                document.body.appendChild(aircraft);
+
+                // 飛機移動動畫
+                let position = -60;
+                const flyInterval = setInterval(() => {
+                    position += 8;
+                    aircraft.style.left = position + 'px';
+                    
+                    // 隨機投彈
+                    if (position > 200 && position < window.innerWidth - 200 && Math.random() > 0.8) {
+                        this.dropBomb(position + 30, parseInt(aircraft.style.top));
+                    }
+                    
+                    if (position > window.innerWidth) {
+                        clearInterval(flyInterval);
+                        if (aircraft.parentNode) {
+                            aircraft.parentNode.removeChild(aircraft);
+                        }
+                    }
+                }, 50);
+            }
+
+            // 投彈
+            dropBomb(x, y) {
+                const bomb = document.createElement('div');
+                bomb.className = 'bomb';
+                bomb.style.left = x + 'px';
+                bomb.style.top = y + 'px';
+                document.body.appendChild(bomb);
+
+                setTimeout(() => {
+                    if (bomb.parentNode) {
+                        bomb.parentNode.removeChild(bomb);
+                        this.createExplosion(x, y + window.innerHeight * 0.7);
+                    }
+                }, 2000);
+            }
+
+            // 創建爆炸
+            createExplosion(x, y) {
+                const explosion = document.createElement('div');
+                explosion.className = 'explosion';
+                explosion.style.left = (x - 50) + 'px';
+                explosion.style.top = (y - 50) + 'px';
+                document.body.appendChild(explosion);
+
+                // 屏幕震動
+                document.body.classList.add('screen-shake');
+                setTimeout(() => {
+                    document.body.classList.remove('screen-shake');
+                }, 500);
+
+                setTimeout(() => {
+                    if (explosion.parentNode) {
+                        explosion.parentNode.removeChild(explosion);
+                    }
+                }, 1000);
+            }
+
+            // 創建閃電
+            createLightning() {
+                const lightning = document.createElement('div');
+                lightning.className = 'lightning';
+                lightning.style.left = Math.random() * window.innerWidth + 'px';
+                document.body.appendChild(lightning);
+
+                setTimeout(() => {
+                    if (lightning.parentNode) {
+                        lightning.parentNode.removeChild(lightning);
+                    }
+                }, 300);
+            }
+
+            // 隨機爆炸
+            createRandomExplosion() {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                this.createExplosion(x, y);
+            }
+
+            // 更新戰場數據
+            updateBattlefield(newData) {
+                this.checkForUpdates(newData);
+                this.updateUI(newData);
+                this.checkVictoryConditions(newData);
+                this.previousScores = { ...this.currentScores };
+                this.currentScores = { ...newData };
+            }
+
+            // 檢查數據更新
+            checkForUpdates(newData) {
+                Object.keys(newData).forEach(territory => {
+                    const difference = newData[territory] - this.previousScores[territory];
+                    if (difference > 0.5) { // 只有明顯變化才顯示
+                        this.showBattleUpdate(`💥 ${territory.toUpperCase()}戰區 獲得新的戰鬥點數! (+${Math.floor(difference)})`);
+                        this.createExplosion(
+                            Math.random() * window.innerWidth,
+                            Math.random() * window.innerHeight * 0.6 + 200
+                        );
+                    }
+                });
+            }
+
+            // 更新UI
+            updateUI(data) {
+                Object.keys(data).forEach(territory => {
+                    const score = Math.floor(data[territory]);
+                    const percentage = Math.min(100, (score / this.maxScore) * 100);
+                    
+                    // 更新分數
+                    const scoreElement = document.getElementById(`${territory}Score`);
+                    if (scoreElement) {
+                        scoreElement.textContent = score;
+                    }
+                    
+                    // 更新進度條
+                    const progressElement = document.getElementById(`${territory}Progress`);
+                    if (progressElement) {
+                        progressElement.style.width = `${percentage}%`;
+                    }
+                });
+                
+                // 更新總點數
+                const totalPoints = Object.values(data).reduce((sum, val) => sum + Math.floor(val), 0);
+                const totalElement = document.getElementById('totalRounds');
+                if (totalElement) {
+                    totalElement.textContent = totalPoints;
+                }
+                
+                // 更新活躍戰區數
+                const activeZones = Object.values(data).filter(val => val > 0).length;
+                const activeElement = document.getElementById('activeZones');
+                if (activeElement) {
+                    activeElement.textContent = activeZones;
+                }
+            }
+
+            // 檢查勝利條件
+            checkVictoryConditions(data) {
+                Object.keys(data).forEach(territory => {
+                    if (data[territory] >= this.maxScore && this.previousScores[territory] < this.maxScore) {
+                        this.triggerVictory(territory);
+                    }
+                });
+            }
+
+            // 觸發勝利效果
+            triggerVictory(territory) {
+                this.showBattleUpdate(`🎉 ${territory.toUpperCase()}戰區 完全佔領! 🎉`);
+                this.createMassiveFireworks();
+                
+                // 更新狀態
+                const card = document.querySelector(`[data-territory="${territory}"]`);
+                if (card) {
+                    const status = card.querySelector('.status');
+                    if (status) {
+                        status.textContent = '🏆 完全佔領';
+                        status.classList.remove('active', 'locked');
+                        status.style.background = 'rgba(255, 215, 0, 0.4)';
+                        status.style.color = '#ffd700';
+                        status.style.border = '2px solid #ffd700';
+                        status.style.boxShadow = '0 0 30px rgba(255, 215, 0, 0.8)';
+                    }
+                }
+
+                // 大型屏幕效果
+                document.body.style.animation = 'screenShake 2s infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 3000);
+            }
+
+            // 大型煙火效果
+            createMassiveFireworks() {
+                const victoryEffect = document.getElementById('victoryEffect');
+                
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const firework = document.createElement('div');
+                        firework.className = 'fireworks';
+                        firework.style.left = Math.random() * 100 + '%';
+                        firework.style.top = Math.random() * 100 + '%';
+                        firework.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                        firework.style.boxShadow = `0 0 30px hsl(${Math.random() * 360}, 100%, 70%)`;
+                        
+                        victoryEffect.appendChild(firework);
+                        
+                        setTimeout(() => {
+                            if (firework.parentNode) {
+                                firework.parentNode.removeChild(firework);
+                            }
+                        }, 1500);
+                    }, i * 50);
+                }
+            }
+
+            // 顯示戰鬥更新提示
+            showBattleUpdate(message) {
+                const existing = document.querySelector('.battle-update');
+                if (existing) existing.remove();
+                
+                const updateDiv = document.createElement('div');
+                updateDiv.className = 'battle-update';
+                updateDiv.textContent = message;
+                document.body.appendChild(updateDiv);
+                
+                setTimeout(() => {
+                    if (updateDiv.parentNode) {
+                        updateDiv.parentNode.removeChild(updateDiv);
+                    }
+                }, 4000);
+            }
+
+            // 更新最後更新時間
+            updateLastUpdateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('zh-TW', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                const updateElement = document.getElementById('lastUpdate');
+                if (updateElement) {
+                    updateElement.textContent = timeString;
+                }
+            }
+        }
+
+        // 初始化戰場控制器
+        window.addEventListener('DOMContentLoaded', () => {
+            new BattlefieldController();
+        });
+
+        // 添加鍵盤快捷鍵
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                e.preventDefault();
+                location.reload();
+            }
+        });
+
+        // 頁面可見性變化時的處理
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                console.log('頁面隱藏，暫停特效');
+            } else {
+                console.log('頁面顯示，恢復特效');
+                // 頁面重新顯示時強制更新一次數據
+                if (window.battleController) {
+                    window.battleController.fetchInitialData();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
