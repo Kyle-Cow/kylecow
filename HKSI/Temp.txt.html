@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>連點溫度計：衝到100！EX</title>
+  <meta name="description" content="不停點擊螢幕讓溫度往上升，停 0.5 秒就往下掉。衝破 100 觸發黃金狂熱特效！" />
+  <style>
+    :root{
+      --bg:#070a11;
+      --fg:#e8f1ff;
+      --muted:#8da0c7;
+      --accent:#ff3d81;
+      --accent2:#ffb703;
+      --good:#21e6b5;
+      --warn:#ff5a3d;
+      --gold:#ffd400;
+      --gold2:#ffb703;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;height:100%;
+      background:radial-gradient(1200px 800px at 70% 10%, #12192a 0%, #0b0f16 60%, #05070c 100%);
+      color:var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      overscroll-behavior:none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .root{
+      display:flex;flex-direction:column;min-height:100%;width:100%;
+      align-items:center;justify-content:space-between;gap:8px;
+      padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+    }
+    header{
+      width:100%;max-width:960px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+      padding:10px 4px 0;user-select:none;
+    }
+    .brand{display:flex;gap:10px;align-items:center;font-weight:900;letter-spacing:.5px}
+    .brand .dot{
+      width:12px;height:12px;border-radius:50%;
+      background:conic-gradient(from 0deg, var(--accent), #ff0066, #ff5ad1, var(--accent));
+      box-shadow:0 0 14px 2px rgba(255,0,120,.7), 0 0 30px 8px rgba(255,50,150,.28) inset;
+      animation: spin 3s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hint{font-size:.9rem;color:var(--muted);text-align:right;line-height:1.3}
+
+    /* Stage */
+    .stage{
+      position:relative;width:100%;max-width:960px;flex:1;display:flex;align-items:center;justify-content:center;
+      padding:8px 0 4px;overflow:hidden;border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+      backdrop-filter: blur(2px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 20px 80px rgba(0,0,0,.4);
+    }
+
+    /* Canvases */
+    canvas#bg, canvas#fx, canvas#particles, canvas#burst{
+      position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;
+    }
+
+    /* Golden Frenzy background layer */
+    .gold-back{
+      position:absolute;inset:-20%;pointer-events:none;opacity:0;mix-blend-mode:screen;
+      background:
+        radial-gradient(60% 60% at 50% 40%, rgba(255,215,64,.35), rgba(255,215,64,0) 60%),
+        conic-gradient(from 0deg at 50% 40%, rgba(255,216,0,.25), rgba(255,180,0,.05), rgba(255,216,0,.25));
+      filter: blur(18px) saturate(1.2);
+      transition: opacity .25s ease;
+    }
+    .gold-active .gold-back{ opacity:1 }
+
+    /* HUD */
+    .hud{
+      position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+      pointer-events:none;padding:16px 12px 20px;gap:12px;
+    }
+    .meter-wrap{
+      width:min(560px, 92vw);
+      height: min(62vh, 520px);
+      max-height: 560px;min-height: 320px;
+      display:flex;align-items:flex-end;justify-content:center;position:relative;pointer-events:none;
+      filter: drop-shadow(0 16px 36px rgba(0,0,0,.55));
+    }
+    .thermo{
+      position:relative;width:min(130px, 24vw);min-width:88px;max-width:150px;height:100%;
+      border-radius:999px;
+      background: linear-gradient(180deg, #0f1626, #0a0f18);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:
+        inset 0 14px 34px rgba(255,255,255,.06),
+        inset 0 -12px 36px rgba(0,0,0,.55),
+        0 0 0 6px rgba(255,255,255,.02);
+      overflow:hidden;
+    }
+    .tube{
+      position:absolute;left:50%;transform:translateX(-50%);
+      bottom:20%;width:40%;height:70%;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,0));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:999px;box-shadow: inset 0 0 0 2px rgba(0,0,0,.3);overflow:hidden;
+    }
+    .mercury{
+      position:absolute;left:0;right:0;bottom:0;height:0%;
+      background: linear-gradient(180deg, #ff4d6d, #ff2d55, #ff0062);
+      box-shadow:
+        inset 0 -10px 30px rgba(0,0,0,.25),
+        0 0 24px 8px rgba(255,60,120,.28),
+        0 0 80px 30px rgba(255,30,120,.10);
+      transition: height .08s cubic-bezier(.22,.9,.17,1.2), filter .08s;
+      filter: saturate(1.05);
+    }
+    .bulb{
+      position:absolute;left:50%;transform:translateX(-50%);bottom:2%;
+      width:62%;aspect-ratio:1/1;border-radius:50%;
+      background:
+        radial-gradient(35% 35% at 32% 28%, #fff5 0%, #fff0 60%),
+        radial-gradient(60% 60% at 50% 55%, #ff3d81, #ff1f5a 60%, #c40044 100%);
+      box-shadow:
+        inset 0 -10px 30px rgba(0,0,0,.35),
+        0 6px 22px rgba(0,0,0,.45),
+        0 0 30px 10px rgba(255,40,120,.25),
+        0 0 120px 44px rgba(255,40,120,.14);
+      transition: transform .08s, width .12s, filter .12s;
+    }
+    .bulb.glow-strong{
+      filter: saturate(1.15);
+      box-shadow:
+        inset 0 -10px 30px rgba(0,0,0,.35),
+        0 6px 22px rgba(0,0,0,.45),
+        0 0 40px 14px rgba(255,60,120,.38),
+        0 0 160px 60px rgba(255,60,120,.22);
+    }
+    .tickmarks{position:absolute; left:50%; transform:translateX(-50%); bottom:20%; width:60%; height:70%; pointer-events:none;}
+    .tickmarks .tick{position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg, #fff8, #fff0); opacity:.55}
+    .tickmarks .tick.major{ height:3px; opacity:.9; filter: drop-shadow(0 0 4px rgba(255,255,255,.2)) }
+    .scale-badge{
+      position:absolute; top:8px; right:8px; color:#c7d2ff; font-size:0.85rem; opacity:.85;
+      background:rgba(255,255,255,.06); padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(4px);
+    }
+
+    .score{
+      display:flex; align-items:center; justify-content:center; gap:10px; pointer-events:none;
+      font-weight:900; letter-spacing:1px; font-size: clamp(28px, 7vw, 56px);
+      text-shadow: 0 2px 0 #0008, 0 0 18px rgba(255,200,240,.22);
+    }
+    .score .val{ color:#fff }
+    .score .unit{ color:#ffd7ef; font-size:.6em; opacity:.85; font-weight:800 }
+    .combo{
+      height:28px; display:flex; align-items:center; justify-content:center; pointer-events:none;
+      font-weight:900; letter-spacing:.5px; color:#ffe38a; text-shadow:0 0 10px rgba(255,210,0,.35);
+      opacity:0; transform:translateY(8px) scale(.96);
+      transition: opacity .18s, transform .18s;
+      font-size: clamp(14px, 4vw, 18px);
+    }
+    .combo.show{ opacity:1; transform:translateY(0) scale(1) }
+
+    .sub{
+      font-size:clamp(12px, 3.2vw, 16px);
+      color:var(--muted); text-align:center; line-height:1.3; max-width:680px;
+    }
+
+    /* Rim */
+    .rim{ position:absolute; inset: -8px; border-radius: 24px; pointer-events:none; border:2px solid transparent; }
+
+    /* Controller */
+    .controller{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; -webkit-user-select:none; user-select:none; touch-action: manipulation;
+    }
+    .cta{
+      position:absolute; bottom: 16px; left:50%; transform:translateX(-50%); pointer-events:none;
+      font-weight:900; letter-spacing:.5px; color:#fff; opacity:.9;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(6px); font-size: clamp(14px, 4vw, 16px);
+      animation: ctapulse 1.6s ease-in-out infinite;
+    }
+    @keyframes ctapulse{
+      0%,100%{ transform:translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,.08) }
+      50%{ transform:translateX(-50%) scale(1.02); box-shadow: 0 0 0 10px rgba(255,255,255,.0) }
+    }
+
+    /* Toast / goal */
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%) translateY(-20px);
+      bottom: calc(env(safe-area-inset-bottom) + 84px);
+      background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.7));
+      border:1px solid rgba(255,255,255,.16);
+      color:#fff; padding:10px 14px; border-radius:12px; font-weight:900; letter-spacing:.3px; font-size:14px;
+      opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+      backdrop-filter: blur(8px); box-shadow:0 6px 22px rgba(0,0,0,.45); z-index:20;
+    }
+    .toast.show{ opacity:1; transform:translateX(-50%) translateY(0) }
+
+    /* Buttons */
+    .toolbar{ display:flex; gap:8px; align-items:center; justify-content:center; margin-top:4px }
+    .btn{
+      appearance:none; border:none; outline:none; background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.18); color:#fff; font-weight:800; letter-spacing:.3px; border-radius:12px;
+      padding:10px 12px; cursor:pointer; transition:transform .06s ease, background .2s ease; touch-action: manipulation;
+    }
+    .btn:active{ transform: scale(.98) }
+    .btn.small{ font-size:12px; padding:8px 10px; opacity:.95 }
+
+    /* Fever banner */
+    .fever-banner{
+      position:absolute; top:12px; left:50%; transform: translateX(-50%) translateY(-20px) scale(.98);
+      background: linear-gradient(90deg, #ffef99, #ffd400, #ffb703, #ffef99);
+      background-size: 300% 100%;
+      color:#3a2200; font-weight:1000; letter-spacing:.8px; padding:8px 14px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.35); filter: drop-shadow(0 8px 30px rgba(255,190,0,.4));
+      pointer-events:none; opacity:0; transition: opacity .2s, transform .2s;
+      text-shadow: none;
+      z-index:15;
+    }
+    .fever-banner.show{
+      opacity:1; transform: translateX(-50%) translateY(0) scale(1);
+      animation: feverflow 1.2s linear infinite;
+    }
+    @keyframes feverflow{ to{ background-position: 300% 0 } }
+
+    /* Taiko-style hit splashes */
+    .hitfx{
+      position:absolute; width:22vmin; max-width:260px; aspect-ratio:1/1; pointer-events:none; opacity:0; transform:translate(-50%,-50%) scale(.6);
+      left:50%; top:74%;
+      filter: drop-shadow(0 8px 22px rgba(0,0,0,.45));
+    }
+    .hitfx.show{ opacity:1; animation: hitpop .35s ease-out forwards }
+    @keyframes hitpop{
+      0%{ transform:translate(-50%,-50%) scale(.5); opacity:0 }
+      50%{ transform:translate(-50%,-50%) scale(1.05); opacity:1 }
+      100%{ transform:translate(-50%,-50%) scale(1.0); opacity:0 }
+    }
+
+    /* Camera shake on big hits */
+    .shake{ animation: shake .25s cubic-bezier(.36,.07,.19,.97) both }
+    @keyframes shake{
+      10%, 90% { transform: translate3d(-1px, 1px, 0); }
+      20%, 80% { transform: translate3d(2px, -2px, 0); }
+      30%, 50%, 70% { transform: translate3d(-3px, 3px, 0); }
+      40%, 60% { transform: translate3d(3px, -3px, 0); }
+    }
+
+    /* Mobile tweaks */
+    @media (max-width:480px){
+      header{ padding-top:8px }
+      .hint{ font-size:.82rem }
+      .bulb{ bottom:1.6% }
+    }
+
+    /* Accessibility */
+    .sr-only{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0 }
+  </style>
+</head>
+<body>
+  <div class="root">
+    <header>
+      <div class="brand">
+        <div class="dot" aria-hidden="true"></div>
+        <div>連點溫度計 EX</div>
+      </div>
+      <div class="hint">
+        手機：不斷點擊或長按快速連點<br/>
+        桌面：滑鼠連點／空白鍵
+      </div>
+    </header>
+
+    <main class="stage" role="application" aria-label="連點溫度計遊戲舞台" id="stage">
+      <div class="gold-back" id="goldBg" aria-hidden="true"></div>
+
+      <canvas id="bg" aria-hidden="true"></canvas>
+      <canvas id="burst" aria-hidden="true"></canvas>
+      <canvas id="fx" aria-hidden="true"></canvas>
+      <canvas id="particles" aria-hidden="true"></canvas>
+
+      <div class="fever-banner" id="feverBanner">黃金狂熱 FEVER!</div>
+
+      <img id="hitFX" class="hitfx" alt="" aria-hidden="true"/>
+
+      <div class="hud" aria-hidden="true">
+        <div class="meter-wrap">
+          <div class="thermo" aria-hidden="true">
+            <div class="scale-badge">0 → 100+</div>
+            <div class="tube">
+              <div class="mercury" id="mercury"></div>
+            </div>
+            <div class="tickmarks" id="ticks"></div>
+            <div class="bulb" id="bulb"></div>
+          </div>
+          <div class="rim" id="rim"></div>
+        </div>
+
+        <div class="score" aria-live="polite" aria-atomic="true">
+          <span class="val" id="scoreVal">0</span>
+          <span class="unit">/100</span>
+        </div>
+        <div class="combo" id="comboText">COMBO x1</div>
+        <div class="sub" id="subText">不停點擊讓溫度上升；停 0.5 秒就會快速下跌。衝到 100！</div>
+
+        <div class="toolbar">
+          <button class="btn small" id="resetBtn" aria-label="重置">重置</button>
+          <button class="btn small" id="hapticBtn" aria-pressed="true">震動：開</button>
+          <button class="btn small" id="soundBtn" aria-pressed="true">音效：開</button>
+        </div>
+      </div>
+
+      <div class="controller" id="controller" aria-label="點擊/按壓以加熱">
+        <div class="cta">點、按、連點！</div>
+      </div>
+    </main>
+
+    <div class="toast" id="toast">達成：100！燃燒吧！</div>
+
+    <p class="sr-only" id="ariaStatus" aria-live="assertive" aria-atomic="true"></p>
+  </div>
+
+  <script>
+    // Utilities
+    const clamp = (v, a, b)=>Math.max(a, Math.min(b, v));
+    const lerp  = (a,b,t)=>a+(b-a)*t;
+    const map   = (v, inMin, inMax, outMin, outMax)=> outMin + (clamp((v-inMin)/(inMax-inMin),0,1))*(outMax-outMin);
+    const now = ()=>performance.now();
+    const rand = (a,b)=>a + Math.random()*(b-a);
+
+    // State
+    let value = 0;           // 0..100+
+    let peak = 0;
+    let lastPress = 0;       // ms timestamp
+    let lastInput = 0;       // ms timestamp
+    let pressing = false;
+    let consecutivePress = 0;
+    let alive = true;
+    let fever = false;       // golden frenzy
+    let feverTimer = 0;
+    let cameraShake = 0;
+
+    // Config (tuned for show floor high energy)
+    const INC_BASE = 2.0;         // per tap burst
+    const INC_HOLD = 26;          // per second while actively tapping
+    const DEC_IDLE_DELAY = 500;   // ms (changed from 2000 to 500)
+    const DEC_RATE = 34;          // per second drop after idle
+    const DEC_ACCEL = 1.22;       // drop acceleration factor
+    const TAP_WINDOW = 140;       // ms combo window
+    const KNOCKBACK = 1.25;       // diminishing gain at high temps
+    const MAX_VIB = 30;           // ms haptics
+
+    // DOM
+    const scoreEl = document.getElementById('scoreVal');
+    const mercuryEl = document.getElementById('mercury');
+    const bulbEl = document.getElementById('bulb');
+    const rimEl = document.getElementById('rim');
+    const controller = document.getElementById('controller');
+    const ticksEl = document.getElementById('ticks');
+    const toastEl = document.getElementById('toast');
+    const ariaStatus = document.getElementById('ariaStatus');
+    const resetBtn = document.getElementById('resetBtn');
+    const hapticBtn = document.getElementById('hapticBtn');
+    const soundBtn = document.getElementById('soundBtn');
+    const comboText = document.getElementById('comboText');
+    const feverBanner = document.getElementById('feverBanner');
+    const goldBg = document.getElementById('goldBg');
+    const stage = document.getElementById('stage');
+    const hitFXEl = document.getElementById('hitFX');
+
+    // Canvases
+    const bg = document.getElementById('bg');
+    const fx = document.getElementById('fx');
+    const pc = document.getElementById('particles');
+    const burst = document.getElementById('burst');
+    const bgx = bg.getContext('2d');
+    const fxx = fx.getContext('2d');
+    const pcx = pc.getContext('2d');
+    const btx = burst.getContext('2d');
+
+    // Audio (WebAudio, procedural, no files)
+    let audioOn = true;
+    let hapticOn = true;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let actx = null;
+    function ensureAudio(){
+      if (!audioOn) return;
+      if (!actx) {
+        try { actx = new AudioCtx(); }
+        catch(e){ console.warn('Audio init failed', e); audioOn = false; }
+      }
+    }
+    function tone({freq=440, dur=0.06, gain=0.06, type='square', attack=0.005, decay=0.04, pan=0}={}){
+      if (!audioOn) return;
+      ensureAudio(); if (!actx) return;
+      const o = actx.createOscillator();
+      const g = actx.createGain();
+      const p = actx.createStereoPanner ? actx.createStereoPanner() : null;
+      o.type = type; o.frequency.value = freq; g.gain.value = 0;
+      const t = actx.currentTime;
+      g.gain.linearRampToValueAtTime(gain, t+attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+attack+decay+dur);
+      if (p){ p.pan.value = pan; o.connect(g).connect(p).connect(actx.destination); }
+      else { o.connect(g).connect(actx.destination); }
+      o.start(); o.stop(t+dur+attack+decay+0.05);
+    }
+    function sweep(start=220, end=1200, dur=0.5, gain=0.08, type='sawtooth'){
+      if (!audioOn) return;
+      ensureAudio(); if (!actx) return;
+      const o = actx.createOscillator();
+      const g = actx.createGain();
+      const t = actx.currentTime;
+      o.type = type; o.frequency.value = start;
+      o.frequency.exponentialRampToValueAtTime(end, t+dur);
+      g.gain.value = 0;
+      g.gain.linearRampToValueAtTime(gain, t+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g).connect(actx.destination);
+      o.start(); o.stop(t+dur+0.05);
+    }
+    function clickSound(intensity=1){
+      // Taiko-like: short click + body
+      const base = 380 + intensity*220 + Math.random()*20;
+      tone({freq:base, dur:0.05, gain:0.09*intensity, type:'square', attack:0.002, decay:0.05, pan:rand(-0.2,0.2)});
+      tone({freq:base/2, dur:0.06, gain:0.05*intensity, type:'triangle', attack:0.002, decay:0.06, pan:rand(-0.2,0.2)});
+    }
+
+    // Haptics
+    function vibrate(ms=10){ if (!hapticOn) return; if (navigator.vibrate) navigator.vibrate(ms); }
+
+    // Ticks
+    function drawTicks(){
+      ticksEl.innerHTML = '';
+      const tube = document.querySelector('.tube');
+      const h = tube.clientHeight;
+      const gap = h / 10;
+      for (let i=0;i<=10;i++){
+        const tick = document.createElement('div');
+        tick.className = 'tick' + (i%2===0 ? ' major' : '');
+        tick.style.bottom = `${i*gap}px`;
+        ticksEl.appendChild(tick);
+      }
+    }
+
+    // Resize
+    function resize(){
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+      for (const c of [bg, fx, pc, burst]){
+        const rect = c.getBoundingClientRect();
+        c.width = Math.floor(rect.width * dpr);
+        c.height = Math.floor(rect.height * dpr);
+        const ctx = c.getContext('2d');
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+      }
+      drawTicks();
+      drawBG();
+    }
+    window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', resize);
+
+    // Background grid + subtle parallax stars
+    const stars = [];
+    function initStars(){
+      stars.length = 0;
+      const w = bg.width/(window.devicePixelRatio||1);
+      const h = bg.height/(window.devicePixelRatio||1);
+      const n = Math.floor((w*h)/18000);
+      for (let i=0;i<n;i++){
+        stars.push({x:Math.random()*w, y:Math.random()*h, r: Math.random()*1.5+0.5, a: Math.random()*0.6+0.2});
+      }
+    }
+    function drawBG(){
+      const w = bg.width / (window.devicePixelRatio||1);
+      const h = bg.height / (window.devicePixelRatio||1);
+      bgx.clearRect(0,0,w,h);
+
+      // Diagonal neon grid
+      bgx.globalAlpha = 0.18;
+      const step = 26;
+      bgx.strokeStyle = '#26314f';
+      for (let x=-h; x<w; x+=step){
+        bgx.beginPath(); bgx.moveTo(x, 0); bgx.lineTo(x+h, h); bgx.stroke();
+      }
+      for (let x=0; x<w+h; x+=step){
+        bgx.beginPath(); bgx.moveTo(x, 0); bgx.lineTo(x-h, h); bgx.stroke();
+      }
+      bgx.globalAlpha = 1;
+
+      // Stars
+      if (stars.length===0) initStars();
+      for (const s of stars){
+        bgx.fillStyle = `rgba(180,200,255,${s.a})`;
+        bgx.beginPath(); bgx.arc(s.x, s.y, s.r, 0, Math.PI*2); bgx.fill();
+      }
+
+      // Vignette
+      const grd = bgx.createRadialGradient(w*0.5,h*0.4, 10, w*0.5,h*0.5, Math.max(w,h)*0.8);
+      grd.addColorStop(0,'rgba(0,0,0,0)');
+      grd.addColorStop(1,'rgba(0,0,0,0.55)');
+      bgx.fillStyle = grd; bgx.fillRect(0,0,w,h);
+    }
+
+    // Particles (embers + stars bursts)
+    const parts = [];
+    function spawnParticles(cx, cy, count=10, color='#ff3d81', sizeRange=[2,4], vyRange=[-220,-80], glow=true){
+      for (let i=0;i<count;i++){
+        parts.push({
+          x: cx + (Math.random()-0.5)*16,
+          y: cy + (Math.random()-0.5)*12,
+          vx: (Math.random()-0.5)*160,
+          vy: rand(vyRange[0], vyRange[1]),
+          life: 0.5 + Math.random()*0.5,
+          t: 0,
+          size: rand(sizeRange[0], sizeRange[1]),
+          color, glow
+        });
+      }
+    }
+    function updateParticles(dt){
+      const w = pc.width/(window.devicePixelRatio||1);
+      const h = pc.height/(window.devicePixelRatio||1);
+      pcx.clearRect(0,0,w,h);
+      for (let i=parts.length-1;i>=0;i--){
+        const p = parts[i];
+        p.t += dt;
+        if (p.t > p.life){ parts.splice(i,1); continue; }
+        p.vy += 320*dt; // gravity
+        p.x += p.vx*dt;
+        p.y += p.vy*dt;
+        const a = 1 - p.t/p.life;
+        if (p.glow){
+          pcx.shadowColor = p.color;
+          pcx.shadowBlur = 12;
+        } else {
+          pcx.shadowBlur = 0;
+        }
+        pcx.fillStyle = p.color.replace('rgb', 'rgba').replace(')', `,${(a*0.95).toFixed(3)})`);
+        pcx.beginPath(); pcx.arc(p.x, p.y, p.size, 0, Math.PI*2); pcx.fill();
+        pcx.shadowBlur = 0;
+      }
+    }
+
+    // Radial burst (on 100+ and big hits)
+    const bursts = [];
+    function triggerBurst(cx, cy, hue=48){
+      const rays = 36;
+      const t0 = now();
+      bursts.push({cx, cy, t0, rays, hue});
+    }
+    function drawBursts(){
+      const w = burst.width/(window.devicePixelRatio||1);
+      const h = burst.height/(window.devicePixelRatio||1);
+      btx.clearRect(0,0,w,h);
+      const T = now();
+      for (let i=bursts.length-1;i>=0;i--){
+        const b = bursts[i];
+        const dt = (T - b.t0)/1000;
+        if (dt > 0.6){ bursts.splice(i,1); continue; }
+        const progress = dt/0.6;
+        const alpha = 1 - progress;
+        const rMax = Math.min(w,h) * 0.7;
+        const r = rMax * progress;
+        // central flash
+        const grd = btx.createRadialGradient(b.cx,b.cy, 0, b.cx,b.cy, r*0.6);
+        grd.addColorStop(0, `rgba(255,230,120,${0.35*alpha})`);
+        grd.addColorStop(1, `rgba(255,230,120,0)`);
+        btx.fillStyle = grd; btx.fillRect(0,0,w,h);
+        // rays
+        btx.save();
+        btx.translate(b.cx, b.cy);
+        btx.globalAlpha = 0.6*alpha;
+        for (let k=0;k<b.rays;k++){
+          const ang = (k/b.rays)*Math.PI*2 + progress*4;
+          const len = r * (0.6 + Math.sin(progress*8 + k)*0.1);
+          const wline = 2 + (1-progress)*3;
+          btx.rotate(ang);
+          btx.fillStyle = `hsl(${b.hue}deg 100% 60% / ${0.8*alpha})`;
+          btx.fillRect(0, -wline/2, len, wline);
+          btx.rotate(-ang);
+        }
+        btx.restore();
+      }
+    }
+
+    // FX overlay: heat haze + speed lines + golden flicker
+    let fxTimer = 0;
+    function drawFX(dt){
+      const w = fx.width/(window.devicePixelRatio||1);
+      const h = fx.height/(window.devicePixelRatio||1);
+      fxTimer += dt;
+      fxx.clearRect(0,0,w,h);
+
+      // Heat haze near bulb
+      const heat = map(value, 0,120, 0,1);
+      const waves = Math.floor(lerp(2, 12, heat));
+      const amp = lerp(0, 10, heat);
+      const baseY = h*0.72;
+      fxx.save();
+      fxx.globalAlpha = clamp(heat*0.6, 0, 0.75);
+      fxx.strokeStyle = 'rgba(255,180,140,0.35)';
+      fxx.lineWidth = 2;
+      for (let i=0;i<waves;i++){
+        const y = baseY - i*10;
+        fxx.beginPath();
+        for (let x=0;x<=w;x+=10){
+          const yoff = Math.sin((x*0.06) + fxTimer*9 + i)*amp * (1 - i/waves);
+          if (x===0) fxx.moveTo(x, y+yoff);
+          else fxx.lineTo(x, y+yoff);
+        }
+        fxx.stroke();
+      }
+      fxx.restore();
+
+      // Speed lines (combo-driven)
+      const speed = clamp(consecutivePress/10,0,1);
+      if (speed > 0){
+        fxx.save();
+        fxx.globalAlpha = 0.1 + speed*0.22;
+        fxx.strokeStyle = '#ffffff';
+        fxx.lineWidth = 2;
+        const lines = Math.floor(lerp(6, 20, speed));
+        for (let i=0;i<lines;i++){
+          const x = Math.random() * w;
+          fxx.beginPath();
+          fxx.moveTo(x, h);
+          fxx.lineTo(x + (Math.random()-0.5)*60, h - (120 + Math.random()*260));
+          fxx.stroke();
+        }
+        fxx.restore();
+      }
+
+      // Golden flicker overlay during fever
+      if (fever){
+        fxx.save();
+        const a = 0.08 + Math.sin(fxTimer*20)*0.04;
+        fxx.fillStyle = `rgba(255,220,80,${a})`;
+        fxx.fillRect(0,0,w,h);
+        fxx.restore();
+      }
+
+      // Rim glow
+      const rim = map(value, 0,120, 0,1);
+      rimEl.style.boxShadow =
+        `0 0 ${18+rim*28}px ${6+rim*14}px rgba(255,60,120,${0.12+rim*0.25}), inset 0 0 ${8+rim*22}px rgba(255,255,255,${0.06+rim*0.12})`;
+      rimEl.style.borderColor = `rgba(255,120,180,${0.2+rim*0.25})`;
+    }
+
+    // UI update
+    function updateUI(){
+      const pct = clamp(value/100, 0, 1.2);
+      mercuryEl.style.height = `${clamp((value/100)*100, 0, 115)}%`;
+      mercuryEl.style.filter = value>100 ? 'saturate(1.25) brightness(1.1)' : 'saturate(1.05)';
+
+      scoreEl.textContent = Math.floor(value).toString();
+
+      // Bulb grows with value
+      const baseW = document.querySelector('.thermo').clientWidth * 0.62;
+      const grow = lerp(0, 0.4, clamp(value/120,0,1));
+      bulbEl.style.width = `${baseW * (1 + grow)}px`;
+      bulbEl.classList.toggle('glow-strong', value > 70);
+
+      // Color shift
+      const hue = lerp(200, 350, clamp(value/100,0,1));
+      const sat = lerp(60, 98, clamp(value/100,0,1));
+      mercuryEl.style.background =
+        `linear-gradient(180deg, hsl(${hue}deg, ${sat}%, 62%), hsl(${hue+8}deg, ${sat}%, 52%), hsl(${hue+16}deg, ${sat}%, 46%))`;
+
+      // CTA visibility
+      document.querySelector('.cta').style.opacity = value < 12 ? 0.95 : 0.12;
+
+      // Subtext
+      const sub = document.getElementById('subText');
+      if (value > 120){
+        sub.textContent = '黃金狂熱！盡情連打！';
+      } else if (value >= 100){
+        sub.textContent = '100+ 超載！保持節奏！';
+      } else if (value >= 70){
+        sub.textContent = '熱浪翻湧！再加把勁！';
+      } else if (value >= 40){
+        sub.textContent = '節奏起來了！';
+      } else {
+        sub.textContent = '不停點擊讓溫度上升；停 0.5 秒就會快速下跌。衝到 100！';
+      }
+
+      // Combo text
+      if (consecutivePress >= 2){
+        comboText.textContent = `COMBO x${consecutivePress}`;
+        comboText.classList.add('show');
+      } else {
+        comboText.classList.remove('show');
+      }
+
+      // Fever UI
+      stage.classList.toggle('gold-active', fever);
+      feverBanner.classList.toggle('show', fever);
+      goldBg.style.opacity = fever ? '1' : '0';
+    }
+
+    // Game loop
+    let lastT = now();
+    let decVel = 0;
+    function loop(){
+      if (!alive) return;
+      const t = now();
+      const dt = (t - lastT) / 1000;
+      lastT = t;
+
+      // Camera shake decay
+      if (cameraShake > 0){
+        cameraShake = Math.max(0, cameraShake - dt*6);
+        const dx = (Math.random()*2-1) * cameraShake * 10;
+        const dy = (Math.random()*2-1) * cameraShake * 10;
+        document.querySelector('.stage').style.transform = `translate(${dx}px, ${dy}px)`;
+      } else {
+        document.querySelector('.stage').style.transform = '';
+      }
+
+      // Increase when pressing (recent activity)
+      const sinceInput = t - lastInput;
+      const active = sinceInput < 120;
+
+      if (active){
+        const knock = 1 - map(value, 70, 120, 0, KNOCKBACK);
+        const gain = INC_HOLD * dt * clamp(knock, 0.2, 1);
+        value += gain;
+        if (value > peak) peak = value;
+        decVel = 0; // reset drop velocity when active
+      } else {
+        const idle = t - lastPress;
+        if (idle > DEC_IDLE_DELAY){
+          decVel = decVel ? decVel * (1 + (DEC_ACCEL-1)*dt*20) : DEC_RATE;
+          value -= decVel * dt;
+        }
+      }
+
+      // Clamp + Fever
+      value = clamp(value, 0, 150); // allow overshoot
+      if (!fever && value >= 100){
+        fever = true;
+        feverTimer = 0;
+        showToast('達成：100！黃金狂熱！');
+        sweep(300, 1600, 0.55, 0.09);
+        vibrate(60);
+        // burst center
+        const rect = burst.getBoundingClientRect();
+        triggerBurst(rect.width/2, rect.height*0.75, 50);
+      }
+      if (fever){
+        feverTimer += dt;
+        if (value < 95) fever = false;
+      }
+
+      // FX
+      drawFX(dt);
+      updateParticles(dt);
+      drawBursts();
+      updateUI();
+
+      requestAnimationFrame(loop);
+    }
+
+    // Hit FX image (procedural SVG data URI)
+    function setHitFXArt(){
+      const svg = encodeURIComponent(`
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>
+          <defs>
+            <radialGradient id='g' cx='50%' cy='50%' r='50%'>
+              <stop offset='0%' stop-color='#fff3' />
+              <stop offset='60%' stop-color='#fff0' />
+            </radialGradient>
+            <linearGradient id='r' x1='0' y1='0' x2='1' y2='0'>
+              <stop offset='0%' stop-color='#ffef99'/>
+              <stop offset='50%' stop-color='#ffd400'/>
+              <stop offset='100%' stop-color='#ffb703'/>
+            </linearGradient>
+          </defs>
+          <circle cx='60' cy='60' r='52' fill='url(#g)' />
+          <g fill='none' stroke='url(#r)' stroke-width='8' stroke-linecap='round'>
+            <path d='M20 60 H100'/>
+            <path d='M60 20 V100'/>
+            <path d='M30 30 L90 90'/>
+            <path d='M90 30 L30 90'/>
+          </g>
+        </svg>
+      `);
+      hitFXEl.src = `data:image/svg+xml;charset=UTF-8,${svg}`;
+    }
+
+    // Input
+    function onPress(){
+      const t = now();
+      lastPress = t;
+      lastInput = t;
+      pressing = true;
+
+      // Combo cadence
+      const cadence = (t - (onPress.lastTime||0));
+      onPress.lastTime = t;
+      const combo = cadence < TAP_WINDOW ? 1 : 0;
+      consecutivePress = combo ? Math.min(consecutivePress + 1, 999) : 1;
+
+      // Tap burst with soft cap
+      const comboBoost = 1 + Math.min(consecutivePress, 30)*0.11;
+      const heatPenalty = map(value, 90, 140, 0, 0.5);
+      const burst = INC_BASE * comboBoost * (1 - clamp(heatPenalty,0,0.5));
+      value = clamp(value + burst, 0, 150);
+
+      // VFX/SFX
+      const rect = pc.getBoundingClientRect();
+      const cx = rect.left + rect.width/2;
+      const cy = rect.top + rect.height*0.78;
+
+      // Taiko-like splash
+      hitFXEl.classList.remove('show');
+      // Force reflow for restart animation
+      void hitFXEl.offsetWidth;
+      hitFXEl.classList.add('show');
+
+      // Ember particles color swaps when fever
+      const emberColor = fever ? 'rgb(255,210,60)' : 'rgb(255,120,180)';
+      spawnParticles(cx, cy, Math.floor(8 + consecutivePress*0.5), emberColor, [2,4], [-260,-100], true);
+
+      // Small star sparkles on higher combo
+      if (consecutivePress % 4 === 0){
+        spawnParticles(cx, cy-30, 12, 'rgb(255,255,200)', [1.2,2.2], [-320,-140], true);
+      }
+
+      // Radial burst on milestones
+      if (value >= 100 && Math.floor(value) % 10 === 0){
+        triggerBurst(rect.width/2, rect.height*0.74, 48);
+      }
+
+      const pitch = map(value,0,120, 420, 1300) + Math.random()*40;
+      clickSound(clamp(consecutivePress/15, 0.7, 1.4));
+      tone({freq:pitch, dur:0.04, gain:0.04, type:'triangle', attack:0.002, decay:0.05});
+
+      if (consecutivePress % 5 === 0) vibrate(Math.min(12 + consecutivePress, MAX_VIB));
+      if (value >= 90) vibrate(18);
+
+      // Camera shake on strong hits
+      if (value > 100 || consecutivePress % 10 === 0){
+        cameraShake = Math.min(1, cameraShake + 0.4);
+      }
+
+      // ARIA status occasionally
+      if (consecutivePress % 10 === 0){
+        ariaStatus.textContent = `節奏 x${consecutivePress}`;
+      }
+    }
+    function onRelease(){ pressing = false; }
+
+    // Controls
+    function bindControls(){
+      const el = controller;
+      // Touch
+      el.addEventListener('touchstart', (e)=>{ e.preventDefault(); onPress(); }, {passive:false});
+      el.addEventListener('touchend',   (e)=>{ e.preventDefault(); onRelease(); }, {passive:false});
+      el.addEventListener('touchcancel',(e)=>{ e.preventDefault(); onRelease(); }, {passive:false});
+      // Mouse
+      el.addEventListener('mousedown', (e)=>{ e.preventDefault(); onPress(); });
+      window.addEventListener('mouseup', onRelease);
+      el.addEventListener('click', (e)=>{ e.preventDefault(); });
+
+      // Hold to auto-tap (simulate taiko drumroll)
+      let holdTimer=null;
+      el.addEventListener('pointerdown', (e)=>{
+        e.preventDefault();
+        onPress();
+        clearInterval(holdTimer);
+        holdTimer = setInterval(()=>{ lastInput = now(); onPress(); }, 95); // slightly faster
+      });
+      window.addEventListener('pointerup', ()=>{ clearInterval(holdTimer); onRelease(); });
+
+      // Keyboard
+      window.addEventListener('keydown', (e)=>{
+        if (e.code === 'Space' || e.code === 'Enter'){
+          e.preventDefault(); onPress();
+        }
+      });
+      window.addEventListener('keyup', (e)=>{
+        if (e.code === 'Space' || e.code === 'Enter'){
+          e.preventDefault(); onRelease();
+        }
+      });
+    }
+
+    // Toast
+    let toastTimer=null;
+    function showToast(msg){
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 1600);
+    }
+
+    // Buttons
+    resetBtn.addEventListener('click', ()=>{
+      value = 0; peak = 0; decVel = 0; consecutivePress = 0; fever = false; feverTimer = 0; cameraShake = 0;
+      showToast('已重置，重新衝刺！');
+      vibrate(8);
+      updateUI();
+    });
+    hapticBtn.addEventListener('click', ()=>{
+      hapticOn = !hapticOn;
+      hapticBtn.textContent = `震動：${hapticOn?'開':'關'}`;
+      hapticBtn.setAttribute('aria-pressed', String(hapticOn));
+      if (hapticOn) vibrate(12);
+    });
+    soundBtn.addEventListener('click', ()=>{
+      audioOn = !audioOn;
+      soundBtn.textContent = `音效：${audioOn?'開':'關'}`;
+      soundBtn.setAttribute('aria-pressed', String(audioOn));
+      if (audioOn){ ensureAudio(); tone({freq:660,dur:0.08,gain:0.05,type:'square'}); }
+    });
+
+    // Init
+    setHitFXArt();
+    bindControls();
+    resize();
+    updateUI();
+    requestAnimationFrame(loop);
+
+    // Prevent iOS double-tap zoom
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const t = now();
+      if (t - lastTouchEnd <= 300) event.preventDefault();
+      lastTouchEnd = t;
+    }, {passive:false});
+  </script>
+</body>
+</html>
