@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SW507 小組簡報主題選擇指南（更新版，行動與對比）</title>
+  <style>
+    /* ========== Reset & Base ========== */
+    *,*::before,*::after{box-sizing:border-box}
+    html{font-size:16px}
+    body{
+      margin:0; color:#243447; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+      font-family:'PingFang TC','Microsoft JhengHei',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+      line-height:1.7;
+    }
+    :root{
+      --ink:#243447; --muted:#69727d; --card:#fff;
+      --prime:#5B2C87; --accent:#E74C3C; --blue:#2c7be5; --cyan:#17a2b8;
+      --easy:#2ECC71; --medium:#F39C12; --hard:#E74C3C;
+      --ok:#27AE60; --warn:#F39C12; --bad:#E74C3C; --good:#2ECC71;
+      --soft:#f3f6ff; --line:#e8ecf5;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+    .container{max-width:1040px;margin:0 auto;padding:20px}
+    @media (max-width:768px){.container{padding:14px}}
+
+    /* ========== Header ========== */
+    .header{
+      background:var(--card); border-radius:20px; padding:28px; margin-bottom:18px; box-shadow:var(--shadow);
+    }
+    .header h1{margin:0 0 6px; color:var(--prime); font-weight:800; font-size:clamp(1.25rem,2.5vw,1.9rem)}
+    .header p{margin:0; color:var(--muted); font-size:clamp(.9rem,2vw,1rem)}
+    .badge{
+      display:inline-block; margin-top:8px; padding:6px 12px; border-radius:999px; font-weight:700; font-size:.82rem; color:#fff; background:#8e44ad;
+    }
+
+    /* ========== Flow steps (替代思維地圖，避免走位) ========== */
+    .flow{
+      background:linear-gradient(180deg,#ffffff 0%,#f7f8ff 100%);
+      border-radius:16px; padding:16px; box-shadow:var(--shadow); margin:18px 0 26px;
+    }
+    .flow h2{margin:0 0 8px; color:#384057; font-size:1.1rem}
+    .steps{
+      display:flex; gap:10px; overflow:auto; padding:6px 2px;
+      scrollbar-width:thin;
+    }
+    .step{
+      min-width:220px; flex:1; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px;
+    }
+    .step h4{margin:0 0 4px; font-size:.98rem; color:#1f2d3d}
+    .step small{color:var(--muted)}
+
+    /* ========== Grid cards ========== */
+    .topics-grid{
+      display:grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap:16px; margin-bottom:18px;
+    }
+    @media (max-width:360px){ .topics-grid{ grid-template-columns: 1fr; } }
+
+    .topic-card{
+      background:var(--card); border-radius:18px; padding:16px; box-shadow:var(--shadow);
+    }
+    .topic-title{
+      display:flex; align-items:center; gap:.5rem;
+      color:var(--accent); font-weight:800; font-size:clamp(1rem,2.2vw,1.2rem);
+      border-bottom:2px solid #fde1dd; padding-bottom:8px; margin-bottom:10px;
+    }
+    .topic-kicker{font-size:.72rem;color:#fff;background:#c0392b;padding:3px 8px;border-radius:999px}
+
+    /* 摘要列 + 對比條 */
+    .summary{color:var(--ink); font-size:.95rem; margin:6px 0 10px}
+    .meta{
+      display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 4px;
+    }
+    .chip{font-size:.78rem; padding:4px 8px; border-radius:999px; border:1px solid var(--line); background:#f8f9fb; color:#34495e}
+    .difficulty{ color:#fff; border:none }
+    .easy{ background: var(--easy); }
+    .medium{ background: var(--medium); }
+    .hard{ background: var(--hard); }
+
+    /* 對比條 */
+    .bars{display:grid; grid-template-columns:1fr; gap:8px; margin-top:8px}
+    .bar{background:#f1f4fb; border-radius:10px; overflow:hidden; position:relative}
+    .bar span{position:absolute; left:10px; top:6px; font-size:.8rem; color:#425466}
+    .fill{height:26px; background:linear-gradient(90deg,#7f53ac,#647dee)}
+    .bar[data-label]::before{
+      content: attr(data-label); position:absolute; left:10px; top:5px; color:#fff; font-weight:700; font-size:.8rem; mix-blend-mode:difference;
+    }
+
+    /* 可折疊詳情 */
+    details{border:1px solid var(--line); border-radius:12px; background:#fbfcff; padding:10px 12px; margin-top:10px}
+    summary{cursor:pointer; font-weight:700; color:#2c3e50}
+    summary::-webkit-details-marker{display:none}
+    summary::after{content:"＋"; float:right; color:#999}
+    details[open] summary::after{content:"－"}
+    .pros-cons{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:8px 0}
+    .pros,.cons{padding:10px;border-radius:10px}
+    .pros{background:#DFF5E4; border-left:4px solid #27AE60}
+    .cons{background:#FBE3E1; border-left:4px solid #E74C3C}
+    .outline{background:#EBF5FF; padding:10px; border-radius:10px; margin-top:8px}
+    .time-slot{background:#fff; padding:8px 10px; border-left:3px solid var(--cyan); border-radius:8px; margin:6px 0; font-size:.95rem}
+
+    /* 討論與投票工具列 */
+    .toolbox{
+      display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:center
+    }
+    .btn{
+      padding:8px 12px; border-radius:10px; border:1px solid var(--line); background:#f6f8ff; color:#32444e; cursor:pointer;
+    }
+    .btn.primary{ background:linear-gradient(90deg,#7f53ac,#647dee); color:#fff; border:none }
+    .btn.ghost{ background:#fff }
+    .vote-pill{margin-left:auto; display:flex; gap:6px; align-items:center}
+    .vote{padding:6px 10px; border-radius:999px; font-size:.85rem; cursor:pointer; border:1px solid var(--line); background:#fff}
+    .vote.active{background:#eae6ff; border-color:#b8a4ff}
+    .hint{font-size:.85rem; color:var(--muted)}
+
+    /* 引導問題區塊 */
+    .why-box{background:#F4F6F8; border:1px dashed #b0bec5; border-radius:12px; padding:10px; margin-top:8px}
+    .why-box h4{margin:0 0 6px; color:#34495e}
+
+    /* Tips card */
+    .tips-card{
+      text-align:left; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff;
+      border-radius: 20px; padding: 18px; box-shadow: var(--shadow);
+    }
+    .tips-grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+    .tips-grid > div{background: rgba(255,255,255,.12); padding:12px; border-radius:12px}
+
+    /* Footer note */
+    .foot{background:#f9fbff; border-radius:12px; padding:12px; color:#607d8b; font-size:.92rem}
+
+    /* Accessibility */
+    a.skip{position:absolute; left:-9999px}
+    a.skip:focus{left:10px; top:10px; background:#000; color:#fff; padding:8px; border-radius:6px}
+
+    /* Responsive tweaks */
+    @media (max-width:768px){
+      .pros-cons{grid-template-columns:1fr}
+      .vote-pill{margin-left:0; width:100%}
+    }
+  </style>
+</head>
+<body>
+<a class="skip" href="#main">跳至內容</a>
+<div class="container" id="main">
+  <!-- Header -->
+  <header class="header" role="banner">
+    <h1>SW507 小組簡報主題選擇指南（全球化與地區化社會政策）</h1>
+    <p>25分鐘簡報策略｜批判性比較與可落地路線圖｜幫助同學理解、討論與投票</p>
+    <span class="badge">更新：手機友善、收合詳情、對比條、投票意向</span>
+  </header>
+
+  <!-- Flow steps -->
+  <section class="flow" aria-label="一站式簡報流程">
+    <h2>一站式簡報流程（問題→證據→理論→政策→社工角色→影響）</h2>
+    <div class="steps" role="list">
+      <div class="step" role="listitem">
+        <h4>1. 問題界定</h4>
+        <small>人口、服務缺口、不平等、脈絡</small>
+      </div>
+      <div class="step" role="listitem">
+        <h4>2. 證據基礎</h4>
+        <small>統計、政策文件、研究與評估</small>
+      </div>
+      <div class="step" role="listitem">
+        <h4>3. 理論鏡框</h4>
+        <small>福利政體、福利多元、defamilisation、社會資本</small>
+      </div>
+      <div class="step" role="listitem">
+        <h4>4. 全球/本地比較</h4>
+        <small>OECD/東亞案例 ⇆ 香港情境</small>
+      </div>
+      <div class="step" role="listitem">
+        <h4>5. 社工專業角色</h4>
+        <small>監察、倡議、協作、設計、評估</small>
+      </div>
+      <div class="step" role="listitem">
+        <h4>6. 政策建議與路線圖</h4>
+        <small>可行、可衡量、時程與責任分配</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics -->
+  <section class="topics-grid" aria-label="主題清單">
+    <!-- Topic A -->
+    <article class="topic-card" data-topic="A1">
+      <div class="topic-title">A) 低收入家庭社會福利支援 <span class="topic-kicker">政策與倡議</span></div>
+      <p class="summary">主題一：香港低收入家庭社會福利政策的宏觀結構挑戰——社工如何倡議與推動政策改革</p>
+      <div class="meta">
+        <span class="chip difficulty medium">中等難度</span>
+        <span class="chip">資料豐富</span>
+        <span class="chip">制度比較適合</span>
+        <span class="chip">倡議導向</span>
+      </div>
+      <!-- 對比條：1–100% 視覺化 -->
+      <div class="bars" aria-label="快速對比">
+        <div class="bar" data-label="證據就緒度">
+          <div class="fill" style="width:85%"></div>
+        </div>
+        <div class="bar" data-label="理論適配度">
+          <div class="fill" style="width:90%"></div>
+        </div>
+        <div class="bar" data-label="實務連結度">
+          <div class="fill" style="width:75%"></div>
+        </div>
+        <div class="bar" data-label="12個月落地性">
+          <div class="fill" style="width:70%"></div>
+        </div>
+      </div>
+
+      <details>
+        <summary>查看詳情、優缺點與大綱</summary>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✅ 優點</h4>
+            <ul>
+              <li>政策與數據資源豐富</li>
+              <li>易連繫福利政體、福利多元等理論</li>
+              <li>與社工倡議實務高度相關</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 難處</h4>
+            <ul>
+              <li>結構性分析需清晰邏輯</li>
+              <li>涉政治經濟敏感度</li>
+              <li>需處理多方案取捨與成本效益</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="outline">
+          <h4>📋 25分鐘大綱</h4>
+          <div class="time-slot">0–3：問題規模（貧窮率、住屋負擔、在職貧窮）</div>
+          <div class="time-slot">3–8：理論鏡框（福利政體、福利多元主義）→ 社會安全網結構</div>
+          <div class="time-slot">8–14：政策斷點與排除（門檻、覆蓋、充足性、可近性）</div>
+          <div class="time-slot">14–20：社工倡議工具箱（監察、證據倡議、聯盟、媒體）</div>
+          <div class="time-slot">20–25：改革路線圖與Q&A</div>
+        </div>
+
+        <div class="why-box">
+          <h4>投票前3問</h4>
+          <ol>
+            <li>我們能取得哪些官方統計與評估？</li>
+            <li>哪個理論最能解釋現象與排除機制？</li>
+            <li>12個月內可落地的改革里程碑與責任單位是？</li>
+          </ol>
+        </div>
+
+        <div class="why-box">
+          <h4>討論引導問題</h4>
+          <ul>
+            <li>「福利充足性」指標如何設計才兼顧公平與效率？</li>
+            <li>在政治可行性限制下，哪項改革優先順序最高？</li>
+            <li>社工在議程設定中能扮演何種具體協作角色？</li>
+          </ul>
+        </div>
+
+        <div class="why-box">
+          <h4>準備提示</h4>
+          <p>以「福利充足性」指標組合（金額、可近性、覆蓋率）做主軸，配一頁邏輯模型圖，統一敘事。</p>
+        </div>
+      </details>
+
+      <div class="toolbox" role="toolbar" aria-label="投票與分享">
+        <button class="btn primary save-like">加入我的清單</button>
+        <button class="btn ghost copy-link">複製可分享連結</button>
+        <div class="vote-pill">
+          <button class="vote" data-vote="yes">👍 有意投此題</button>
+          <button class="vote" data-vote="maybe">🤔 考慮中</button>
+          <button class="vote" data-vote="no">👎 不考慮</button>
+        </div>
+        <span class="hint status" aria-live="polite"></span>
+      </div>
+    </article>
+
+    <article class="topic-card" data-topic="A2">
+      <div class="topic-title">A) 低收入家庭社會福利支援 <span class="topic-kicker">跨部門服務</span></div>
+      <p class="summary">主題二：跨部門合作模式下香港基層家庭福利服務的現況與社工專業介入</p>
+      <div class="meta">
+        <span class="chip difficulty easy">容易入手</span>
+        <span class="chip">服務流程可視化</span>
+        <span class="chip">實務連結高</span>
+      </div>
+      <div class="bars">
+        <div class="bar" data-label="證據就緒度"><div class="fill" style="width:70%"></div></div>
+        <div class="bar" data-label="理論適配度"><div class="fill" style="width:70%"></div></div>
+        <div class="bar" data-label="實務連結度"><div class="fill" style="width:90%"></div></div>
+        <div class="bar" data-label="12個月落地性"><div class="fill" style="width:75%"></div></div>
+      </div>
+
+      <details>
+        <summary>查看詳情、優缺點與大綱</summary>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✅ 優點</h4>
+            <ul>
+              <li>實務案例易取得</li>
+              <li>可視化服務旅程清晰</li>
+              <li>凸顯社工連結與協作能力</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 難處</h4>
+            <ul>
+              <li>跨部門治理複雜</li>
+              <li>成效指標需設計合理</li>
+              <li>需兼顧服務品質與公平</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="outline">
+          <h4>📋 25分鐘大綱</h4>
+          <div class="time-slot">0–4：協作版圖與服務旅程</div>
+          <div class="time-slot">4–10：資源整合與缺口（入口、轉介、連續性）</div>
+          <div class="time-slot">10–17：社工介入角色（連結、動員、倡議）</div>
+          <div class="time-slot">17–22：案例＋微型成效框架（等候、覆蓋、滿意）</div>
+          <div class="time-slot">22–25：風險與倫理、答問</div>
+        </div>
+
+        <div class="why-box">
+          <h4>投票前3問</h4>
+          <ol>
+            <li>是否取得流程與等候等運作數據？</li>
+            <li>是否能說清楚跨部門協作中的責任分工？</li>
+            <li>是否可提出12個月內的「瓶頸解除」里程碑？</li>
+          </ol>
+        </div>
+
+        <div class="why-box">
+          <h4>討論引導問題</h4>
+          <ul>
+            <li>哪個斷點（入口/轉介/追蹤）最值得優先解決？</li>
+            <li>如何平衡效率與弱勢公平的取捨？</li>
+            <li>社工如何建立跨界治理的最小可行協議？</li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="toolbox" role="toolbar">
+        <button class="btn primary save-like">加入我的清單</button>
+        <button class="btn ghost copy-link">複製可分享連結</button>
+        <div class="vote-pill">
+          <button class="vote" data-vote="yes">👍 有意投此題</button>
+          <button class="vote" data-vote="maybe">🤔 考慮中</button>
+          <button class="vote" data-vote="no">👎 不考慮</button>
+        </div>
+        <span class="hint status" aria-live="polite"></span>
+      </div>
+    </article>
+
+    <!-- Topic B -->
+    <article class="topic-card" data-topic="B1">
+      <div class="topic-title">B) 慢性病患者非正式照顧者 <span class="topic-kicker">defamilisation 與權益</span></div>
+      <p class="summary">主題一：defamilisation 視角下香港慢性病家庭照顧者保障——社工倡議與服務設計</p>
+      <div class="meta">
+        <span class="chip difficulty hard">高難度</span>
+        <span class="chip">理論挑戰高</span>
+        <span class="chip">國際比較友善</span>
+      </div>
+      <div class="bars">
+        <div class="bar" data-label="證據就緒度"><div class="fill" style="width:65%"></div></div>
+        <div class="bar" data-label="理論適配度"><div class="fill" style="width:95%"></div></div>
+        <div class="bar" data-label="實務連結度"><div class="fill" style="width:70%"></div></div>
+        <div class="bar" data-label="12個月落地性"><div class="fill" style="width:60%"></div></div>
+      </div>
+
+      <details>
+        <summary>查看詳情、優缺點與大綱</summary>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✅ 優點</h4>
+            <ul>
+              <li>概念鮮明，易作國際比較</li>
+              <li>直指政策空白與權益議題</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 難處</h4>
+            <ul>
+              <li>理論操作化需嚴謹（指標界定）</li>
+              <li>涉及倫理與照顧關係的複雜性</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="outline">
+          <h4>📋 25分鐘大綱</h4>
+          <div class="time-slot">0–4：照顧負擔現況與隱性成本</div>
+          <div class="time-slot">4–10：理論與指標：defamilisation＋福利政體 → 評估框架</div>
+          <div class="time-slot">10–16：保護機制盤點（津貼、喘息、工時彈性、保障工）</div>
+          <div class="time-slot">16–21：社工雙軌介入（倡議＋服務設計原則）</div>
+          <div class="time-slot">21–25：可行建議與落地試點</div>
+        </div>
+
+        <div class="why-box">
+          <h4>投票前3問</h4>
+          <ol>
+            <li>有哪些可用數據衡量照顧負擔與時間成本？</li>
+            <li>哪些國家政策最具可比性，可作參照？</li>
+            <li>是否能提出低成本、高可行的起步方案？</li>
+          </ol>
+        </div>
+
+        <div class="why-box">
+          <h4>討論引導問題</h4>
+          <ul>
+            <li>現金/服務支持哪種對不同家庭更公平？</li>
+            <li>如何處理家庭自主與國家介入的邊界？</li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="toolbox" role="toolbar">
+        <button class="btn primary save-like">加入我的清單</button>
+        <button class="btn ghost copy-link">複製可分享連結</button>
+        <div class="vote-pill">
+          <button class="vote" data-vote="yes">👍 有意投此題</button>
+          <button class="vote" data-vote="maybe">🤔 考慮中</button>
+          <button class="vote" data-vote="no">👎 不考慮</button>
+        </div>
+        <span class="hint status" aria-live="polite"></span>
+      </div>
+    </article>
+
+    <article class="topic-card" data-topic="B2">
+      <div class="topic-title">B) 慢性病患者非正式照顧者 <span class="topic-kicker">醫社整合</span></div>
+      <p class="summary">主題二：社工推動醫社合作提升慢病家庭支援——國際與本地政策模式比較</p>
+      <div class="meta">
+        <span class="chip difficulty medium">中等難度</span>
+        <span class="chip">跨專業協作</span>
+        <span class="chip">成效導向</span>
+      </div>
+      <div class="bars">
+        <div class="bar" data-label="證據就緒度"><div class="fill" style="width:75%"></div></div>
+        <div class="bar" data-label="理論適配度"><div class="fill" style="width:80%"></div></div>
+        <div class="bar" data-label="實務連結度"><div class="fill" style="width:90%"></div></div>
+        <div class="bar" data-label="12個月落地性"><div class="fill" style="width:70%"></div></div>
+      </div>
+
+      <details>
+        <summary>查看詳情、優缺點與大綱</summary>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✅ 優點</h4>
+            <ul>
+              <li>整合服務路徑圖清晰</li>
+              <li>可用再入院率等結果指標</li>
+              <li>跨專業協作亮點多</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 難處</h4>
+            <ul>
+              <li>需理解醫療流程與支付制度</li>
+              <li>治理細節多，歸因不易</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="outline">
+          <h4>📋 25分鐘大綱</h4>
+          <div class="time-slot">0–4：醫社協作必要性與系統斷層</div>
+          <div class="time-slot">4–11：國際模式（PCMH、Buurtzorg、英國ICS）對照香港</div>
+          <div class="time-slot">11–18：社工角色（導航、個案管理、社區連結、過渡照顧）</div>
+          <div class="time-slot">18–23：成效框架與資料需求</div>
+          <div class="time-slot">23–25：風險、倫理與擴散</div>
+        </div>
+
+        <div class="why-box">
+          <h4>投票前3問</h4>
+          <ol>
+            <li>是否能接觸到跨界合作的關鍵持分者？</li>
+            <li>有無可比的國際指標與本地數據？</li>
+            <li>能否提出「小規模先行」的低風險試點？</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="toolbox" role="toolbar">
+        <button class="btn primary save-like">加入我的清單</button>
+        <button class="btn ghost copy-link">複製可分享連結</button>
+        <div class="vote-pill">
+          <button class="vote" data-vote="yes">👍 有意投此題</button>
+          <button class="vote" data-vote="maybe">🤔 考慮中</button>
+          <button class="vote" data-vote="no">👎 不考慮</button>
+        </div>
+        <span class="hint status" aria-live="polite"></span>
+      </div>
+    </article>
+
+    <!-- Topic C -->
+    <article class="topic-card" data-topic="C1">
+      <div class="topic-title">C) 學生心理健康素養 <span class="topic-kicker">制度公平</span></div>
+      <p class="summary">主題一：香港學校心理健康政策發展與社工專業介入——以資源分配與制度公平為核心</p>
+      <div class="meta">
+        <span class="chip difficulty medium">中等難度</span>
+        <span class="chip">公平與效率辯論</span>
+        <span class="chip">資料可得</span>
+      </div>
+      <div class="bars">
+        <div class="bar" data-label="證據就緒度"><div class="fill" style="width:80%"></div></div>
+        <div class="bar" data-label="理論適配度"><div class="fill" style="width:85%"></div></div>
+        <div class="bar" data-label="實務連結度"><div class="fill" style="width:80%"></div></div>
+        <div class="bar" data-label="12個月落地性"><div class="fill" style="width:75%"></div></div>
+      </div>
+
+      <details>
+        <summary>查看詳情、優缺點與大綱</summary>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✅ 優點</h4>
+            <ul>
+              <li>政策文件及數據較易取得</li>
+              <li>兼具公平與效率辯論</li>
+              <li>社工多層面角色清晰</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 難處</h4>
+            <ul>
+              <li>成效需有邏輯模型</li>
+              <li>學校合作與倫理需要留意</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="outline">
+          <h4>📋 25分鐘大綱</h4>
+          <div class="time-slot">0–3：現況與不平等分布</div>
+          <div class="time-slot">3–9：制度設計與資源配置（全校模式、比率、培訓）</div>
+          <div class="time-slot">9–15：公平視角（地區/校種差異、可近性）</div>
+          <div class="time-slot">15–21：社工介入（倡議、系統改革、校社醫連結）</div>
+          <div class="time-slot">21–25：政策建議與影響評估框架</div>
+        </div>
+
+        <div class="why-box">
+          <h4>投票前3問</h4>
+          <ol>
+            <li>是否能取得地區/校種差異的可比數據？</li>
+            <li>哪個政策槓桿最具成本效益？</li>
+            <li>是否具備與學校和醫療的協作門路？</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="toolbox" role="toolbar">
+        <button class="btn primary save-like">加入我的清單</button>
+        <button class="btn ghost copy-link">複製可分享連結</button>
+        <div class="vote-pill">
+          <button class="vote" data-vote="yes">👍 有意投此題</button>
+          <button class="vote" data-vote="maybe">🤔 考慮中</button>
+          <button class="vote" data-vote="no">👎 不考慮</button>
+        </div>
+        <span class="hint status" aria-live="polite"></span>
+      </div>
+    </article>
+
+    <article class="topic-card" data-topic="C2">
+      <div class="topic-title">C) 學生心理健康素養 <span class="topic-kicker">跨界創新</span></div>
+      <p class="summary">主題二：社工跨界合作提升本地青少年心理健康素養——創新政策模式與成效分析</p>
+      <div class="meta">
+        <span class="chip difficulty hard">高難度</span>
+        <span class="chip">創新與擴散潛力</span>
+        <span class="chip">混合式指標</span>
+      </div>
+      <div class="bars">
+        <div class="bar" data-label="證據就緒度"><div class="fill" style="width:70%"></div></div>
+        <div class="bar" data-label="理論適配度"><div class="fill" style="width:85%"></div></div>
+        <div class="bar" data-label="實務連結度"><div class="fill" style="width:85%"></div></div>
+        <div class="bar" data-label="12個月落地性"><div class="fill" style="width:65%"></div></div>
+      </div>
+
+      <details>
+        <summary>查看詳情、優缺點與大綱</summary>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✅ 優點</h4>
+            <ul>
+              <li>能整合家庭、學校、醫療多方實例</li>
+              <li>可設計混合式成效指標（量表＋運作）</li>
+              <li>具創新與擴散潛力</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>❌ 難處</h4>
+            <ul>
+              <li>跨界治理與私隱合規複雜</li>
+              <li>需要嚴謹評估設計，歸因挑戰</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="outline">
+          <h4>📋 25分鐘大綱</h4>
+          <div class="time-slot">0–4：素養缺口與介面問題（轉介、等候、追蹤）</div>
+          <div class="time-slot">4–11：跨界模式盤點（學校–家庭–醫療–社區）</div>
+          <div class="time-slot">11–18：社工作為協同設計者與流程管理者</div>
+          <div class="time-slot">18–23：成效與經濟性（SDQ/PHQ-9、出席、成本/效益）</div>
+          <div class="time-slot">23–25：政策擴散與風險管理</div>
+        </div>
+
+        <div class="why-box">
+          <h4>投票前3問</h4>
+          <ol>
+            <li>是否能取得量表與運作雙重數據？</li>
+            <li>是否能處理私隱與資料共享協議？</li>
+            <li>能否先行試點並設定退出條件？</li>
+          </ol>
+        </div>
+      </details>
+
+      <div class="toolbox" role="toolbar">
+        <button class="btn primary save-like">加入我的清單</button>
+        <button class="btn ghost copy-link">複製可分享連結</button>
+        <div class="vote-pill">
+          <button class="vote" data-vote="yes">👍 有意投此題</button>
+          <button class="vote" data-vote="maybe">🤔 考慮中</button>
+          <button class="vote" data-vote="no">👎 不考慮</button>
+        </div>
+        <span class="hint status" aria-live="polite"></span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Selection strategy and reporting guide -->
+  <section class="topic-card tips-card" role="region" aria-label="選擇策略與匯報指引">
+    <h2 style="margin:0 0 10px">🎯 選擇策略與SW507匯報指引</h2>
+    <div class="tips-grid">
+      <div>
+        <h3>📊 選題四問</h3>
+        <p>• 我們有哪類證據可取得？<br/>• 何種理論最能解釋現象？<br/>• 社工角色在哪層級最具影響？<br/>• 建議是否可行可評估？</p>
+      </div>
+      <div>
+        <h3>⏱️ 時間配置</h3>
+        <p>• 70% 分析與路線圖<br/>• 20% 案例/視覺化<br/>• 10% Q&A與反駁</p>
+      </div>
+      <div>
+        <h3>🧭 批判性框架</h3>
+        <p>• 因果鏈：結構→機制→結果<br/>• 反假設：為何替代解釋較弱<br/>• 公平-效率取捨：補償機制</p>
+      </div>
+      <div>
+        <h3>🎨 呈現技巧</h3>
+        <p>• 一頁邏輯模型＋KPI表<br/>• 流程/路徑圖取代文字堆疊<br/>• 前後對照圖表呈現成效</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why this topic -->
+  <section class="topic-card">
+    <h2 class="topic-title">為甚麼我們選這個主題？快速導引</h2>
+    <div class="tips-grid">
+      <div class="why-box">
+        <h4>證據就緒度</h4>
+        <p>能取得官方統計、政策文件與學術研究時，優先選擇結構與政策改革向（A1、C1）。</p>
+      </div>
+      <div class="why-box">
+        <h4>實務連結度</h4>
+        <p>如有實務或實習資源，選擇協作與整合向（A2、B2、C2），加入微型評估。</p>
+      </div>
+      <div class="why-box">
+        <h4>理論適配度</h4>
+        <p>對理論有把握可挑戰 defamilisation 或福利政體比較（B1、A1），提升批判深度。</p>
+      </div>
+      <div class="why-box">
+        <h4>影響與可行性</h4>
+        <p>能提出「12個月內可落地」建議者更具說服力，附責任單位與里程碑。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footnote -->
+  <section class="foot">
+    <p>[教學對齊] 本頁框架協助同學把福利政體、福利多元主義、defamilisation、社會資本等理論操作化，並映射至社工的監察、倡議、協作、服務設計與評估，對齊SW507之全球/本地對讀與政策分析要求。</p>
+  </section>
+</div>
+
+<script>
+  // 以 URL 參數或 localStorage 儲存喜好與投票意向
+  (function(){
+    const qs = new URLSearchParams(location.search);
+    const selected = (qs.get('sel')||'').split(',').filter(Boolean);
+    const storeKey = 'SW507_TOPIC_PREFS_V1';
+
+    // 初始化：標記URL中已選主題
+    selected.forEach(id=>{
+      const el = document.querySelector(`[data-topic="${id}"]`);
+      if(!el) return;
+      el.classList.add('selected');
+      el.querySelector('.summary')?.insertAdjacentHTML('afterend','<div class="hint">（由連結指定的已選主題）</div>');
+    });
+
+    // 綁定按鈕：加入我的清單、投票、複製連結
+    document.querySelectorAll('.topic-card').forEach(card=>{
+      const id = card.getAttribute('data-topic');
+      const status = card.querySelector('.status');
+
+      const likeBtn = card.querySelector('.save-like');
+      if(likeBtn){
+        likeBtn.addEventListener('click', ()=>{
+          const prefs = loadPrefs();
+          if(!prefs.likes.includes(id)) prefs.likes.push(id);
+          savePrefs(prefs);
+          status.textContent = '已加入我的清單';
+          setTimeout(()=>status.textContent='', 2000);
+        });
+      }
+
+      card.querySelectorAll('.vote').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const vote = btn.dataset.vote;
+          const prefs = loadPrefs();
+          prefs.votes[id] = vote;
+          savePrefs(prefs);
+          // 切換active外觀
+          card.querySelectorAll('.vote').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          const label = vote==='yes'?'傾向投票': vote==='maybe'?'考慮中':'不考慮';
+          status.textContent = `已記錄：${label}`;
+          setTimeout(()=>status.textContent='', 2000);
+        });
+      });
+
+      const copyBtn = card.querySelector('.copy-link');
+      if(copyBtn){
+        copyBtn.addEventListener('click', async ()=>{
+          const prefs = loadPrefs();
+          const set = new Set(selected.concat(prefs.likes));
+          const selParam = Array.from(set).join(',');
+          const url = new URL(location.href);
+          if(selParam) url.searchParams.set('sel', selParam); else url.searchParams.delete('sel');
+          try{
+            await navigator.clipboard.writeText(url.toString());
+            status.textContent = '已複製分享連結';
+          }catch(e){
+            status.textContent = '無法自動複製，請手動選取網址列';
+          }
+          setTimeout(()=>status.textContent='', 2500);
+        });
+      }
+    });
+
+    function loadPrefs(){
+      try{
+        const raw = localStorage.getItem(storeKey);
+        if(!raw) return {likes:[], votes:{}};
+        const obj = JSON.parse(raw);
+        if(!obj.likes) obj.likes=[];
+        if(!obj.votes) obj.votes={};
+        return obj;
+      }catch(e){ return {likes:[], votes:{}} }
+    }
+    function savePrefs(p){ localStorage.setItem(storeKey, JSON.stringify(p)); }
+  })();
+</script>
+</body>
+</html>
