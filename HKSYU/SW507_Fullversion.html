@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港低收入家庭社會福利支援 - 綜援政策分析</title>
+    <style>
+        :root {
+            --primary-color: #E6F3FF;
+            --secondary-color: #B8E6B8;
+            --accent-color: #FFE5CC;
+            --text-primary: #2C3E50;
+            --text-secondary: #5D6D7E;
+            --border-color: #D5DBDB;
+            --highlight-color: #F8C8DC;
+            --success-color: #A8E6CF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .lang-toggle-container {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+        }
+
+        #lang-toggle-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: var(--highlight-color);
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* Language Toggle Logic */
+        .lang-en { display: none; }
+        body.show-en .lang-zh { display: none; }
+        body.show-en .lang-en { display: revert; }
+
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .team-info {
+            background: var(--accent-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .member {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background: var(--success-color);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-export {
+            background: var(--highlight-color);
+        }
+
+        .slide-navigation {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .slide-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .slide-nav-item {
+            background: var(--primary-color);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .slide-nav-item:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .slide-nav-item.active {
+            border-color: var(--text-primary);
+            background: var(--accent-color);
+        }
+
+        .slide-nav-item .slide-number {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .slide-nav-item .slide-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .slide-nav-item .slide-time {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .presentation-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h2 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .slide h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+        }
+
+        .slide h4 {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 20px 0 10px 0;
+        }
+
+        .slide p, .slide li {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .slide ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-section {
+            margin: 20px 0;
+        }
+
+        .toggle-header {
+            background: var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-header:hover {
+            background: var(--secondary-color);
+        }
+
+        .toggle-content {
+            display: none;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            border: 2px solid var(--border-color);
+            border-top: none;
+        }
+
+        .toggle-content.active {
+            display: block;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .highlight-box {
+            background: var(--highlight-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid var(--text-primary);
+        }
+
+        .theory-box {
+            background: var(--accent-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .time-indicator {
+            background: var(--success-color);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .speaker-tag {
+            background: var(--highlight-color);
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .lang-toggle-container {
+                top: 15px;
+                right: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .presentation-content {
+                padding: 25px;
+            }
+
+            .slide h2 {
+                font-size: 1.5rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .team-members {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .member {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Styles for PDF Export */
+        .export-only {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .container {
+                max-width: none;
+                padding: 20px;
+                box-shadow: none;
+            }
+            
+            .controls,
+            .slide-navigation,
+            .toggle-header,
+            .time-indicator,
+            .speaker-tag,
+            .presentation-content,
+            .lang-toggle-container {
+                display: none !important;
+            }
+            
+            .export-only {
+                display: block !important;
+                font-family: 'Times New Roman', serif;
+                font-size: 11pt;
+                line-height: 1.5;
+            }
+            body.show-en .export-only .lang-zh { display: none; }
+            body.show-en .export-only .lang-en { display: block !important; }
+            
+            .export-only h1 {
+                font-size: 18pt;
+                margin-bottom: 10px;
+            }
+            
+            .export-only h2 {
+                font-size: 14pt;
+                margin-top: 20px;
+                margin-bottom: 8px;
+                border-bottom: 1px solid #333;
+                padding-bottom: 3px;
+                page-break-before: auto;
+                page-break-after: avoid;
+            }
+            
+            .export-only h3 {
+                font-size: 12pt;
+                font-weight: bold;
+                margin-top: 15px;
+                margin-bottom: 6px;
+                page-break-after: avoid;
+            }
+            
+            .export-only ul {
+                list-style-type: disc;
+                margin-left: 20px;
+                margin-bottom: 10px;
+            }
+            
+            .export-only li {
+                margin-bottom: 4px;
+            }
+            
+            .header {
+                 display: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lang-toggle-container">
+            <button id="lang-toggle-btn" class="btn" onclick="toggleLanguage()">EN</button>
+        </div>
+        <div class="header">
+            <h1>
+                <span class="lang-zh">香港低收入家庭社會福利支援</span>
+                <span class="lang-en">Social Welfare Support for Low-Income Families in Hong Kong</span>
+            </h1>
+            <p class="subtitle">
+                <span class="lang-zh">綜援政策的宏觀結構因素批判性分析</span>
+                <span class="lang-en">A Critical Analysis of Macro-Structural Factors in the CSSA Policy</span>
+            </p>
+            <div class="team-info">
+                <h3>
+                    <span class="lang-zh">SW507 課程組別匯報</span>
+                    <span class="lang-en">SW507 Course Group Presentation</span>
+                </h3>
+                <div class="team-members">
+                    <div class="member">246609M Li Ka Kit (牛)</div>
+                    <div class="member">246610M Lam Ka Wing (Hebe)</div>
+                    <div class="member">246611M Liu Pik Ha (Vivian)</div>
+                    <div class="member">246601M Siu King San (Kingson)</div>
+                    <div class="member">246613M Cheung Ching Long (Isaac)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="toggleAllScripts()">
+                <span class="lang-zh">切換所有講稿</span>
+                <span class="lang-en">Toggle All Scripts</span>
+            </button>
+            <button class="btn btn-export" onclick="exportToPDF()">
+                <span class="lang-zh">匯出PDF大綱</span>
+                <span class="lang-en">Export PDF Outline</span>
+            </button>
+            <button class="btn" onclick="resetPresentation()">
+                <span class="lang-zh">重設簡報</span>
+                <span class="lang-en">Reset Presentation</span>
+            </button>
+        </div>
+
+        <div class="slide-navigation">
+            <h3>
+                <span class="lang-zh">簡報導航 (總時間: 25分鐘)</span>
+                <span class="lang-en">Presentation Navigation (Total: 25 mins)</span>
+            </h3>
+            <div class="slide-nav-grid">
+                <div class="slide-nav-item active" onclick="showSlide(1)">
+                    <div class="slide-number">1</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">為何聚焦CSSA？</span>
+                        <span class="lang-en">Why Focus on CSSA?</span>
+                    </div>
+                    <div class="slide-time">1.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(2)">
+                    <div class="slide-number">2</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">制度功能與意識形態</span>
+                        <span class="lang-en">Function & Ideology</span>
+                    </div>
+                    <div class="slide-time">2.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(3)">
+                    <div class="slide-number">3</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">理論(一): 新自由主義</span>
+                        <span class="lang-en">Theory I: Neoliberalism</span>
+                    </div>
+                    <div class="slide-time">2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(4)">
+                    <div class="slide-number">4</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">理論(二): 福利體制</span>
+                        <span class="lang-en">Theory II: Welfare Regime</span>
+                    </div>
+                    <div class="slide-time">2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(5)">
+                    <div class="slide-number">5</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">理論(三): 社會投資</span>
+                        <span class="lang-en">Theory III: Social Investment</span>
+                    </div>
+                    <div class="slide-time">2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(6)">
+                    <div class="slide-number">6</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">制度失靈的證據</span>
+                        <span class="lang-en">Evidence of System Failure</span>
+                    </div>
+                    <div class="slide-time">4<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(7)">
+                    <div class="slide-number">7</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">國際比較</span>
+                        <span class="lang-en">International Comparison</span>
+                    </div>
+                    <div class="slide-time">4<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(8)">
+                    <div class="slide-number">8</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">政策建議</span>
+                        <span class="lang-en">Policy Recommendations</span>
+                    </div>
+                    <div class="slide-time">5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(9)">
+                    <div class="slide-number">9</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">反思與專業定位</span>
+                        <span class="lang-en">Reflection & Role</span>
+                    </div>
+                    <div class="slide-time">2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="presentation-content">
+            <!-- Slide 1: 為何聚焦CSSA？ -->
+            <div class="slide active" id="slide1">
+                <div class="time-indicator">⏱️ 1.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Li Ka Kit (牛)</span>
+                    <span class="lang-en">Speaker: Li Ka Kit (牛)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">為何聚焦CSSA而非其他政策？</span>
+                    <span class="lang-en">Why Focus on CSSA and Not Other Policies?</span>
+                </h2>
+                <p>
+                    <span class="lang-zh">在眾多扶貧政策中，我們選擇聚焦CSSA，因為它是香港社會福利體系的基石與最後安全網，最能深刻反映制度的內在價值與結構性矛盾。</span>
+                    <span class="lang-en">Among the many anti-poverty policies, we choose to focus on CSSA because it is the cornerstone and final safety net of Hong Kong's social welfare system, best reflecting the system's intrinsic values and structural contradictions.</span>
+                </p>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>核心性：</strong>CSSA直接處理「最弱勢家庭」的生存風險，是最低生活水平的保障。</span>
+                        <span class="lang-en"><strong>Core Role:</strong> CSSA directly addresses the survival risks of the "most vulnerable families" and serves as a guarantee for the minimum standard of living.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>代表性：</strong>相對於在職家庭津貼等與就業掛鉤的政策，CSSA更能反映社會對公民基本權利的「去商品化」底線。</span>
+                        <span class="lang-en"><strong>Representativeness:</strong> Compared to policies linked to employment like the Working Family Allowance, CSSA better reflects society's bottom line on the "de-commodification" of basic citizen rights.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>系統性：</strong>以CSSA為主軸，能有效串連起在職貧窮、住房負擔、無酬照顧責任及社會污名等相互交織的宏觀議題。</span>
+                        <span class="lang-en"><strong>Systemic Relevance:</strong> Using CSSA as the main axis allows for an effective connection between intertwined macro issues such as in-work poverty, housing burden, unpaid care responsibilities, and social stigma.</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script1')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script1">
+                        <p>
+                            <span class="lang-zh">各位教授、同學早安。今天我們將深入探討香港的低收入家庭支援政策。在開始前，首先要解答一個關鍵問題：為何在眾多政策中，我們選擇聚焦於綜援(CSSA)？</span>
+                            <span class="lang-en">Good morning, professors and classmates. Today, we will delve into the support policies for low-income families in Hong Kong. Before we begin, we must first answer a key question: Why, among the many policies, do we choose to focus on the Comprehensive Social Security Assistance (CSSA)?</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">答案在於其**核心性、代表性與系統性**。首先，CSSA是香港福利制度的最後一道防線，直接處理家庭最基本的生存風險，是我們社會的「安全網底」。其次，它最能反映香港福利體制對公民基本生活權利的態度，也就是理論所說的「去商品化」程度。最後，綜援像一面稜鏡，透過它，我們可以清晰地看到在職貧窮、住房危機、照顧責任和社會污名等各種宏觀問題如何交織，共同將家庭推向困境。</span>
+                            <span class="lang-en">The answer lies in its **core role, representativeness, and systemic relevance**. Firstly, CSSA is the last line of defense in Hong Kong's welfare system, directly addressing the most basic survival risks of families, serving as our society's "safety net floor." Secondly, it best reflects the attitude of the Hong Kong welfare regime towards the basic living rights of citizens, which is what theory refers to as the degree of "de-commodification." Lastly, CSSA acts like a prism; through it, we can clearly see how various macro issues like in-work poverty, the housing crisis, care responsibilities, and social stigma intertwine to push families into hardship.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">因此，剖析CSSA，就是剖析香港扶貧政策的根源與靈魂。接下來，我們將首先檢視其制度脈絡。</span>
+                            <span class="lang-en">Therefore, to analyze CSSA is to analyze the root and soul of Hong Kong's anti-poverty policy. Next, we will first examine its institutional context.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: 制度功能與意識形態 -->
+            <div class="slide" id="slide2">
+                 <div class="time-indicator">⏱️ 2.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe)</span>
+                    <span class="lang-en">Speaker: Lam Ka Wing (Hebe)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">制度功能與意識形態：權利還是恩恤？</span>
+                    <span class="lang-en">Institutional Function & Ideology: Right or Charity?</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">核心功能</span>
+                    <span class="lang-en">Core Functions</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">補足家庭收入至政府訂定的最低生活線。</span>
+                        <span class="lang-en">Supplementing family income to meet the government-set minimum subsistence level.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">提供標準金額（基本生活費）、補助金及特別津貼（如租金、學費等）。</span>
+                        <span class="lang-en">Providing standard rates (for basic living expenses), supplements, and special grants (e.g., for rent, school fees).</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">制度定位：殘補式福利 (Residual Welfare)</span>
+                    <span class="lang-en">Institutional Positioning: Residual Welfare</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">政府只在市場與家庭支援失效時才介入，作為「保底」角色。</span>
+                        <span class="lang-en">The government intervenes only when the market and family support fail, acting as a "safety net of last resort."</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">設有嚴格的入息及資產審查（Means-testing），以控制公共開支及防止「濫用」。</span>
+                        <span class="lang-en">It involves strict means-testing to control public expenditure and prevent "abuse."</span>
+                    </li>
+                </ul>
+                <div class="highlight-box">
+                    <h4>
+                        <span class="lang-zh">意識形態辯證：公民權利 vs. 酌情恩恤</span>
+                        <span class="lang-en">Ideological Dialectic: A Citizen's Right vs. Discretionary Charity</span>
+                    </h4>
+                    <p>
+                        <span class="lang-zh">CSSA的設計充滿矛盾：它一方面承認市民有免於赤貧的基本需要，但另一方面，其嚴苛的審查、規訓式的管理和社會污名化，都使其更像一種**有條件的、由上而下的恩恤(Charity)**，而非一項**公民應有的權利(Right)**。這種意識形態上的模糊，是理解其一切問題的根源。</span>
+                        <span class="lang-en">The design of CSSA is full of contradictions: on one hand, it acknowledges the basic need of citizens to be free from destitution. On the other hand, its harsh vetting, disciplinary management, and social stigmatization make it more like a **conditional, top-down form of charity** rather than an **inalienable citizen's right**. This ideological ambiguity is the root of all its problems.</span>
+                    </p>
+                </div>
+                 <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script2')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script2">
+                        <p>
+                            <span class="lang-zh">CSSA的核心功能很明確：補足收入至最低水平。它的定位是「殘補式福利」，即政府在市場和家庭都失效後的最後防線。</span>
+                            <span class="lang-en">CSSA's core function is clear: to supplement income to a minimum level. Its positioning is that of "residual welfare," meaning it is the last line of defense after the market and family have failed.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">但我們要提出的核心批判是：這種設計背後的意識形態，究竟視福利為公民的「權利」，還是一種「恩恤」？</span>
+                            <span class="lang-en">But the core critique we want to raise is: does the ideology behind this design treat welfare as a citizen's "right" or as a form of "charity"?</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">從表面看，它似乎保障了基本生存權。但深入分析，其嚴苛的審查、對受助者生活的規訓式管理、以及整個社會對「綜援戶」的標籤，都指向它更像一種有條件的、由上而下的施予。這種將福利「恩恤化」而非「權利化」的意識形態，正是導致其種種問題，如污名化、申請門檻過高的根源。理解這一點，對我們後續的批判至關重要。</span>
+                            <span class="lang-en">On the surface, it seems to guarantee the basic right to subsistence. But upon deeper analysis, its stringent vetting, the disciplinary management of recipients' lives, and the societal labeling of "CSSA households" all point to it being more of a conditional, top-down handout. This ideology, which frames welfare as "charity" rather than a "right," is the very source of its many problems, such as stigmatization and high application barriers. Understanding this is crucial for our subsequent critique.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 理論剖析（一）：新自由主義 -->
+            <div class="slide" id="slide3">
+                 <div class="time-indicator">⏱️ 2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Liu Pik Ha (Vivian)</span>
+                    <span class="lang-en">Speaker: Liu Pik Ha (Vivian)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">理論剖析(一)：新自由主義的治理邏輯與盲點</span>
+                    <span class="lang-en">Theory I: Neoliberalism's Governing Logic & Blind Spots</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">治理邏輯</span>
+                    <span class="lang-en">Governing Logic</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>意識形態：</strong>強調「小政府、大市場」，視福利為市場效率的潛在威脅。</span>
+                        <span class="lang-en"><strong>Ideology:</strong> Emphasizes "small government, big market," viewing welfare as a potential threat to market efficiency.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>個人責任化：</strong>將貧窮歸因於個人選擇或努力不足，而非結構性因素。</span>
+                        <span class="lang-en"><strong>Individualization of Responsibility:</strong> Attributes poverty to individual choices or lack of effort, rather than structural factors.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>績效問責：</strong>偏好量化指標（如脫離綜援人數）來衡量政策「效率」，忽略人的福祉。</span>
+                        <span class="lang-en"><strong>Performance Accountability:</strong> Prefers quantitative indicators (e.g., the number of people leaving CSSA) to measure policy "efficiency," ignoring human well-being.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">對CSSA的影響</span>
+                    <span class="lang-en">Impact on CSSA</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>嚴格審查與低給付：</strong>旨在維持工作倫理和市場紀律。</span>
+                        <span class="lang-en"><strong>Strict Vetting & Low Payouts:</strong> Aims to maintain work ethics and market discipline.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>污名化副作用：</strong>制度設計本身就在製造「福利依賴者」與「勤奮工作者」的對立，產生社會排斥。</span>
+                        <span class="lang-en"><strong>Side Effect of Stigmatization:</strong> The system's design inherently creates a dichotomy between "welfare dependents" and "diligent workers," leading to social exclusion.</span>
+                    </li>
+                </ul>
+                 <div class="highlight-box">
+                    <h4>
+                        <span class="lang-zh">結構性盲點</span>
+                        <span class="lang-en">Structural Blind Spots</span>
+                    </h4>
+                    <p>
+                        <span class="lang-zh">新自由主義的致命盲點，在於它完全無視了**前端結構性不公**對**末端福利政策**的衝擊。例如：</span>
+                        <span class="lang-en">The fatal blind spot of neoliberalism is its complete disregard for the impact of **front-end structural injustices** on **back-end welfare policies**. For example:</span>
+                    </p>
+                    <ul>
+                        <li>
+                            <span class="lang-zh"><strong>高地價政策</strong>作為宏觀經濟選擇，其後果是CSSA的租金津貼變相成為對業主的補貼，而非對家庭的支援。</span>
+                            <span class="lang-en">The **high land price policy**, as a macroeconomic choice, results in CSSA rent allowances effectively becoming subsidies for landlords rather than support for families.</span>
+                        </li>
+                        <li>
+                            <span class="lang-zh"><strong>對無酬照顧勞動的漠視</strong>，使女性和單親家庭在勞動市場上處於先天不利位置，增加了他們對CSSA的需求。</span>
+                            <span class="lang-en">The **disregard for unpaid care labor** places women and single-parent families at an inherent disadvantage in the labor market, increasing their need for CSSA.</span>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script3')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script3">
+                        <p>
+                            <span class="lang-zh">要理解CSSA為何是今天的模樣，必須理解其背後的主導意識形態——新自由主義。它的核心邏輯是市場至上，認為貧窮是個人不努力的結果，因此政府的角色應盡可能小，避免「養懶人」。</span>
+                            <span class="lang-en">To understand why CSSA is the way it is today, we must understand its dominant underlying ideology: neoliberalism. Its core logic is market supremacy, which posits that poverty is the result of individual lack of effort. Therefore, the government's role should be as minimal as possible to avoid "nurturing the lazy."</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">這種思想直接體現在CSSA的設計上：極其嚴格的審查、僅僅維持生存的低給付水平，都是為了確保工作的「吸引力」永遠高於領取援助。但這種設計的副作用，就是將申請者標籤化，製造社會對立。</span>
+                            <span class="lang-en">This thinking is directly reflected in CSSA's design: extremely strict vetting and low payouts that barely sustain life are all intended to ensure that the "attraction" of work is always greater than receiving assistance. But the side effect of this design is the labeling of applicants, creating social division.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">更重要的是，新自由主義的理論框架有巨大的盲點。它完全無法解釋香港的現實：在一個由地產霸權主導、缺乏租金管制的市場，一個低收入工人的大部分薪水都被租金吞噬，這不是個人努力可以改變的。同樣，它也忽視了大量存在的、由女性承擔的無酬照顧工作，這些工作沒有市場價值，卻是社會運作的基石。這些結構性因素，才是導致貧窮的根本原因。</span>
+                            <span class="lang-en">More importantly, the neoliberal theoretical framework has huge blind spots. It completely fails to explain the reality of Hong Kong: in a market dominated by real estate hegemony and lacking rent control, a large portion of a low-income worker's salary is consumed by rent—a situation that individual effort cannot change. Likewise, it ignores the vast amount of unpaid care work, largely undertaken by women, which has no market value but is the bedrock of social functioning. These structural factors are the true root causes of poverty.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 4: 理論剖析（二）：福利體制 -->
+            <div class="slide" id="slide4">
+                <div class="time-indicator">⏱️ 2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Siu King San (Kingson)</span>
+                    <span class="lang-en">Speaker: Siu King San (Kingson)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">理論剖析(二)：福利體制與被遺漏的群體</span>
+                    <span class="lang-en">Theory II: The Welfare Regime and the Excluded</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">香港的定位</span>
+                    <span class="lang-en">Hong Kong's Positioning</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">根據Esping-Andersen的理論，香港屬於典型的**自由主義/殘補式福利體制**。</span>
+                        <span class="lang-en">According to Esping-Andersen's theory, Hong Kong belongs to a typical **liberal/residual welfare regime**.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>特點：</strong>手段審查(Means-testing)嚴格、福利的普及性低、公民脫離市場而生存的能力（即「去商品化」程度）極弱。</span>
+                        <span class="lang-en"><strong>Characteristics:</strong> Strict means-testing, low universality of benefits, and a very weak capacity for citizens to survive outside the market (i.e., a low degree of "de-commodification").</span>
+                    </li>
+                </ul>
+                 <h3>
+                    <span class="lang-zh">東亞脈絡的特殊性</span>
+                    <span class="lang-en">The Specificity of the East Asian Context</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">混合了儒家**家庭主義**，預設家庭是福利的第一道防線，進一步減輕了國家的責任。</span>
+                        <span class="lang-en">It incorporates Confucian **familialism**, which presumes the family as the first line of welfare, further reducing the state's responsibility.</span>
+                    </li>
+                     <li>
+                        <span class="lang-zh">強調**工作倫理**，福利與勞動參與緊密掛鉤。</span>
+                        <span class="lang-en">It emphasizes a **work ethic**, tightly linking welfare to labor market participation.</span>
+                    </li>
+                </ul>
+                 <div class="highlight-box">
+                    <h4>
+                        <span class="lang-zh">安全網的漏洞：被遺漏的群體</span>
+                        <span class="lang-en">Gaps in the Safety Net: The Excluded Groups</span>
+                    </h4>
+                    <p>
+                        <span class="lang-zh">這種體制最大的問題，是在邊界地帶製造了大量的「福利孤兒」，他們因不完全符合資格而被安全網漏掉：</span>
+                        <span class="lang-en">The biggest problem with this regime is that it creates numerous "welfare orphans" at the margins, who fall through the safety net because they do not fully meet the eligibility criteria:</span>
+                    </p>
+                    <ul>
+                        <li>
+                            <span class="lang-zh"><strong>在職貧窮/近貧戶 (N無人士)：</strong>收入僅僅略高於綜援線，卻無法享受任何支援。</span>
+                            <span class="lang-en"><strong>The Working Poor / Near-Poor ("N-nothing" households):</strong> Their income is just slightly above the CSSA line, yet they are ineligible for any support.</span>
+                        </li>
+                        <li>
+                            <span class="lang-zh"><strong>非典型就業者 (零散工)：</strong>收入不穩，難以通過僵化的入息審查。</span>
+                            <span class="lang-en"><strong>Atypical Workers (Gig workers):</strong> With unstable incomes, they struggle to pass the rigid income assessment.</span>
+                        </li>
+                        <li>
+                            <span class="lang-zh"><strong>部分單親家庭和照顧者：</strong>因照顧責任無法滿足工時要求。</span>
+                            <span class="lang-en"><strong>Some Single Parents and Carers:</strong> They cannot meet the work-hour requirements due to caregiving responsibilities.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script4')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script4">
+                        <p>
+                            <span class="lang-zh">從福利體制的角度看，香港被歸類為「自由主義」或「殘補式」的體制。這個理論的核心概念是「去商品化」——指的是一個公民在多大程度上可以不依賴市場（即工作收入）而維持有尊嚴的生活。</span>
+                            <span class="lang-en">From a welfare regime perspective, Hong Kong is classified as a "liberal" or "residual" system. The core concept of this theory is "de-commodification"—which refers to the degree to which a citizen can maintain a dignified life without relying on the market (i.e., earned income).</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">在香港，答案顯然是：程度極低。我們的福利設計，從綜援到強積金，都假設你必須是一個勞動者才能生存。這套體制在東亞脈絡下，還加上了「家庭主義」的元素，即預設家庭會承擔大部分照顧責任，這進一步合理化了政府的低度介入。</span>
+                            <span class="lang-en">In Hong Kong, the answer is clearly: to a very low degree. Our welfare design, from CSSA to the MPF, assumes that one must be a laborer to survive. In the East Asian context, this system is also infused with "familialism," which presumes that the family will bear most of the care responsibilities, further justifying the government's minimal intervention.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">這種制度最大的問題，是它在邊界地帶製造了大量的「福利孤兒」。例如，收入僅僅略高於綜援線的N無人士、無法找到足夠工時的單親媽媽、或是從事零散工作的青年，他們往往無法得到任何制度性的支援。這給我們的啟示是，一個好的安全網，不僅要看它接住了多少人，更要看它漏掉了多少人。</span>
+                            <span class="lang-en">The biggest problem with this system is that it creates a large number of "welfare orphans" at the margins. For example, the "N-nothing" households whose income is just slightly above the CSSA line, single mothers who cannot find enough work hours, or young people in precarious gig work often fail to receive any institutional support. This teaches us that a good safety net should not only be judged by how many people it catches, but also by how many it misses.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: 理論剖析（三）：社會投資 -->
+            <div class="slide" id="slide5">
+                <div class="time-indicator">⏱️ 2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Cheung Ching Long (Isaac)</span>
+                    <span class="lang-en">Speaker: Cheung Ching Long (Isaac)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">理論剖析(三)：社會投資視角—從補助到能力建構</span>
+                    <span class="lang-en">Theory III: The Social Investment Perspective—From Subsidy to Capacity Building</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">核心理念</span>
+                    <span class="lang-en">Core Ideas</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>範式轉移：</strong>將社會支出視為對未來的「投資」，而非單純的「開銷」。</span>
+                        <span class="lang-en"><strong>Paradigm Shift:</strong> Viewing social expenditure as an "investment" in the future, rather than a mere "expense."</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>生命週期觀點：</strong>強調在人生的關鍵階段（特別是兒童早期）進行介入，以獲取長期回報。</span>
+                        <span class="lang-en"><strong>Life-Course Perspective:</strong> Emphasizing intervention at critical life stages (especially early childhood) to yield long-term returns.</span>
+                    </li>
+                </ul>
+                 <h3>
+                    <span class="lang-zh">政策重點</span>
+                    <span class="lang-en">Policy Focus</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">幼兒早期教育與照顧 (e.g. 可負擔的托兒服務)。</span>
+                        <span class="lang-en">Early childhood education and care (e.g., affordable childcare services).</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">終身學習與技能再培訓。</span>
+                        <span class="lang-en">Lifelong learning and skills retraining.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">促進工作與家庭平衡的政策 (e.g. 育兒假)。</span>
+                        <span class="lang-en">Policies that promote work-family balance (e.g., parental leave).</span>
+                    </li>
+                </ul>
+                <div class="highlight-box">
+                    <h4>
+                        <span class="lang-zh">對CSSA的啟發與限制</span>
+                        <span class="lang-en">Implications for CSSA & Its Limitations</span>
+                    </h4>
+                    <p>
+                        <span class="lang-zh"><strong>啟發：</strong>我們應在CSSA中大幅增加對兒童、青年和照顧者的支援元素，例如設立更高的兒童津貼、提供照顧者津貼、或將領取援助與教育培訓機會掛鉤，將短期現金補助轉化為中長期的能力提升。</span>
+                        <span class="lang-en"><strong>Implications:</strong> We should significantly increase support elements for children, youth, and carers within CSSA. For instance, by establishing higher child allowances, providing carer allowances, or linking assistance to educational and training opportunities, we can transform short-term cash subsidies into medium-to-long-term capacity building.</span>
+                    </p>
+                    <p>
+                        <span class="lang-zh"><strong>限制：</strong>社會投資回報期長，需要穩定的政治意願和財政投入。同時，我們必須警惕將所有貧窮問題都簡化為個人「技能不足」的風險，而忽略了結構性改革的必要性。</span>
+                        <span class="lang-en"><strong>Limitations:</strong> Social investment has a long return period, requiring stable political will and financial commitment. At the same time, we must be wary of the risk of oversimplifying all poverty issues into individual "skill deficiencies," thereby ignoring the need for structural reform.</span>
+                    </p>
+                </div>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script5')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script5">
+                        <p>
+                            <span class="lang-zh">社會投資理論為我們提供了跳出傳統福利思維的第三種視角。它主張，最好的扶貧政策不是在人們陷入困境後派錢，而是在他們生命的早期階段就進行投資，從根本上預防貧窮的發生。</span>
+                            <span class="lang-en">The social investment theory offers a third perspective that breaks from traditional welfare thinking. It argues that the best anti-poverty policy is not to hand out money after people fall into hardship, but to invest in the early stages of their lives to prevent poverty from occurring in the first place.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">它的政策重點非常清晰：優質的幼兒教育、可負擔的托兒服務、持續的技能培訓。這些都不是傳統意義上的「救濟」，而是對「人力資本」的投資，目標是提升整個社會的生產力和韌性。</span>
+                            <span class="lang-en">Its policy focus is very clear: high-quality early childhood education, affordable childcare, and continuous skills training. These are not "relief" in the traditional sense, but "investments" in "human capital," aimed at enhancing the productivity and resilience of the entire society.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">這對改革CSSA有重要啟發。我們可以在現有框架內，大幅增加對兒童相關開支的補助，或者為需要照顧家庭的單親家長提供津貼，讓她們有機會去進修。目標是將被動的現金援助，轉化為主動的能力建設。當然，我們也要意識到它的局限性：社會投資需要長期承擔，且不能成為政府推卸結構性改革（如解決住房問題）責任的藉口。</span>
+                            <span class="lang-en">This has important implications for reforming CSSA. Within the existing framework, we can significantly increase subsidies for child-related expenses or provide allowances for single parents who need to care for their families, giving them opportunities for further education. The goal is to transform passive cash assistance into active capacity building. Of course, we must also be aware of its limitations: social investment requires long-term commitment and must not become an excuse for the government to evade its responsibility for structural reforms (such as solving the housing problem).</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 6: 制度失靈的證據 -->
+            <div class="slide" id="slide6">
+                <div class="time-indicator">⏱️ 4<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Liu Pik Ha (Vivian) & Lam Ka Wing (Hebe)</span>
+                    <span class="lang-en">Speakers: Liu Pik Ha (Vivian) & Lam Ka Wing (Hebe)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">制度失靈的證據：數據與現實</span>
+                    <span class="lang-en">Evidence of System Failure: Data and Reality</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">1. 住房壓力使津貼失效</span>
+                    <span class="lang-en">1. Housing Pressure Nullifies Subsidies</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">根據Wong & Chan (2019)等學者的研究，高昂的租金是侵蝕CSSA津貼購買力的最主要因素。租金津貼的上限遠低於市場水平，導致許多家庭需要用本應用於食物、教育的基本生活費去補貼租金，令脫貧難上加難。</span>
+                    <span class="lang-en">According to research by scholars like Wong & Chan (2019), exorbitant rents are the primary factor eroding the purchasing power of CSSA allowances. The cap on rent allowance is far below market levels, forcing many families to use their basic living expenses intended for food and education to cover rent, making it even harder to escape poverty.</span>
+                </p>
+
+                <h3>
+                    <span class="lang-zh">2. 污名與程序負擔導致的「非申請型排斥」</span>
+                    <span class="lang-en">2. "Non-Take-Up Exclusion" Caused by Stigma and Procedural Burdens</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>程序負擔：</strong>繁複的文件要求、漫長的審批時間、侵入性的家訪，都構成巨大的「程序焦慮」。</span>
+                        <span class="lang-en"><strong>Procedural Burdens:</strong> Complicated document requirements, lengthy approval times, and intrusive home visits all create significant "procedural anxiety."</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>污名效應：</strong>社會標籤導致符合資格的家庭（特別是長者和在職貧窮）因害怕被歧視而選擇不申請。</span>
+                        <span class="lang-en"><strong>Stigma Effect:</strong> Social labeling causes eligible families (especially the elderly and the working poor) to opt out of applying for fear of discrimination.</span>
+                    </li>
+                </ul>
+                
+                <h3>
+                    <span class="lang-zh">3. 就業誘因的「貧窮陷阱」</span>
+                    <span class="lang-en">3. The "Poverty Trap" of Work Incentives</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">現行的收入豁免額度過低，導致受助人工作收入增加時，大部分會被扣減，即「邊際有效稅率」過高。這種「多做多扣」的體感，嚴重削弱了尋找更高收入工作的動力，使人困在低薪工作與援助之間。</span>
+                    <span class="lang-en">The current income disregard level is too low, causing a large portion of a recipient's increased earnings to be deducted, resulting in a high "effective marginal tax rate." This feeling of "earning more means getting less" severely dampens the motivation to seek higher-paying jobs, trapping individuals between low-wage work and assistance.</span>
+                </p>
+
+                <h3>
+                    <span class="lang-zh">4. 個案結構轉變的警號</span>
+                    <span class="lang-en">4. A Warning Sign in Caseload Structure Changes</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">近年長者、永久性殘疾及病患者的個案佔比持續上升，而健全人士個案則下降。這可能意味著制度門檻正將越來越多的在職貧窮家庭排斥在安全網之外，使他們成為被遺忘的一群。</span>
+                    <span class="lang-en">In recent years, the proportion of cases involving the elderly, permanently disabled, and ill has been rising, while cases of able-bodied individuals have declined. This could mean that the system's barriers are increasingly excluding working-poor families from the safety net, turning them into a forgotten group.</span>
+                </p>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script6')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script6">
+                        <p>
+                            <span class="lang-zh"><strong>(Vivian):</strong> 理論之外，現實數據更揭示了制度的失靈。首先，最觸目驚心的就是住房問題。大量研究證實，租金津貼的不足，令綜援家庭被迫用基本生活費去交租。這意味著政府的福利開支，很大一部分最終流入了私人業主的口袋，而非真正改善家庭生活，這是制度失效的最直接證據。</span>
+                            <span class="lang-en"><strong>(Vivian):</strong> Beyond theory, real-world data reveals the system's failure. First and foremost, the most shocking issue is housing. Numerous studies confirm that the inadequacy of the rent allowance forces CSSA families to use their basic living expenses to pay rent. This means a significant portion of the government's welfare expenditure ends up in the pockets of private landlords instead of genuinely improving family life—the most direct evidence of system failure.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>(Hebe):</strong> 其次，是隱形的排斥。申請過程本身就是一道高牆，繁複的程序和社會的負面標籤，令許多真正有需要的人望而卻步。這種因制度設計而導致的「非申請型排斥」，是我們評估政策時必須看到的。</span>
+                            <span class="lang-en"><strong>(Hebe):</strong> Secondly, there is invisible exclusion. The application process itself is a high wall. The complicated procedures and negative social labels deter many who are genuinely in need. This "non-take-up exclusion" resulting from the system's design is something we must see when evaluating the policy.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>(Vivian):</strong> 第三，對於想靠工作脫貧的受助人，制度卻設下了「貧窮陷阱」。過低的收入豁免額，讓他們感覺「多做多扣」，辛勞工作換來的收入增長微乎其微。這不是他們懶惰，而是制度設計本身就在抑制向上流動。</span>
+                            <span class="lang-en"><strong>(Vivian):</strong> Third, for recipients who want to escape poverty through work, the system sets a "poverty trap." The excessively low income disregard level makes them feel that "the more they work, the more is deducted," and the income growth from their hard work is minimal. This is not because they are lazy, but because the system design itself suppresses upward mobility.</span>
+                        </p>
+                         <p>
+                            <span class="lang-zh"><strong>(Hebe):</strong> 最後，綜援的個案結構轉變是一個重要警號。健全人士個案比例下降，可能並非全是好消息，它可能意味著我們的安全網，正在遺漏越來越多處於貧窮邊緣的在職家庭。這些數據，都指向了改革的迫切性。</span>
+                            <span class="lang-en"><strong>(Hebe):</strong> Finally, the changing caseload structure of CSSA is a major warning sign. The decreasing proportion of able-bodied cases may not be entirely good news; it could mean that our safety net is leaving out more and more working families on the edge of poverty. All this data points to the urgency of reform.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: 國際比較 -->
+            <div class="slide" id="slide7">
+                <div class="time-indicator">⏱️ 4<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Cheung Ching Long (Isaac)</span>
+                    <span class="lang-en">Speaker: Cheung Ching Long (Isaac)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">國際比較與啟示 (相類安全網政策)</span>
+                    <span class="lang-en">International Comparison & Implications (Similar Safety Net Policies)</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">1. 英國：Universal Credit (綜合福利金)</span>
+                    <span class="lang-en">1. UK: Universal Credit</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>整合性:</strong> 將多個援助項目(如住房、失業、兒童稅務減免)整合為單一支付，簡化申請。</span>
+                        <span class="lang-en"><strong>Integration:</strong> Consolidates multiple benefits (e.g., housing, unemployment, child tax credit) into a single payment, simplifying applications.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>數碼化平台:</strong> 全面網上申請及管理，但對數碼能力弱者構成障礙。</span>
+                        <span class="lang-en"><strong>Digital Platform:</strong> Fully online application and management, but creates barriers for the digitally less literate.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>啟示:</strong> 簡化系統是方向，但必須保留人性化及非數碼的申請渠道，避免數碼排斥。</span>
+                        <span class="lang-en"><strong>Implication:</strong> System simplification is the right direction, but humanized and non-digital application channels must be retained to avoid digital exclusion.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">2. 台灣：低收入戶及中低收入戶補助</span>
+                    <span class="lang-en">2. Taiwan: Low-Income & Mid-Low-Income Household Subsidies</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>兩級制設計:</strong> 設立兩級門檻，為略高於最低資格線的「近貧」家庭提供支援，有效避免「福利懸崖」。</span>
+                        <span class="lang-en"><strong>Two-Tier Design:</strong> Establishes two tiers of eligibility to support "near-poor" families just above the poverty line, effectively avoiding the "welfare cliff."</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>服務整合:</strong> 補助與健保費減免、教育津貼等服務掛鉤，提供整合性支援。</span>
+                        <span class="lang-en"><strong>Service Integration:</strong> Links subsidies with services like health insurance premium reductions and education allowances, providing integrated support.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>啟示:</strong> 建立緩衝機制，為脫離綜援的家庭提供過渡性支援，是解決「貧窮陷阱」的關鍵。</span>
+                        <span class="lang-en"><strong>Implication:</strong> Creating a buffer mechanism to provide transitional support for families leaving assistance is key to solving the "poverty trap."</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">3. 澳門：經濟援助 (MOP)</span>
+                    <span class="lang-en">3. Macau: Financial Assistance (MOP)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>援助水平:</strong> 援助金額相對慷慨，更能應對生活成本，反映政府財政決心。</span>
+                        <span class="lang-en"><strong>Assistance Level:</strong> The amount is relatively generous and better reflects the cost of living, showing government financial commitment.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>社會觀感:</strong> 社會對福利的觀感相對較香港寬容，減少了污名化。</span>
+                        <span class="lang-en"><strong>Social Perception:</strong> Public perception of welfare is comparatively more tolerant than in Hong Kong, reducing stigmatization.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>啟示:</strong> 援助金額應與本地實際生活成本緊密掛鉤，才能真正起到保障作用。</span>
+                        <span class="lang-en"><strong>Implication:</strong> The assistance amount must be closely tied to the actual local cost of living to be genuinely effective.</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script7')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script7">
+                        <p>
+                            <span class="lang-zh">為進行更有意義的比較，我們專注於其他與香港CSSA性質相似的、作為「最後安全網」的社會援助計劃。</span>
+                            <span class="lang-en">To conduct a more meaningful comparison, we are focusing on other social assistance schemes that are similar in nature to Hong Kong's CSSA and serve as a "final safety net."</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>英國的Universal Credit</strong>是近年最大規模的福利改革，目標是將多個福利整合成單一支付。理念先進，但其完全數碼化的平台和嚴格的制裁制度，反而排斥了最弱勢的群體。這給香港的教訓是：系統現代化是必要的，但絕不能犧牲可及性和人性化服務。</span>
+                            <span class="lang-en"><strong>The UK's Universal Credit</strong> is the largest welfare reform in recent years, aiming to consolidate multiple benefits into a single payment. The concept is advanced, but its fully digital platform and strict sanction system have paradoxically excluded the most vulnerable groups. The lesson for Hong Kong is: system modernization is necessary, but it must not sacrifice accessibility and human-centered service.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>台灣的兩級制補助</strong>為我們解決「福利懸崖」問題提供了絕佳範本。他們設立了「低收入戶」和「中低收入戶」，讓收入略高於貧窮線的家庭仍能獲得部分支援。這種漸進式設計，比香港的「全有全無」模式更具彈性，更能鼓勵就業。</span>
+                            <span class="lang-en"><strong>Taiwan's two-tier subsidy system</strong> provides an excellent model for solving our "welfare cliff" problem. They have established both "low-income" and "middle-low-income" households, allowing families with incomes slightly above the poverty line to still receive partial support. This gradual design is more flexible than Hong Kong's "all-or-nothing" model and is more effective at encouraging employment.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>鄰近的澳門</strong>，其經濟援助制度與香港最相似，但援助金額更能追上生活成本，社會接受度也更高。這促使我們反思：香港CSSA的低給付水平，究竟是純粹的財政問題，還是一種不信任窮人的價值觀體現？</span>
+                            <span class="lang-en"><strong>Nearby Macau's</strong> financial assistance system is the most similar to Hong Kong's. However, its assistance amount is better able to keep up with the cost of living, and social acceptance is higher. This prompts us to reflect: is the low payout level of Hong Kong's CSSA purely a fiscal issue, or does it reflect a value system that distrusts the poor?</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: 社會工作者的建議 -->
+            <div class="slide" id="slide8">
+                <div class="time-indicator">⏱️ 5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Siu King San (Kingson) & 全體</span>
+                    <span class="lang-en">Speakers: Siu King San (Kingson) & All</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">社會工作者的建議：微／中／宏三層優化路線</span>
+                    <span class="lang-en">Social Work Recommendations: A Three-Tiered Path to Optimization</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">微觀 (個案／家庭)</span>
+                    <span class="lang-en">Micro (Case/Family)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>申請支援與權益教育：</strong>提供「一站式」申請協助，減少申請者的「程序焦慮」，並在面談時倡導以尊嚴為本的對話。</span>
+                        <span class="lang-en"><strong>Application Support & Rights Education:</strong> Provide "one-stop" application assistance to reduce applicants' "procedural anxiety" and advocate for dignity-based dialogue during interviews.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>連結個人化服務：</strong>根據家庭獨特需要（如托兒、精神健康、子女學習困難），連結針對性的社區服務，而不只提供金錢援助。</span>
+                        <span class="lang-en"><strong>Connecting to Personalized Services:</strong> Link families to targeted community services based on their unique needs (e.g., childcare, mental health, children's learning difficulties), going beyond mere financial aid.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">中觀 (機構／社區)</span>
+                    <span class="lang-en">Meso (Organization/Community)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>建立「申請易」協作網絡：</strong>社福機構與社署建立快速通道和個案回饋機制，並為少數族裔等群體提供語言友善的支援流程。</span>
+                        <span class="lang-en"><strong>Building an "Easy-Apply" Collaborative Network:</strong> Social service organizations and the Social Welfare Department should establish fast-track channels and case feedback mechanisms, providing language-friendly support for ethnic minorities.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>推動「過渡屋＋社工隊」模式：</strong>將居住穩定與就業、家庭支援服務綑綁，在社區層面建立更穩固的支援網絡。</span>
+                        <span class="lang-en"><strong>Promoting the "Transitional Housing + Social Work Team" Model:</strong> Bundle housing stability with employment and family support services to build a more robust support network at the community level.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">宏觀 (政策倡議)</span>
+                    <span class="lang-en">Macro (Policy Advocacy)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>優化CSSA制度：</strong>倡議提高收入豁免額及資產上限、縮短審批時程、建立與市場租金掛鉤的租金津貼調整機制。</span>
+                        <span class="lang-en"><strong>Optimizing the CSSA System:</strong> Advocate for raising the income and asset disregard levels, shortening approval times, and establishing a rent allowance adjustment mechanism linked to market rates.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>打通政策銜接：</strong>推動CSSA與在職家庭津貼、僱員再培訓局課程的無縫對接，建立平滑的援助退坡曲線和職涯發展梯階。</span>
+                        <span class="lang-en"><strong>Creating Policy Pathways:</strong> Promote seamless integration between CSSA, the Working Family Allowance, and ERB courses to create a smooth phase-out curve and a career development ladder.</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script8')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script8">
+                        <p>
+                            <span class="lang-zh">基於以上分析，作為社會工作者，我們從實踐角度提出三層次的優化路線。</span>
+                            <span class="lang-en">Based on the analysis above, as social workers, we propose a three-tiered path to optimization from a practical perspective.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>在微觀的個案層面</strong>，我們前線同工可以做得更多。除了協助填表，更應提供情緒支援，減少他們面對官僚程序時的無力感。同時，要超越金錢援助，為他們連結真正能解決其家庭問題的服務，例如為單親媽媽找托兒服務，為失業青年找生涯規劃。</span>
+                            <span class="lang-en"><strong>At the micro (case) level,</strong> our frontline colleagues can do more. Beyond helping fill out forms, we should provide emotional support to reduce their sense of powerlessness when facing bureaucratic procedures. At the same time, we must go beyond financial aid and connect them to services that can truly solve their family's problems, such as finding childcare for single mothers or career planning for unemployed youth.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>在中觀的社區層面</strong>，我們機構之間需要更緊密協作。我們可以聯合起來，與社署建立更有效的溝通機制，反映制度的執行問題。我們也可以在社區推動創新的服務模式，例如將現在的過渡性房屋與深入的社工支援結合，做到「安居」與「培力」並行。</span>
+                            <span class="lang-en"><strong>At the meso (community) level,</strong> our organizations need to collaborate more closely. We can unite to establish more effective communication mechanisms with the Social Welfare Department to reflect implementation issues within the system. We can also promote innovative service models in the community, such as combining current transitional housing with intensive social work support, achieving both "stable housing" and "empowerment."</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh"><strong>在宏觀的政策倡議層面</strong>，這是我們作為一個專業最不可推卸的責任。我們必須持續地、有理有據地向政府倡議，要求改革不合時宜的制度設計。例如，我們應運用前線數據，證明提高收入豁免額和租金津貼的迫切性；我們也應推動不同福利計劃之間的銜接，為服務對象建立一條清晰的、可行的脫貧路徑。這三層工作環環相扣，缺一不可。</span>
+                            <span class="lang-en"><strong>At the macro (policy advocacy) level,</strong> this is our most inescapable responsibility as a profession. We must persistently and evidence-basedly advocate to the government, demanding reforms of outdated system designs. For example, we should use frontline data to demonstrate the urgency of raising the income disregard and rent allowance levels. We should also promote integration between different welfare schemes to build a clear and feasible pathway out of poverty for our clients. These three tiers of work are interlinked and indispensable.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: 反思與專業定位 -->
+            <div class="slide" id="slide9">
+                <div class="time-indicator">⏱️ 2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Li Ka Kit (牛)</span>
+                    <span class="lang-en">Speaker: Li Ka Kit (牛)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">反思與專業定位：畢業後的可行行動</span>
+                    <span class="lang-en">Reflection & Professional Role: Actionable Steps After Graduation</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">我們的專業角色</span>
+                    <span class="lang-en">Our Professional Roles</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">面對複雜的結構性貧窮，社工的角色絕不僅是福利服務的派發者。我們更應是：</span>
+                    <span class="lang-en">Facing complex structural poverty, the role of a social worker is far more than just a distributor of welfare services. We should be:</span>
+                </p>
+                <ul>
+                    <li>
+                        <span class="lang-zh"><strong>制度的翻譯者：</strong>將複雜的政策語言轉化為服務對象能理解的權益。</span>
+                        <span class="lang-en"><strong>Translators of the System:</strong> Turning complex policy language into rights that clients can understand.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>證據的倡議者：</strong>系統性地記錄前線觀察，將個案的掙扎轉化為推動改革的數據。</span>
+                        <span class="lang-en"><strong>Advocates with Evidence:</strong> Systematically documenting frontline observations to transform individual struggles into data that drives reform.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh"><strong>倫理的守門人：</strong>在制度與人之間，堅守專業倫理，維護服務對象的尊嚴與權利。</span>
+                        <span class="lang-en"><strong>Guardians of Ethics:</strong> Standing between the system and the individual, upholding professional ethics to protect the dignity and rights of clients.</span>
+                    </li>
+                </ul>
+                 <h3>
+                    <span class="lang-zh">畢業後的可行行動</span>
+                    <span class="lang-en">Actionable Steps After Graduation</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">積極參與機構內外的**政策研究和數據蒐集**工作。</span>
+                        <span class="lang-en">Actively participate in **policy research and data collection** both within and outside our organizations.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">與同事和服務使用者組成關注組，共同**撰寫立場書**，向區議會、立法會表達意見。</span>
+                        <span class="lang-en">Form concern groups with colleagues and clients to jointly **write position papers** and voice opinions to District Councils and the Legislative Council.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">在社區層面推動**公共教育**，分享真實的個案故事，挑戰社會對貧窮的刻板印象與污名。</span>
+                        <span class="lang-en">Promote **public education** at the community level by sharing real case stories to challenge stereotypes and the stigma of poverty.</span>
+                    </li>
+                </ul>
+                 <div class="highlight-box">
+                    <h4>
+                        <span class="lang-zh">核心價值，貫徹始終</span>
+                        <span class="lang-en">Core Values, Upheld Throughout</span>
+                    </h4>
+                    <p>
+                        <span class="lang-zh">無論在微觀的會談室，還是在宏觀的政策論壇，我們都應當時刻謹記並踐行社會工作的核心價值：追求社會公義，尊重個人尊嚴。</span>
+                        <span class="lang-en">Whether in the micro-level counseling room or at the macro-level policy forum, we must always remember and practice the core values of social work: striving for social justice and respecting individual dignity.</span>
+                    </p>
+                </div>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script9')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script9">
+                        <p>
+                            <span class="lang-zh">最後，回到我們自身。作為即將畢業的社會工作碩士生，這次的分析不僅是學術功課，更是對我們專業定位的一次深刻反思。</span>
+                            <span class="lang-en">Finally, let's return to ourselves. As graduating Master of Social Work students, this analysis is not just an academic assignment but also a profound reflection on our professional identity.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">我們不能只做一個被動的執行者。我們必須成為「制度的翻譯官」，幫助服務對象理解他們的權利；我們必須成為「證據的倡議者」，將一個個心酸的個案故事，轉化為推動改革的有力證據；我們更必須成為「倫理的守門人」，在冰冷的制度面前，堅守人的尊嚴與價值。</span>
+                            <span class="lang-en">We cannot be mere passive implementers. We must become "translators of the system," helping clients understand their rights; we must become "advocates with evidence," transforming heartbreaking case stories into powerful data for reform; and we must be "guardians of ethics," upholding human dignity and values in the face of an impersonal system.</span>
+                        </p>
+                        <p>
+                            <span class="lang-zh">畢業後，這不是遙不可及的理想。我們可以從參與機構的研究、與同儕撰寫立場書、在社區舉辦分享會開始，一步一步地推動改變。因為，無論在哪個崗位，我們都應將追求社會公義、尊重個人尊嚴的核心價值，貫徹在每一次的專業實踐中。這才是這個課程，這次匯報，賦予我們的真正意義。謝謝大家。</span>
+                            <span class="lang-en">After graduation, this is not an unattainable ideal. We can start by participating in organizational research, writing position papers with peers, and holding community sharing sessions, pushing for change step by step. Because, no matter our position, we should infuse the core values of pursuing social justice and respecting individual dignity into every professional practice. This is the true meaning that this course, and this presentation, has bestowed upon us. Thank you.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: Q&A -->
+            <div class="slide" id="slide10">
+                <div class="time-indicator">
+                    <span class="lang-zh">答問環節</span>
+                    <span class="lang-en">Q&A Session</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">Q&A 提問池 (示例)</span>
+                    <span class="lang-en">Q&A Pool (Examples)</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">潛在問題與回應思路</span>
+                    <span class="lang-en">Potential Questions & Response Strategies</span>
+                </h3>
+                <ul>
+                    <li>
+                        <strong>
+                            <span class="lang-zh">問題：</span><span class="lang-en">Question:</span>
+                        </strong>
+                        <span class="lang-zh">你們建議提高租金津貼，會否反而推高私人市場的租金，令業主得益？</span>
+                        <span class="lang-en">You recommend increasing the rent allowance. Won't that just drive up private market rents, benefiting landlords?</span>
+                        <br><strong>
+                            <span class="lang-zh">回應思路：</span><span class="lang-en">Response Strategy:</span>
+                        </strong>
+                        <span class="lang-zh">承認有此風險。因此建議必須與其他措施並行：1) 參考外國，設立租金津貼的「區域化上限」；2) 推動「標準租約」和起始租金管制；3) 長遠最根本的解決方法仍是大幅增加公共房屋供應。單一加津貼是治標不治本，但短期內對紓緩家庭困境有必要性。</span>
+                        <span class="lang-en">Acknowledge this risk. Therefore, the recommendation must be implemented alongside other measures: 1) Capping the rent allowance based on district, referencing international practices; 2) Pushing for "standard tenancy agreements" and initial rent control; 3) The most fundamental long-term solution remains a significant increase in public housing supply. A standalone allowance increase is a temporary fix, but it is necessary for short-term relief.</span>
+                    </li>
+                    <br>
+                    <li>
+                        <strong>
+                            <span class="lang-zh">問題：</span><span class="lang-en">Question:</span>
+                        </strong>
+                        <span class="lang-zh">大幅放寬收入豁免額，會否削弱工作誘因，變相鼓勵「懶人」？</span>
+                        <span class="lang-en">Will significantly relaxing the income disregard level weaken work incentives and encourage "laziness"?</span>
+                        <br><strong>
+                            <span class="lang-zh">回應思路：</span><span class="lang-en">Response Strategy:</span>
+                        </strong>
+                        <span class="lang-zh">恰恰相反。現時過低的豁免額才是削弱工作誘因的元兇，造成「貧窮陷阱」。參考台灣經驗，更平滑的退坡曲線，能讓受助人感受到「多勞多得」，更願意嘗試更高薪或更穩定的工作。建議可先推行有時限的試點計劃，收集數據，評估對勞動參與率和政府稅收的實際影響。</span>
+                        <span class="lang-en">Quite the opposite. The current low disregard level is the real culprit that weakens work incentives by creating a "poverty trap." Referencing Taiwan's experience, a smoother phase-out curve allows recipients to feel that "hard work pays off," making them more willing to try for higher-paying or more stable jobs. We suggest implementing a time-limited pilot program to collect data and assess the actual impact on labor participation rates and government tax revenue.</span>
+                    </li>
+                </ul>
+                 <div class="highlight-box">
+                    <h2>Q & A</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- This section is hidden by default and only becomes visible when printing -->
+        <div class="export-only">
+            <div class="lang-zh">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1>香港低收入家庭社會福利支援政策分析</h1>
+                    <h2>綜援制度的宏觀結構因素研究</h2>
+                    <p><strong>SW507 課程組別匯報大綱</strong></p>
+                    <p>組員：Li Ka Kit (牛), Lam Ka Wing (Hebe), Liu Pik Ha (Vivian), Siu King San (Kingson), Cheung Ching Long (Isaac)</p>
+                    <p>日期：2025年10月</p>
+                </div>
+
+                <h2>1. 為何聚焦CSSA？ (1.5分鐘)</h2>
+                <ul>
+                    <li>核心性：香港最低生活保障與最後安全網。</li>
+                    <li>代表性：最能反映「去商品化」底線與制度公平。</li>
+                    <li>系統性：可串連在職貧窮、住房負擔、照顧責任與污名等議題。</li>
+                </ul>
+
+                <h2>2. 制度功能與意識形態：權利還是恩恤？ (2.5分鐘)</h2>
+                <ul>
+                    <li>核心功能：補足家庭收入至最低生活線。</li>
+                    <li>制度定位：剩餘型福利，設手段審查以控開支。</li>
+                    <li>意識形態辯證：設計上更像有條件的「恩恤」(Charity)，而非公民應有的「權利」(Right)。</li>
+                </ul>
+                
+                <h2>3. 理論剖析(一)：新自由主義的治理邏輯與盲點 (2分鐘)</h2>
+                <ul>
+                    <li>治理邏輯：小政府、個人責任化、績效問責。</li>
+                    <li>對CSSA的影響：嚴格審查、低給付、污名化副作用。</li>
+                    <li>結構性盲點：漠視高地價政策與無酬照顧勞動等前端不公。</li>
+                </ul>
+                
+                <h2>4. 理論剖析(二)：福利體制與被遺漏的群體 (2分鐘)</h2>
+                <ul>
+                    <li>定位：自由／剩餘型，去商品化程度弱。</li>
+                    <li>制度缺口：易遺漏「近貧戶」、非典型就業者、單親照顧者等群體。</li>
+                </ul>
+
+                <h2>5. 理論剖析(三)：社會投資視角—從補助到能力建構 (2分鐘)</h2>
+                <ul>
+                    <li>核心理念：將社會支出視為對未來的「投資」，而非「開銷」。</li>
+                    <li>對CSSA的啟發：加碼兒童與照顧者元素，將短期補助轉化為中期能力提升。</li>
+                </ul>
+
+                <h2>6. 制度失靈的證據：數據與現實 (4分鐘)</h2>
+                <ul>
+                    <li>住房壓力使津貼失效：租金津貼上限遠低於市場，變相補貼業主。</li>
+                    <li>「非申請型排斥」：污名與程序負擔導致合資格者卻步。</li>
+                    <li>就業誘因的「貧窮陷阱」：低收入豁免額造成「多做多扣」。</li>
+                    <li>個案結構轉變的警號：健全人士個案下降，可能意味在職貧窮被排斥。</li>
+                </ul>
+                
+                <h2>7. 國際比較 (4分鐘)</h2>
+                <ul>
+                    <li><strong>英國 (Universal Credit):</strong> 整合性支付系統簡化程序，但數碼鴻溝和嚴格的條件限制帶來挑戰。</li>
+                    <li><strong>台灣 (低收入戶及中低收入戶補助):</strong> 「兩級制」設計有效避免「福利懸崖」，並提供整合性服務。</li>
+                    <li><strong>澳門 (經濟援助):</strong> 相對慷慨的援助水平更能應對生活成本，反映政府財政決心和社會價值觀。</li>
+                </ul>
+                
+                <h2>8. 社會工作者的建議 (5分鐘)</h2>
+                <ul>
+                    <li><strong>微觀（個案／家庭）：</strong>申請支援與權益教育；連結個人化服務（托兒、精神健康、就業配對）。</li>
+                    <li><strong>中觀（機構／社區）：</strong>建立「申請易」協作網絡；推動「過渡屋＋社工隊」模式。</li>
+                    <li><strong>宏觀（政策倡議）：</strong>優化CSSA（提高豁免額、租津）、打通與WFA及職訓的政策銜接。</li>
+                </ul>
+
+                <h2>9. 反思與專業定位 (2分鐘)</h2>
+                <ul>
+                    <li>專業角色：制度的翻譯者、證據的倡議者、倫理的守門人。</li>
+                    <li>可行行動：參與數據蒐集、撰寫立場書、公共溝通去污名。</li>
+                    <li>核心價值：在所有層級的實踐中落實公平、尊重、關懷、誠信。</li>
+                </ul>
+            </div>
+            <div class="lang-en">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1>Social Welfare Support for Low-Income Families in Hong Kong</h1>
+                    <h2>A Critical Analysis of Macro-Structural Factors in the CSSA Policy</h2>
+                    <p><strong>SW507 Course Group Presentation Outline</strong></p>
+                    <p>Group Members: Li Ka Kit (牛), Lam Ka Wing (Hebe), Liu Pik Ha (Vivian), Siu King San (Kingson), Cheung Ching Long (Isaac)</p>
+                    <p>Date: October 2025</p>
+                </div>
+
+                <h2>1. Why Focus on CSSA? (1.5 min)</h2>
+                <ul>
+                    <li>Core Role: HK's minimum living protection and final safety net.</li>
+                    <li>Representativeness: Best reflects the "de-commodification" baseline and institutional fairness.</li>
+                    <li>Systemic Relevance: Connects issues of in-work poverty, housing burden, care responsibilities, and stigma.</li>
+                </ul>
+
+                <h2>2. Institutional Function & Ideology: Right or Charity? (2.5 min)</h2>
+                <ul>
+                    <li>Core Function: Supplements family income to the minimum subsistence level.</li>
+                    <li>Institutional Positioning: Residual welfare with means-testing to control expenditure.</li>
+                    <li>Ideological Dialectic: Designed more like a conditional "Charity" than a citizen's "Right".</li>
+                </ul>
+                
+                <h2>3. Theory I: Neoliberalism's Governing Logic & Blind Spots (2 min)</h2>
+                <ul>
+                    <li>Governing Logic: Small government, individual responsibility, performance accountability.</li>
+                    <li>Impact on CSSA: Strict vetting, low payouts, side effect of stigmatization.</li>
+                    <li>Structural Blind Spots: Disregards front-end injustices like high land prices and unpaid care labor.</li>
+                </ul>
+                
+                <h2>4. Theory II: The Welfare Regime and the Excluded (2 min)</h2>
+                <ul>
+                    <li>Positioning: Liberal/residual type, weak de-commodification.</li>
+                    <li>System Gaps: Tends to miss groups like the "near-poor," atypical workers, and single carers.</li>
+                </ul>
+
+                <h2>5. Theory III: The Social Investment Perspective (2 min)</h2>
+                <ul>
+                    <li>Core Idea: Shift from "expense" to "investment" in human capital.</li>
+                    <li>Implication for CSSA: Enhance elements for children and carers to turn subsidies into capacity building.</li>
+                </ul>
+
+                <h2>6. Evidence of System Failure: Data and Reality (4 min)</h2>
+                <ul>
+                    <li>Housing Pressure Nullifies Subsidies: Rent allowance lags far behind market rates.</li>
+                    <li>"Non-Take-Up Exclusion": Stigma and procedural burdens deter eligible applicants.</li>
+                    <li>The "Poverty Trap": Low income disregard levels disincentivize work.</li>
+                    <li>Warning Sign in Caseload: Declining able-bodied cases may indicate exclusion of the working poor.</li>
+                </ul>
+                
+                <h2>7. International Comparison (4 min)</h2>
+                <ul>
+                    <li><strong>UK (Universal Credit):</strong> Integrated system simplifies applications but poses digital exclusion risks.</li>
+                    <li><strong>Taiwan (Low & Mid-Low-Income Subsidies):</strong> "Two-tier" design effectively avoids the "welfare cliff."</li>
+                    <li><strong>Macau (Financial Assistance):</strong> More generous assistance levels reflect political will and social values.</li>
+                </ul>
+                
+                <h2>8. Social Work Recommendations (5 min)</h2>
+                <ul>
+                    <li><strong>Micro (Case/Family):</strong> Application support and rights education; connecting to personalized services.</li>
+                    <li><strong>Meso (Organization/Community):</strong> "Easy-Apply" collaborative network; "Transitional Housing + Social Work Team" model.</li>
+                    <li><strong>Macro (Policy Advocacy):</strong> Optimize CSSA (raise disregards, rent allowance); create pathways between welfare and training programs.</li>
+                </ul>
+
+                <h2>9. Reflection & Professional Role (2 min)</h2>
+                <ul>
+                    <li>Professional Roles: Translator of the system, Advocate with evidence, Guardian of ethics.</li>
+                    <li>Actionable Steps: Participate in data collection, write position papers, engage in public education to de-stigmatize.</li>
+                    <li>Core Values: Uphold social justice and respect for dignity in all levels of practice.</li>
+                </ul>
+            </div>
+
+            <hr style="margin: 30px 0;">
+             <div style="text-align: center; margin-top: 30px; padding: 20px; border-top: 2px solid #333;">
+                <p style="font-weight: bold; font-size: 12pt;">
+                    <span class="lang-zh">完</span>
+                    <span class="lang-en">End</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        let scriptsVisible = false;
+        let isEnglish = false;
+
+        function toggleLanguage() {
+            const btn = document.getElementById('lang-toggle-btn');
+            isEnglish = !isEnglish;
+            if (isEnglish) {
+                document.body.classList.add('show-en');
+                btn.textContent = '中';
+            } else {
+                document.body.classList.remove('show-en');
+                btn.textContent = 'EN';
+            }
+        }
+
+        function showSlide(slideNumber) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            const targetSlide = document.getElementById(`slide${slideNumber}`);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+            }
+            
+            const navItems = document.querySelectorAll('.slide-nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            if (navItems[slideNumber - 1]) {
+                navItems[slideNumber - 1].classList.add('active');
+            }
+            
+            currentSlide = slideNumber;
+            
+            const presentationContent = document.querySelector('.presentation-content');
+            if(presentationContent) {
+                window.scrollTo({
+                    top: presentationContent.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function toggleContent(contentId) {
+            const content = document.getElementById(contentId);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content && icon) {
+                content.classList.toggle('active');
+                icon.classList.toggle('rotated');
+            }
+        }
+
+        function toggleAllScripts() {
+            const allToggles = document.querySelectorAll('.toggle-content');
+            const allIcons = document.querySelectorAll('.toggle-icon');
+            const button = event.target;
+            
+            scriptsVisible = !scriptsVisible;
+            
+            allToggles.forEach(toggle => {
+                if (scriptsVisible) {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            });
+            
+            allIcons.forEach(icon => {
+                if (scriptsVisible) {
+                    icon.classList.add('rotated');
+                } else {
+                    icon.classList.remove('rotated');
+                }
+            });
+            
+            const zhText = '隱藏所有講稿';
+            const enText = 'Hide All Scripts';
+            const btnZh = button.querySelector('.lang-zh');
+            const btnEn = button.querySelector('.lang-en');
+
+            if (scriptsVisible) {
+                if(btnZh) btnZh.textContent = zhText;
+                if(btnEn) btnEn.textContent = enText;
+            } else {
+                if(btnZh) btnZh.textContent = '顯示所有講稿';
+                if(btnEn) btnEn.textContent = 'Show All Scripts';
+            }
+        }
+
+        function resetPresentation() {
+            showSlide(1);
+            
+            const allToggles = document.querySelectorAll('.toggle-content');
+            const allIcons = document.querySelectorAll('.toggle-icon');
+            
+            allToggles.forEach(toggle => toggle.classList.remove('active'));
+            allIcons.forEach(icon => icon.classList.remove('rotated'));
+            
+            scriptsVisible = false;
+            const toggleButton = document.querySelector('.controls .btn:first-child');
+            if (toggleButton) {
+                const btnZh = toggleButton.querySelector('.lang-zh');
+                const btnEn = toggleButton.querySelector('.lang-en');
+                if(btnZh) btnZh.textContent = '顯示所有講稿';
+                if(btnEn) btnEn.textContent = 'Show All Scripts';
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function exportToPDF() {
+            window.print();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return; 
+            }
+            const totalSlides = document.querySelectorAll('.slide').length;
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' && currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(1);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(1);
+             console.log('簡報系統已載入完成');
+             console.log('使用提示：');
+             console.log('- 點擊導航卡片切換slides');
+             console.log('- 使用左右方向鍵導航');
+             console.log('- Home鍵返回第一頁，End鍵跳至最後一頁');
+             console.log('- 點擊「匯出PDF大綱」可列印/儲存PDF版本');
+        });
+    </script>
+</body>
+</html>
+
