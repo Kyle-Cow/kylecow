@@ -1,0 +1,1726 @@
+html
+
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSSA 政策審查：新自由主義框架下的權利與責任</title>
+    <style>
+        :root {
+            --primary-color: #E6F3FF;
+            --secondary-color: #B8E6B8;
+            --accent-color: #FFE5CC;
+            --text-primary: #2C3E50;
+            --text-secondary: #5D6D7E;
+            --border-color: #D5DBDB;
+            --highlight-color: #F8C8DC;
+            --success-color: #A8E6CF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .lang-toggle-container {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            z-index: 1000;
+        }
+
+        #lang-toggle-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: var(--highlight-color);
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* Language Toggle Logic */
+        .lang-en { display: none; }
+        body.show-en .lang-zh { display: none; }
+        body.show-en .lang-en { display: revert; }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .team-info {
+            background: var(--accent-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .member {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background: var(--success-color);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-export {
+            background: var(--highlight-color);
+        }
+
+        .slide-navigation {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .slide-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .slide-nav-item {
+            background: var(--primary-color);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .slide-nav-item:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .slide-nav-item.active {
+            border-color: var(--text-primary);
+            background: var(--accent-color);
+        }
+
+        .slide-nav-item .slide-number {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .slide-nav-item .slide-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .slide-nav-item .slide-time {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .presentation-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h2 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .slide h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 25px 0 15px 0;
+        }
+
+        .slide h4 {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin: 20px 0 10px 0;
+        }
+
+        .slide p, .slide li {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .slide ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .slide table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .slide th, .slide td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .slide th {
+            background: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .toggle-section {
+            margin: 20px 0;
+        }
+
+        .toggle-header {
+            background: var(--primary-color);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-header:hover {
+            background: var(--secondary-color);
+        }
+
+        .toggle-content {
+            display: none;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            border: 2px solid var(--border-color);
+            border-top: none;
+        }
+
+        .toggle-content.active {
+            display: block;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .highlight-box {
+            background: var(--highlight-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid var(--text-primary);
+        }
+
+        .theory-box {
+            background: var(--accent-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .time-indicator {
+            background: var(--success-color);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .speaker-tag {
+            background: var(--highlight-color);
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .lang-toggle-container {
+                top: 15px;
+                right: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .presentation-content {
+                padding: 25px;
+            }
+
+            .slide h2 {
+                font-size: 1.5rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .team-members {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .member {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Styles for PDF Export */
+        .export-only {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .container {
+                max-width: none;
+                padding: 20px;
+                box-shadow: none;
+            }
+            
+            .controls,
+            .slide-navigation,
+            .toggle-header,
+            .time-indicator,
+            .speaker-tag,
+            .presentation-content,
+            .lang-toggle-container {
+                display: none !important;
+            }
+            
+            .export-only {
+                display: block !important;
+                font-family: 'Times New Roman', serif;
+                font-size: 11pt;
+                line-height: 1.5;
+            }
+            body.show-en .export-only .lang-zh { display: none; }
+            body.show-en .export-only .lang-en { display: block !important; }
+            
+            .export-only h1 {
+                font-size: 18pt;
+                margin-bottom: 10px;
+            }
+            
+            .export-only h2 {
+                font-size: 14pt;
+                margin-top: 20px;
+                margin-bottom: 8px;
+                border-bottom: 1px solid #333;
+                padding-bottom: 3px;
+                page-break-before: auto;
+                page-break-after: avoid;
+            }
+            
+            .export-only h3 {
+                font-size: 12pt;
+                font-weight: bold;
+                margin-top: 15px;
+                margin-bottom: 6px;
+                page-break-after: avoid;
+            }
+            
+            .export-only ul {
+                list-style-type: disc;
+                margin-left: 20px;
+                margin-bottom: 10px;
+            }
+            
+            .export-only li {
+                margin-bottom: 4px;
+            }
+            
+            .export-only table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 15px 0;
+            }
+
+            .export-only th, .export-only td {
+                border: 1px solid #333;
+                padding: 8px;
+            }
+
+            .export-only th {
+                background: #f0f0f0;
+            }
+            
+            .header {
+                display: none !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 2cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lang-toggle-container">
+            <button id="lang-toggle-btn" class="btn" onclick="toggleLanguage()">EN</button>
+        </div>
+        <div class="header">
+            <h1>
+                <span class="lang-zh">CSSA 政策審查：新自由主義框架下的權利與責任</span>
+                <span class="lang-en">Policy Review of CSSA: Rights and Responsibilities under Neoliberalism</span>
+            </h1>
+            <p class="subtitle">
+                <span class="lang-zh">SW507 課程組別匯報</span>
+                <span class="lang-en">SW507 Course Group Presentation</span>
+            </p>
+            <div class="team-info">
+                <h3>
+                    <span class="lang-zh">組員資料</span>
+                    <span class="lang-en">Team Members</span>
+                </h3>
+                <div class="team-members">
+                    <div class="member">246609M Li Ka Kit (牛)</div>
+                    <div class="member">246610M Lam Ka Wing (Hebe)</div>
+                    <div class="member">246611M Liu Pik Ha (Vivian)</div>
+                    <div class="member">246601M Siu King San (Kingson)</div>
+                    <div class="member">246613M Cheung Ching Long (Isaac)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="toggleAllScripts()">
+                <span class="lang-zh">切換所有講稿</span>
+                <span class="lang-en">Toggle All Scripts</span>
+            </button>
+            <button class="btn btn-export" onclick="exportToPDF()">
+                <span class="lang-zh">匯出PDF大綱</span>
+                <span class="lang-en">Export PDF Outline</span>
+            </button>
+            <button class="btn" onclick="resetPresentation()">
+                <span class="lang-zh">重設簡報</span>
+                <span class="lang-en">Reset Presentation</span>
+            </button>
+        </div>
+
+        <div class="slide-navigation">
+            <h3>
+                <span class="lang-zh">簡報導航 (總時間: 25分鐘)</span>
+                <span class="lang-en">Presentation Navigation (Total: 25 mins)</span>
+            </h3>
+            <div class="slide-nav-grid">
+                <div class="slide-nav-item active" onclick="showSlide(1)">
+                    <div class="slide-number">1</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">標題</span>
+                        <span class="lang-en">Title</span>
+                    </div>
+                    <div class="slide-time">0.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(2)">
+                    <div class="slide-number">2-3</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">引言</span>
+                        <span class="lang-en">Introduction</span>
+                    </div>
+                    <div class="slide-time">2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(3)">
+                    <div class="slide-number">4-6</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">福利理念</span>
+                        <span class="lang-en">Welfare Ideology</span>
+                    </div>
+                    <div class="slide-time">3<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(4)">
+                    <div class="slide-number">7-9</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">範式分析</span>
+                        <span class="lang-en">Paradigm Analysis</span>
+                    </div>
+                    <div class="slide-time">3<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(5)">
+                    <div class="slide-number">10-13</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">正義框架</span>
+                        <span class="lang-en">Justice Framework</span>
+                    </div>
+                    <div class="slide-time">4<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(6)">
+                    <div class="slide-number">14-16</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">剝奪分析</span>
+                        <span class="lang-en">Deprivation Analysis</span>
+                    </div>
+                    <div class="slide-time">3<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(7)">
+                    <div class="slide-number">17-20</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">建議</span>
+                        <span class="lang-en">Suggestions</span>
+                    </div>
+                    <div class="slide-time">5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(8)">
+                    <div class="slide-number">21</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">結論</span>
+                        <span class="lang-en">Conclusion</span>
+                    </div>
+                    <div class="slide-time">2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(9)">
+                    <div class="slide-number">22</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">參考文獻</span>
+                        <span class="lang-en">References</span>
+                    </div>
+                    <div class="slide-time">1<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+                <div class="slide-nav-item" onclick="showSlide(10)">
+                    <div class="slide-number">Q&A</div>
+                    <div class="slide-title">
+                        <span class="lang-zh">答問環節</span>
+                        <span class="lang-en">Q&A Session</span>
+                    </div>
+                    <div class="slide-time">1.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="presentation-content">
+            <!-- Slide 1: Title -->
+            <div class="slide active" id="slide1">
+                <div class="time-indicator">⏱️ 0.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe)</span>
+                    <span class="lang-en">Speaker: Lam Ka Wing (Hebe)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">CSSA 政策審查：新自由主義框架下的權利與責任</span>
+                    <span class="lang-en">Policy Review of CSSA: Rights and Responsibilities under Neoliberalism</span>
+                </h2>
+                <p>
+                    <span class="lang-zh">根據課程核心要求 (AT3 評估標準)，本匯報聚焦於CSSA政策的批判性審查，包括議題重要性、關鍵理念與理論、批判審查、平等策略及APA格式。</span>
+                    <span class="lang-en">Based on core course requirements (AT3 Assessment Criteria), this presentation focuses on a critical review of the CSSA policy, including topic importance, key ideologies and theories, critical review, equality strategies, and APA formatting.</span>
+                </p>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script1')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script1">
+                        <p>
+                            <span class="lang-zh">各位教授、同學，大家好。本匯報題為「CSSA 政策審查：新自由主義框架下的權利與責任」。我們將從背景開始，逐步剖析福利理念、範式分析、正義框架、剝奪分析，並提出基於研究的建議。匯報設計緊扣AT3標準，強調批判性應用而非理論全解，連結宏觀結構因素如經濟不穩與市場化貧窮，強調可持續發展。</span>
+                            <span class="lang-en">Good morning, professors and classmates. This presentation is titled "Policy Review of CSSA: Rights and Responsibilities under Neoliberalism." We will start with the background, analyze welfare ideology, paradigm analysis, justice framework, deprivation analysis, and propose research-based suggestions. The design adheres to AT3 criteria, emphasizing critical application over full theory explanation, linking macro-structural factors like economic instability and marketized poverty, and stressing sustainability.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2-3: Introduction -->
+            <div class="slide" id="slide2">
+                <div class="time-indicator">⏱️ 2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe)</span>
+                    <span class="lang-en">Speaker: Lam Ka Wing (Hebe)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">引言：CSSA 背景及重要性</span>
+                    <span class="lang-en">Introduction: CSSA Background and Importance</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">CSSA 背景</span>
+                    <span class="lang-en">CSSA Background</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">CSSA 作為殘餘式福利模式的安全網，提供基本生活援助，但忽略結構性貧窮（如高生活成本）。</span>
+                        <span class="lang-en">CSSA as a residual welfare model safety net, providing basic living assistance but overlooking structural poverty (e.g., high living costs).</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">政策目標：減少長期依賴，強調就業激勵，但導致批評為加劇不平等。</span>
+                        <span class="lang-en">Policy Goals: Reduce long-term dependency, emphasize employment incentives, but criticized for exacerbating inequality.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">現實挑戰</span>
+                    <span class="lang-en">Real Challenges</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">嚴格手段測試排除邊緣貧窮者；工作導向忽略照顧需求。</span>
+                        <span class="lang-en">Strict means-testing excludes marginal poor; work-oriented approach ignores care needs.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">連結宏觀結構：高地價與市場化加劇貧窮。</span>
+                        <span class="lang-en">Linking Macro Structures: High land prices and marketization exacerbate poverty.</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script2')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script2">
+                        <p>
+                            <span class="lang-zh">CSSA 是香港福利體系的核心，旨在為無法自力更生的家庭提供最後安全網。但其設計反映新自由主義，強調小政府與個人責任，導致嚴格審查與低援助水平。這忽略了結構性因素，如高生活成本與就業不穩，批評它未能實現平等。根據最新貧窮報告 (Census and Statistics Department, 2019; HKCSS 最新報告)，貧窮率持續高企，CSSA 非領取率高達30%，反映污名化與申請障礙。我們將批判性分析其權利 vs. 責任辯論，並提出可持續策略。</span>
+                            <span class="lang-en">CSSA is the core of Hong Kong's welfare system, aiming to provide a last safety net for families unable to be self-reliant. However, its design reflects neoliberalism, emphasizing small government and individual responsibility, leading to strict vetting and low assistance levels. This overlooks structural factors like high living costs and employment instability, criticizing it for failing to achieve equality. According to the latest poverty reports (Census and Statistics Department, 2019; HKCSS latest report), poverty rates remain high, with CSSA non-take-up rates up to 30%, reflecting stigmatization and application barriers. We will critically analyze the rights vs. responsibilities debate and propose sustainable strategies.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4-6: Welfare Ideology -->
+            <div class="slide" id="slide3">
+                <div class="time-indicator">⏱️ 3<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                    <span class="lang-en">Speakers: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">福利理念：新自由主義核心特徵及在CSSA的體現</span>
+                    <span class="lang-en">Welfare Ideology: Neoliberalism Core Features and Embodiment in CSSA</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">新自由主義核心特徵</span>
+                    <span class="lang-en">Neoliberalism Core Features</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">強調自由市場競爭、放鬆管制、私有化、個人自力更生 (Lecture 2, Slide 10)。</span>
+                        <span class="lang-en">Emphasizes free market competition, deregulation, privatization, individual self-reliance (Lecture 2, Slide 10).</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">小政府、大市場；市場機制解決社會問題 (Mudge, 2008)。</span>
+                        <span class="lang-en">Small government, big market; market mechanisms solve social problems (Mudge, 2008).</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">CSSA的新自由主義體現</span>
+                    <span class="lang-en">CSSA's Neoliberal Embodiment</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">手段測試：嚴格經濟審查、資產限制，排除邊緣貧窮者。</span>
+                        <span class="lang-en">Means-testing: Strict financial vetting, asset limits, excluding marginal poor.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">工作導向：自力更生支援計劃 (SSR)，強調就業激勵，減少依賴。</span>
+                        <span class="lang-en">Work-oriented: Support for Self-Reliance Scheme (SSR), emphasizing employment incentives, reducing dependency.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">有條件援助：居港年期、工作要求。</span>
+                        <span class="lang-en">Conditional Support: Residency years, work requirements.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">影響分析</span>
+                    <span class="lang-en">Impact Analysis</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">批評：忽略結構性貧窮，加劇不平等 (連結Lecture 2福利權利vs.責任辯論)。</span>
+                    <span class="lang-en">Criticism: Overlooks structural poverty, exacerbates inequality (linking Lecture 2 rights vs. responsibilities debate).</span>
+                </p>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script3')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script3">
+                        <p>
+                            <span class="lang-zh">(Hebe): 新自由主義是CSSA的意識形態基礎，強調市場優先與個人責任 (Liu, 2025)。其特徵如小政府與自力更生，直接體現在CSSA的殘餘模式中。(Vivian): 嚴格手段測試排除邊緣貧窮者，SSR計劃強推就業，但忽略結構性因素如高生活成本與就業不穩。這導致援助僅為短期救濟，而非長期減貧，批評它加劇不平等與污名化。相比之下，它忽視了馬克思主義對資本主義分配不公的批判 (Lecture 4)。</span>
+                            <span class="lang-en">(Hebe): Neoliberalism is the ideological foundation of CSSA, emphasizing market priority and individual responsibility (Liu, 2025). Features like small government and self-reliance are directly embodied in CSSA's residual model. (Vivian): Strict means-testing excludes marginal poor, SSR scheme pushes employment, but ignores structural factors like high living costs and instability. This makes assistance short-term relief rather than long-term poverty reduction, criticizing it for exacerbating inequality and stigmatization. In contrast, it overlooks Marxist critiques of capitalist distributive injustice (Lecture 4).</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7-9: Paradigm Analysis -->
+            <div class="slide" id="slide4">
+                <div class="time-indicator">⏱️ 3<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                    <span class="lang-en">Speakers: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">範式分析：三種範式比較及CSSA定位</span>
+                    <span class="lang-en">Paradigm Analysis: Three Paradigms Comparison and CSSA Positioning</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">三種範式比較表 (Daigneault, 2014)</span>
+                    <span class="lang-en">Three Paradigms Comparison Table (Daigneault, 2014)</span>
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="lang-zh">維度</span>
+                                <span class="lang-en">Dimensions</span>
+                            </th>
+                            <th>
+                                <span class="lang-zh">權利範式</span>
+                                <span class="lang-en">Entitlement</span>
+                            </th>
+                            <th>
+                                <span class="lang-zh">工作福利範式</span>
+                                <span class="lang-en">Workfare</span>
+                            </th>
+                            <th>
+                                <span class="lang-zh">激活範式</span>
+                                <span class="lang-en">Activation</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">意識形態根源</span>
+                                <span class="lang-en">Ideological Roots</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">社會民主主義</span>
+                                <span class="lang-en">Social Democracy</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">保守主義+新自由主義</span>
+                                <span class="lang-en">Conservatism + Neoliberalism</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">「第三條路」+新自由主義+社會投資</span>
+                                <span class="lang-en">"Third Way" + Neoliberalism + Social Investment</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">核心價值</span>
+                                <span class="lang-en">Core Values</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">團結、平等主義</span>
+                                <span class="lang-en">Solidarity, Egalitarianism</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">個人獨立與責任</span>
+                                <span class="lang-en">Individual Independence and Responsibility</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">互惠、機會平等、生產力</span>
+                                <span class="lang-en">Reciprocity, Equal Opportunities, Productivity</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">權利與責任平衡</span>
+                                <span class="lang-en">Rights and Responsibilities Balance</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">強調個人權利：福利是社會權利</span>
+                                <span class="lang-en">Emphasizes individual rights: welfare is social right</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">強調個人責任：福利是特權</span>
+                                <span class="lang-en">Emphasizes individual responsibility: welfare is privilege</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">權利責任平衡：福利是契約</span>
+                                <span class="lang-en">Balanced rights and responsibilities: welfare is contract</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">政策問題根源</span>
+                                <span class="lang-en">Policy Problem Roots</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">主要結構性：社經轉型、經濟衰退</span>
+                                <span class="lang-en">Mainly structural: socio-economic transitions, recessions</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">主要個人：依賴文化、價值觀不足</span>
+                                <span class="lang-en">Mainly individual: dependency culture, value deficiencies</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">政策為本：社會與經濟政策脫節</span>
+                                <span class="lang-en">Policy-based: disconnect between social and economic policies</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">政策目標</span>
+                                <span class="lang-en">Policy Goals</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">透過保障收入及去商品化減少貧窮</span>
+                                <span class="lang-en">Reduce poverty through income security and de-commodification</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">改善工作倫理、態度及自尊</span>
+                                <span class="lang-en">Improve work ethic, attitudes, self-esteem</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">提升經濟活動率、促進就業、減少在職貧窮</span>
+                                <span class="lang-en">Increase economic activity, promote employment, reduce in-work poverty</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">援助金額慷慨度</span>
+                                <span class="lang-en">Generosity of Assistance</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">高</span>
+                                <span class="lang-en">High</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">低：「較少資格」原則</span>
+                                <span class="lang-en">Low: "less eligibility" principle</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">中等：低基本援助但較慷慨收入補助</span>
+                                <span class="lang-en">Medium: low basic but generous income supplements</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">政策工具</span>
+                                <span class="lang-en">Policy Tools</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">無條件現金轉移</span>
+                                <span class="lang-en">Unconditional cash transfers</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">現金轉移附帶工作要求及控制措施</span>
+                                <span class="lang-en">Cash transfers with work requirements and controls</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">無條件現金轉移、有條件收入補助、積極措施（培訓、求職協助）</span>
+                                <span class="lang-en">Unconditional cash, conditional supplements, active measures (training, job assistance)</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">針對性程度</span>
+                                <span class="lang-en">Targeting Degree</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">低：少區分（普遍或廣泛資格）</span>
+                                <span class="lang-en">Low: little differentiation (universal or broad eligibility)</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">高：「值得」與「不值得」之分</span>
+                                <span class="lang-en">High: "deserving" vs. "undeserving"</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">高：收入補助限於符合工作條件者</span>
+                                <span class="lang-en">High: supplements limited to work-compliant</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>
+                    <span class="lang-zh">CSSA定位分析</span>
+                    <span class="lang-en">CSSA Positioning Analysis</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">傾向Workfare：手段測試嚴格、SSR計劃、「較少資格」原則。</span>
+                        <span class="lang-en">Leans toward Workfare: Strict means-testing, SSR scheme, "less eligibility" principle.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">部分Activation：就業培訓、有條件收入補助。</span>
+                        <span class="lang-en">Partial Activation: Employment training, conditional income supplements.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">缺乏Entitlement：非無條件權利、高門檻。</span>
+                        <span class="lang-en">Lacks Entitlement: Not unconditional rights, high thresholds.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">權利 vs. 責任辯論</span>
+                    <span class="lang-en">Rights vs. Responsibilities Debate</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">CSSA視福利為責任多於權利，傾向Workfare減少依賴 (Lecture 2)。</span>
+                    <span class="lang-en">CSSA views welfare more as responsibility than right, leaning toward Workfare to reduce dependency (Lecture 2).</span>
+                </p>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script4')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script4">
+                        <p>
+                            <span class="lang-zh">(Hebe): Daigneault (2014)的三範式框架幫助我們定位CSSA。從表中可見，CSSA傾向Workfare範式，強調個人責任與低援助慷慨度，這與新自由主義一致。(Vivian): 但它部分融入Activation元素，如培訓支援，卻缺乏Entitlement的無條件權利。這導致高排除率與不足援助，無法維持體面生活。批判性而言，這加劇結構性不平等，忽視社經轉型 (Lecture 2)。我們應推動更平衡的權利-責任框架。</span>
+                            <span class="lang-en">(Hebe): Daigneault (2014)'s three paradigms framework helps position CSSA. The table shows CSSA leans toward Workfare, emphasizing individual responsibility and low generosity, aligning with neoliberalism. (Vivian): But it partially incorporates Activation elements like training support, lacking Entitlement's unconditional rights. This leads to high exclusion and insufficient assistance, failing to maintain decent living. Critically, this exacerbates structural inequality, ignoring socio-economic transitions (Lecture 2). We should advocate for a more balanced rights-responsibilities framework.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10-13: Justice Framework -->
+            <div class="slide" id="slide5">
+                <div class="time-indicator">⏱️ 4<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                    <span class="lang-en">Speakers: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">正義框架應用：四價值框架分析CSSA</span>
+                    <span class="lang-en">Justice Framework: Four-Value Framework Application to CSSA</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">1. 公平性 (Fairness)</span>
+                    <span class="lang-en">1. Fairness</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">分配正義缺失：援助低於生活成本，違反Rawls差異原則 (Lecture 4, Slide 10)。</span>
+                        <span class="lang-en">Distributive Justice Deficiency: Assistance below living costs, violating Rawls' Difference Principle (Lecture 4, Slide 10).</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">馬克思主義批判：維持資本主義勞動市場，未能解決結構不公。</span>
+                        <span class="lang-en">Marxist Critiques: Maintains capitalist labor market, fails to address structural inequality.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">2. 程序正義 (Procedural Justice)</span>
+                    <span class="lang-en">2. Procedural Justice</span>
+                </h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="lang-zh">程序規則</span>
+                                <span class="lang-en">Procedural Rules</span>
+                            </th>
+                            <th>
+                                <span class="lang-zh">CSSA 表現</span>
+                                <span class="lang-en">CSSA Performance</span>
+                            </th>
+                            <th>
+                                <span class="lang-zh">評估</span>
+                                <span class="lang-en">Assessment</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">準確性</span>
+                                <span class="lang-en">Accuracy</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">基於經濟審查數據</span>
+                                <span class="lang-en">Based on financial data</span>
+                            </td>
+                            <td>✓ <span class="lang-zh">部分達標</span><span class="lang-en">Partially met</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">偏見抑制</span>
+                                <span class="lang-en">Bias Suppression</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">存在對受助者的污名化</span>
+                                <span class="lang-en">Exists stigmatization of recipients</span>
+                            </td>
+                            <td>✗ <span class="lang-zh">不足</span><span class="lang-en">Insufficient</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">一致性</span>
+                                <span class="lang-en">Consistency</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">申請程序標準化</span>
+                                <span class="lang-en">Standardized application process</span>
+                            </td>
+                            <td>✓ <span class="lang-zh">達標</span><span class="lang-en">Met</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">可糾正性</span>
+                                <span class="lang-en">Correctability</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">設有上訴機制</span>
+                                <span class="lang-en">Appeal mechanism in place</span>
+                            </td>
+                            <td>✓ <span class="lang-zh">達標</span><span class="lang-en">Met</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">倫理性</span>
+                                <span class="lang-en">Ethicality</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">與「自力更生」價值一致，但忽視弱勢需求</span>
+                                <span class="lang-en">Consistent with "self-reliance" but ignores vulnerable needs</span>
+                            </td>
+                            <td>⚠ <span class="lang-zh">部分衝突</span><span class="lang-en">Partial conflict</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="lang-zh">代表性</span>
+                                <span class="lang-en">Representativeness</span>
+                            </td>
+                            <td>
+                                <span class="lang-zh">受助者聲音缺乏</span>
+                                <span class="lang-en">Lack of recipient voices</span>
+                            </td>
+                            <td>✗ <span class="lang-zh">不足</span><span class="lang-en">Insufficient</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>
+                    <span class="lang-zh">3. 關懷 (Care)</span>
+                    <span class="lang-en">3. Care</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">缺失：強調工作責任，忽視單親家庭與照顧者需求 (Lecture 4, Slide 17)。</span>
+                    <span class="lang-en">Deficiency: Emphasizes work responsibility, neglecting single-parent and carer needs (Lecture 4, Slide 17).</span>
+                </p>
+                <h3>
+                    <span class="lang-zh">4. 誠信 (Honesty)</span>
+                    <span class="lang-en">4. Honesty</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">信任赤字：高非領取率、污名化、缺乏透明度 (Lecture 4, Slide 19)。</span>
+                    <span class="lang-en">Trust Deficit: High non-take-up rates, stigmatization, lack of transparency (Lecture 4, Slide 19).</span>
+                </p>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script5')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script5">
+                        <p>
+                            <span class="lang-zh">(Hebe): 應用Schroeder et al. (2019)的四價值框架，CSSA在公平性上嚴重缺失：援助未最大化最弱勢福利，財政優先於公平 (Rawls理論應用)。(Vivian): 程序正義部分達標但存在偏見與代表性不足。關懷缺失忽視無法自理者的需求，誠信問題導致制度信任低落。這批評CSSA未能實現社會公義，連結宏觀資本主義不公。我們建議創新策略如全面關懷系統，以提升可持續性。</span>
+                            <span class="lang-en">(Hebe): Applying Schroeder et al. (2019)'s four-value framework, CSSA severely lacks in fairness: Assistance doesn't maximize the least advantaged's welfare, prioritizing fiscal over equity (Rawls theory application). (Vivian): Procedural justice partially met but with bias and low representativeness. Care deficiency ignores those unable to self-care, honesty issues lead to low institutional trust. This critiques CSSA for failing social justice, linking macro capitalist injustices. We suggest innovative strategies like comprehensive care systems to enhance sustainability.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 14-16: Deprivation Analysis -->
+            <div class="slide" id="slide6">
+                <div class="time-indicator">⏱️ 3<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                    <span class="lang-en">Speakers: Lam Ka Wing (Hebe) & Liu Pik Ha (Vivian)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">剝奪分析：物質與社會剝奪及社會距離</span>
+                    <span class="lang-en">Deprivation Analysis: Material and Social Deprivation and Social Distance</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">香港剝奪指標 (Chan & Wong, 2020)</span>
+                    <span class="lang-en">HK Deprivation Indicators (Chan & Wong, 2020)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">基本需求：每日三餐、新鮮蔬果等。</span>
+                        <span class="lang-en">Basic Needs: Three meals a day, fresh fruits/vegetables, etc.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">醫療、住房、設備、社會參與：CSSA援助不足以負擔社會參與項目，導致排斥。</span>
+                        <span class="lang-en">Health, Housing, Equipment, Social Participation: CSSA insufficient for social participation items, leading to exclusion.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">CSSA援助不足</span>
+                    <span class="lang-en">CSSA Assistance Insufficiency</span>
+                </h3>
+                <p>
+                    <span class="lang-zh">基本金額難負擔社會參與，深化剝奪感 (Lecture 4, Slide 23-24)。</span>
+                    <span class="lang-en">Basic amounts hard to afford social participation, deepening deprivation (Lecture 4, Slide 23-24).</span>
+                </p>
+                <h3>
+                    <span class="lang-zh">社會距離與剝奪</span>
+                    <span class="lang-en">Social Distance and Deprivation</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">物理、文化、社會、關係距離：污名導致自我隔離 (Ho & Cheung, 2012; Lecture 4, Slide 25)。</span>
+                        <span class="lang-en">Physical, Cultural, Social, Relational Distance: Stigma leads to self-isolation (Ho & Cheung, 2012; Lecture 4, Slide 25).</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script6')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script6">
+                        <p>
+                            <span class="lang-zh">(Hebe): CSSA未能緩解物質與社會剝奪：Chan & Wong (2020)的21項指標顯示，受助者難負擔社會參與項目，如外出用餐或派利是，導致排斥與剝奪感加深 (Liu et al., 2023)。(Vivian): 社會距離視角強調，這不僅是金錢問題，更是物理與文化隔離 (Lecture 4)。批判性而言，這連結宏觀市場化貧窮，呼籲長期減貧策略而非短期援助。</span>
+                            <span class="lang-en">(Hebe): CSSA fails to alleviate material and social deprivation: Chan & Wong (2020)'s 21 indicators show recipients struggle with social participation items like dining out or red packets, leading to exclusion and deepened deprivation (Liu et al., 2023). (Vivian): The social distance perspective emphasizes this is not just monetary but physical and cultural isolation (Lecture 4). Critically, this links macro marketized poverty, calling for long-term poverty reduction over short-term aid.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 17-20: Suggestions -->
+            <div class="slide" id="slide7">
+                <div class="time-indicator">⏱️ 5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Cheung Ching Long (Isaac) & Siu King San (Kingson)</span>
+                    <span class="lang-en">Speakers: Cheung Ching Long (Isaac) & Siu King San (Kingson)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">建議：基於社會可持續發展、政策倡議及橋接組織</span>
+                    <span class="lang-en">Suggestions: Based on Social Sustainable Development, Policy Advocacy, and Bridging Organizations</span>
+                </h2>
+                <h3>
+                    <span class="lang-zh">社會可持續發展 (Lecture 3)</span>
+                    <span class="lang-en">Social Sustainable Development (Lecture 3)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">什麼：滿足基本需求及公平分配。</span>
+                        <span class="lang-en">What: Meeting basic needs and fair distribution.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">為何：整合經濟、社會、環境資本，避免代際妥協。</span>
+                        <span class="lang-en">Why: Integrating economic, social, environmental capital without compromising generations.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">如何：Eco-Welfare States模型，提升CSSA長期穩定性。</span>
+                        <span class="lang-en">How: Eco-Welfare States model, enhancing CSSA long-term stability.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">政策倡議策略 (SCT1)</span>
+                    <span class="lang-en">Policy Advocacy Strategies (SCT1)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">Inputs：賦權、領導力、資源。</span>
+                        <span class="lang-en">Inputs: Empowerment, leadership, resources.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">Activities：聯盟建設、公眾動員、遊說、資訊運動 (Gen & Wright, 2013; Coffman & Beer, 2015)。</span>
+                        <span class="lang-en">Activities: Coalition building, public mobilization, lobbying, information campaigning (Gen & Wright, 2013; Coffman & Beer, 2015).</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">橋接組織理論 (Lecture 2)</span>
+                    <span class="lang-en">Bridging Organizations Theory (Lecture 2)</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">福利多元主義：公私夥伴、NGO整合填補缺口。</span>
+                        <span class="lang-en">Welfare Pluralism: Public-private partnerships, NGO integration to fill gaps.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">應用：擴大CSSA涵蓋、針對少數族裔/單親家庭。</span>
+                        <span class="lang-en">Application: Expand CSSA coverage, target ethnic minorities/single-parent families.</span>
+                    </li>
+                </ul>
+                <h3>
+                    <span class="lang-zh">具體改革方向</span>
+                    <span class="lang-en">Specific Reform Directions</span>
+                </h3>
+                <ul>
+                    <li>
+                        <span class="lang-zh">創新策略：基於研究的平等接入，如彈性資產規則、綠色投資。</span>
+                        <span class="lang-en">Innovative Strategies: Research-based equal access, like flexible asset rules, green investments.</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script7')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script7">
+                        <p>
+                            <span class="lang-zh">(Isaac): 基於Lecture 3社會可持續發展，我們建議CSSA從短期救濟轉向長期穩定，強調代際團結與避免雙重不公。(Kingson): 使用SCT1倡議框架，透過聯盟建設與媒體倡議推動變革 (Liu, 2025)。橋接組織理論建議NGO合作擴大服務，彈性規則針對單親家庭。具體如調整資產上限、整合就業培訓，實現平等與可持續 (Yan et al., 2017; Wong & Chan, 2019)。</span>
+                            <span class="lang-en">(Isaac): Based on Lecture 3 social sustainable development, we suggest shifting CSSA from short-term relief to long-term stability, emphasizing intergenerational solidarity and avoiding double injustice. (Kingson): Using SCT1 advocacy framework, drive change through coalition building and media advocacy (Liu, 2025). Bridging organizations theory suggests NGO collaboration to expand services, flexible rules for single-parent families. Specifics like adjusting asset limits, integrating employment training, achieving equality and sustainability (Yan et al., 2017; Wong & Chan, 2019).</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 21: Conclusion -->
+            <div class="slide" id="slide8">
+                <div class="time-indicator">⏱️ 2<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Cheung Ching Long (Isaac) & Siu King San (Kingson)</span>
+                    <span class="lang-en">Speakers: Cheung Ching Long (Isaac) & Siu King San (Kingson)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">結論：優化方向及未來研究</span>
+                    <span class="lang-en">Conclusion: Optimization Directions and Future Research</span>
+                </h2>
+                <ul>
+                    <li>
+                        <span class="lang-zh">優化方向：從Workfare向Activation轉移，融入Entitlement元素，提升援助慷慨度與平等接入。</span>
+                        <span class="lang-en">Optimization Directions: Shift from Workfare to Activation, incorporate Entitlement elements, enhance generosity and equal access.</span>
+                    </li>
+                    <li>
+                        <span class="lang-zh">未來研究：追蹤污名化影響、比較國際Eco-Welfare模式、評估政策倡議效果。</span>
+                        <span class="lang-en">Future Research: Track stigmatization impacts, compare international Eco-Welfare models, evaluate advocacy effectiveness.</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script8')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script8">
+                        <p>
+                            <span class="lang-zh">(Isaac): 總結而言，CSSA在新自由主義下強調責任多於權利，導致剝奪與不公。(Kingson): 我們建議基於可持續發展與倡議策略的改革，如提升援助與公私合作。未來研究應聚焦污名減低與綠色福利整合，實現長期減貧 (Esping-Andersen, 1990; Titmuss, 1976)。</span>
+                            <span class="lang-en">(Isaac): In summary, CSSA under neoliberalism emphasizes responsibilities over rights, leading to deprivation and injustice. (Kingson): We suggest reforms based on sustainability and advocacy strategies, like enhancing assistance and public-private partnerships. Future research should focus on stigma reduction and green welfare integration for long-term poverty reduction (Esping-Andersen, 1990; Titmuss, 1976).</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 22: References -->
+            <div class="slide" id="slide9">
+                <div class="time-indicator">⏱️ 1<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Cheung Ching Long (Isaac) & Siu King San (Kingson)</span>
+                    <span class="lang-en">Speakers: Cheung Ching Long (Isaac) & Siu King San (Kingson)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">參考文獻 (APA 7th)</span>
+                    <span class="lang-en">References (APA 7th)</span>
+                </h2>
+                <ul>
+                    <li>Chan, D., & Wong, H. (2020). Measuring deprivation in Hong Kong. In Social indicators research series. Springer.</li>
+                    <li>Census and Statistics Department. (2019). Hong Kong poverty report 2018. Government of the Hong Kong Special Administrative Region.</li>
+                    <li>Coffman, J., & Beer, T. (2015). The advocacy strategy framework. Center for Evaluation Innovation.</li>
+                    <li>Daigneault, P. (2014). Three paradigms of social assistance. Sage Open, 4(4), 1-8. https://doi.org/10.1177/2158244014552888</li>
+                    <li>Esping-Andersen, G. (1990). The three worlds of welfare capitalism. Princeton University Press.</li>
+                    <li>Gen, S., & Wright, A. C. (2013). Policy advocacy organizations: A framework linking theory and practice. Journal of Policy Practice, 12(3), 163-193. https://doi.org/10.1080/15588742.2013.795915</li>
+                    <li>Ho, L. S., & Cheung, A. K. L. (2012). The social distance perspective of deprivation. Hong Kong Journal of Social Work, 46(1-2), 23-45.</li>
+                    <li>Liu, B., Wu, Y., & Chen, Z. (2023). Income, deprivation, and social exclusion: Toward a comprehensive poverty measurement. Social Policy & Administration, 57(3), 401-420.</li>
+                    <li>Liu, C. P. B. (2025). Advocacy for policy change and social justice [Small class teaching notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Liu, C. P. B. (2025). Key ideologies, concepts, theories, and models in social policy and welfare [Lecture notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Liu, C. P. B. (2025). Theoretical frameworks of social and welfare equality [Lecture notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Mudge, S. L. (2008). What is neo-liberalism? Socio-Economic Review, 6(4), 703-731. https://doi.org/10.1093/ser/mwn016</li>
+                    <li>Schroeder, D., Chatfield, K., Singh, M., Chennells, R., & Herissone-Kelly, P. (2019). The four values framework: Fairness, respect, care and honesty. In Equitable research partnerships (pp. 23-35). Springer. https://doi.org/10.1007/978-3-030-15745-6_3</li>
+                    <li>Titmuss, R. M. (1976). Essays on the 'welfare state' (3rd ed., with an introduction by Brian Abel-Smith). Allen & Unwin.</li>
+                    <li>Wong, H., & Chan, S. M. (2019). The impacts of housing factors on deprivation in a world city: The case of Hong Kong. Social Policy & Administration, 53(6), 872-888. https://doi.org/10.1111/spol.12431</li>
+                    <li>Yan, M. C., Cheung, J. C. S., Tsui, M. S., & Chu, C. K. (2017). Examining the neoliberal discourse of accountability: The case of Hong Kong's social service sector. International Social Work, 60(4), 976-989. https://doi.org/10.1177/0020872815626994</li>
+                    <!-- 額外引用及統計數據來源 -->
+                    <li>Hong Kong Council of Social Service. (2025). Hong Kong poverty situation report. https://www.hkcss.org.hk/</li>
+                    <li>Social Welfare Department. (2025). Comprehensive Social Security Assistance statistics. https://www.swd.gov.hk/</li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script9')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script9">
+                        <p>
+                            <span class="lang-zh">(Isaac): 本匯報所有引用均遵循APA 7th格式，聚焦課程Lecture 2-4及SCT1內容。(Kingson): 我們整合了香港特定研究與經典閱讀，確保分析嚴謹。感謝聆聽。</span>
+                            <span class="lang-en">(Isaac): All references in this presentation follow APA 7th format, focusing on course Lectures 2-4 and SCT1 content. (Kingson): We integrated Hong Kong-specific studies and classic readings for rigorous analysis. Thank you for listening.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide Q&A: Q&A Session -->
+            <div class="slide" id="slide10">
+                <div class="time-indicator">⏱️ 1.5<span class="lang-zh">分鐘</span><span class="lang-en"> min</span></div>
+                <div class="speaker-tag">
+                    <span class="lang-zh">主講: Li Ka Kit (牛)</span>
+                    <span class="lang-en">Speaker: Li Ka Kit (牛)</span>
+                </div>
+                <h2>
+                    <span class="lang-zh">答問環節：潛在問題與回應</span>
+                    <span class="lang-en">Q&A Session: Potential Questions and Responses</span>
+                </h2>
+                <ul>
+                    <li>
+                        <strong><span class="lang-zh">問題：</span><span class="lang-en">Question:</span></strong>
+                        <span class="lang-zh">CSSA為何傾向Workfare範式，會加劇不平等？</span>
+                        <span class="lang-en">Why does CSSA lean toward Workfare paradigm, exacerbating inequality?</span>
+                        <br><strong><span class="lang-zh">回應：</span><span class="lang-en">Response:</span></strong>
+                        <span class="lang-zh">Workfare強調責任與低援助，但忽略結構因素如高生活成本，導致邊緣貧窮者排除 (Daigneault, 2014)。</span>
+                        <span class="lang-en">Workfare emphasizes responsibility and low assistance, but ignores structural factors like high living costs, excluding marginal poor (Daigneault, 2014).</span>
+                    </li>
+                    <li>
+                        <strong><span class="lang-zh">問題：</span><span class="lang-en">Question:</span></strong>
+                        <span class="lang-zh">如何應用四價值框架改善CSSA？</span>
+                        <span class="lang-en">How to apply the four-value framework to improve CSSA?</span>
+                        <br><strong><span class="lang-zh">回應：</span><span class="lang-en">Response:</span></strong>
+                        <span class="lang-zh">提升公平性透過Rawls原則，強化關懷支援照顧者，改善誠信增加透明度 (Schroeder et al., 2019)。</span>
+                        <span class="lang-en">Enhance fairness via Rawls' principles, strengthen care for carers, improve honesty with transparency (Schroeder et al., 2019).</span>
+                    </li>
+                    <li>
+                        <strong><span class="lang-zh">問題：</span><span class="lang-en">Question:</span></strong>
+                        <span class="lang-zh">建議的倡議策略如何實行？</span>
+                        <span class="lang-en">How to implement the suggested advocacy strategies?</span>
+                        <br><strong><span class="lang-zh">回應：</span><span class="lang-en">Response:</span></strong>
+                        <span class="lang-zh">透過聯盟建設與媒體倡議，結合NGO填補缺口，推動彈性規則 (Gen & Wright, 2013)。</span>
+                        <span class="lang-en">Through coalition building and media advocacy, combine NGOs to fill gaps, push flexible rules (Gen & Wright, 2013).</span>
+                    </li>
+                </ul>
+                <div class="toggle-section">
+                    <div class="toggle-header" onclick="toggleContent('script10')">
+                        <span class="lang-zh">📝 詳細講稿</span><span class="lang-en">📝 Full Script</span><span class="toggle-icon">▼</span>
+                    </div>
+                    <div class="toggle-content" id="script10">
+                        <p>
+                            <span class="lang-zh">感謝提問。我們預備了潛在問題的回應，基於資料庫分析。任何其他問題歡迎討論。</span>
+                            <span class="lang-en">Thank you for questions. We prepared responses to potential issues based on database analysis. Welcome any other questions.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export-Only Section for PDF -->
+        <div class="export-only">
+            <div class="lang-zh">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1>CSSA 政策審查：新自由主義框架下的權利與責任</h1>
+                    <p><strong>SW507 課程組別匯報大綱</strong></p>
+                    <p>組員：Li Ka Kit (牛), Lam Ka Wing (Hebe), Liu Pik Ha (Vivian), Siu King San (Kingson), Cheung Ching Long (Isaac)</p>
+                    <p>日期：2025年10月15日</p>
+                </div>
+
+                <h2>Slide 1: 標題 (0.5分鐘)</h2>
+                <p>CSSA 政策審查：新自由主義框架下的權利與責任</p>
+
+                <h2>Slide 2-3: 引言 (2分鐘)</h2>
+                <ul>
+                    <li>CSSA 背景及重要性：殘餘式安全網，忽略結構貧窮。</li>
+                    <li>政策目標與挑戰：減少依賴但加劇不平等。</li>
+                </ul>
+
+                <h2>Slide 4-6: 福利理念 (3分鐘)</h2>
+                <ul>
+                    <li>新自由主義核心特徵：小政府、個人自力更生。</li>
+                    <li>CSSA 體現：手段測試、工作導向、有條件援助。</li>
+                    <li>影響分析：批評加劇不平等。</li>
+                </ul>
+
+                <h2>Slide 7-9: 範式分析 (3分鐘)</h2>
+                <table>
+                    <tr><th>維度</th><th>權利範式</th><th>工作福利範式</th><th>激活範式</th></tr>
+                    <tr><td>意識形態根源</td><td>社會民主主義</td><td>保守主義+新自由主義</td><td>「第三條路」+新自由主義+社會投資</td></tr>
+                    <tr><td>核心價值</td><td>團結、平等主義</td><td>個人獨立與責任</td><td>互惠、機會平等、生產力</td></tr>
+                    <tr><td>權利與責任平衡</td><td>強調個人權利：福利是社會權利</td><td>強調個人責任：福利是特權</td><td>權利責任平衡：福利是契約</td></tr>
+                    <tr><td>政策問題根源</td><td>主要結構性：社經轉型、經濟衰退</td><td>主要個人：依賴文化、價值觀不足</td><td>政策為本：社會與經濟政策脫節</td></tr>
+                    <tr><td>政策目標</td><td>透過保障收入及去商品化減少貧窮</td><td>改善工作倫理、態度及自尊</td><td>提升經濟活動率、促進就業、減少在職貧窮</td></tr>
+                    <tr><td>援助金額慷慨度</td><td>高</td><td>低：「較少資格」原則</td><td>中等：低基本援助但較慷慨收入補助</td></tr>
+                    <tr><td>政策工具</td><td>無條件現金轉移</td><td>現金轉移附帶工作要求及控制措施</td><td>無條件現金轉移、有條件收入補助、積極措施（培訓、求職協助）</td></tr>
+                    <tr><td>針對性程度</td><td>低：少區分（普遍或廣泛資格）</td><td>高：「值得」與「不值得」之分</td><td>高：收入補助限於符合工作條件者</td></tr>
+                </table>
+                <ul>
+                    <li>CSSA 定位：傾向Workfare，部分Activation，缺乏Entitlement。</li>
+                    <li>權利 vs. 責任辯論。</li>
+                </ul>
+
+                <h2>Slide 10-13: 正義框架 (4分鐘)</h2>
+                <ul>
+                    <li>公平性：分配正義缺失，違反Rawls原則。</li>
+                    <li>程序正義：部分達標但偏見與代表性不足。</li>
+                    <li>關懷：忽略照顧需求。</li>
+                    <li>誠信：信任赤字，高非領取率。</li>
+                </ul>
+                <table>
+                    <tr><th>程序規則</th><th>CSSA 表現</th><th>評估</th></tr>
+                    <tr><td>準確性</td><td>基於經濟審查數據</td><td>✓ 部分達標</td></tr>
+                    <tr><td>偏見抑制</td><td>存在對受助者的污名化</td><td>✗ 不足</td></tr>
+                    <tr><td>一致性</td><td>申請程序標準化</td><td>✓ 達標</td></tr>
+                    <tr><td>可糾正性</td><td>設有上訴機制</td><td>✓ 達標</td></tr>
+                    <tr><td>倫理性</td><td>與「自力更生」價值一致，但忽視弱勢需求</td><td>⚠ 部分衝突</td></tr>
+                    <tr><td>代表性</td><td>受助者聲音缺乏</td><td>✗ 不足</td></tr>
+                </table>
+
+                <h2>Slide 14-16: 剝奪分析 (3分鐘)</h2>
+                <ul>
+                    <li>香港剝奪指標：基本、醫療、住房、社會參與。</li>
+                    <li>CSSA 援助不足：難負擔社會參與，導致排斥。</li>
+                    <li>社會距離：物理、文化隔離加深貧窮。</li>
+                </ul>
+
+                <h2>Slide 17-20: 建議 (5分鐘)</h2>
+                <ul>
+                    <li>社會可持續發展：長期穩定、代際團結。</li>
+                    <li>政策倡議：聯盟建設、遊說、媒體倡議。</li>
+                    <li>橋接組織：公私夥伴、NGO整合。</li>
+                    <li>具體改革：彈性規則、綠色投資。</li>
+                </ul>
+
+                <h2>Slide 21: 結論 (2分鐘)</h2>
+                <ul>
+                    <li>優化方向：向Activation轉移，提升平等。</li>
+                    <li>未來研究：污名影響、Eco-Welfare比較。</li>
+                </ul>
+
+                <h2>Slide 22: 參考文獻 (1分鐘)</h2>
+                <ul>
+                    <li>Chan, D., & Wong, H. (2020). Measuring deprivation in Hong Kong. In Social indicators research series. Springer.</li>
+                    <li>Census and Statistics Department. (2019). Hong Kong poverty report 2018. Government of the Hong Kong Special Administrative Region.</li>
+                    <li>Coffman, J., & Beer, T. (2015). The advocacy strategy framework. Center for Evaluation Innovation.</li>
+                    <li>Daigneault, P. (2014). Three paradigms of social assistance. Sage Open, 4(4), 1-8. https://doi.org/10.1177/2158244014552888</li>
+                    <li>Esping-Andersen, G. (1990). The three worlds of welfare capitalism. Princeton University Press.</li>
+                    <li>Gen, S., & Wright, A. C. (2013). Policy advocacy organizations: A framework linking theory and practice. Journal of Policy Practice, 12(3), 163-193. https://doi.org/10.1080/15588742.2013.795915</li>
+                    <li>Ho, L. S., & Cheung, A. K. L. (2012). The social distance perspective of deprivation. Hong Kong Journal of Social Work, 46(1-2), 23-45.</li>
+                    <li>Liu, B., Wu, Y., & Chen, Z. (2023). Income, deprivation, and social exclusion: Toward a comprehensive poverty measurement. Social Policy & Administration, 57(3), 401-420.</li>
+                    <li>Liu, C. P. B. (2025). Advocacy for policy change and social justice [Small class teaching notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Liu, C. P. B. (2025). Key ideologies, concepts, theories, and models in social policy and welfare [Lecture notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Liu, C. P. B. (2025). Theoretical frameworks of social and welfare equality [Lecture notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Mudge, S. L. (2008). What is neo-liberalism? Socio-Economic Review, 6(4), 703-731. https://doi.org/10.1093/ser/mwn016</li>
+                    <li>Schroeder, D., Chatfield, K., Singh, M., Chennells, R., & Herissone-Kelly, P. (2019). The four values framework: Fairness, respect, care and honesty. In Equitable research partnerships (pp. 23-35). Springer. https://doi.org/10.1007/978-3-030-15745-6_3</li>
+                    <li>Titmuss, R. M. (1976). Essays on the 'welfare state' (3rd ed., with an introduction by Brian Abel-Smith). Allen & Unwin.</li>
+                    <li>Wong, H., & Chan, S. M. (2019). The impacts of housing factors on deprivation in a world city: The case of Hong Kong. Social Policy & Administration, 53(6), 872-888. https://doi.org/10.1111/spol.12431</li>
+                    <li>Yan, M. C., Cheung, J. C. S., Tsui, M. S., & Chu, C. K. (2017). Examining the neoliberal discourse of accountability: The case of Hong Kong's social service sector. International Social Work, 60(4), 976-989. https://doi.org/10.1177/0020872815626994</li>
+                    <li>Hong Kong Council of Social Service. (2025). Hong Kong poverty situation report. https://www.hkcss.org.hk/</li>
+                    <li>Social Welfare Department. (2025). Comprehensive Social Security Assistance statistics. https://www.swd.gov.hk/</li>
+                </ul>
+
+                <h2>Q&A 答問環節 (1.5分鐘)</h2>
+                <ul>
+                    <li>問題：CSSA為何傾向Workfare範式，會加劇不平等？<br>回應：Workfare強調責任與低援助，但忽略結構因素如高生活成本，導致邊緣貧窮者排除 (Daigneault, 2014)。</li>
+                    <li>問題：如何應用四價值框架改善CSSA？<br>回應：提升公平性透過Rawls原則，強化關懷支援照顧者，改善誠信增加透明度 (Schroeder et al., 2019)。</li>
+                    <li>問題：建議的倡議策略如何實行？<br>回應：透過聯盟建設與媒體倡議，結合NGO填補缺口，推動彈性規則 (Gen & Wright, 2013)。</li>
+                </ul>
+
+                <hr style="margin: 30px 0;">
+                <div style="text-align: center; margin-top: 30px; padding: 20px; border-top: 2px solid #333;">
+                    <p style="font-weight: bold; font-size: 12pt;">完</p>
+                </div>
+            </div>
+            <div class="lang-en">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1>Policy Review of CSSA: Rights and Responsibilities under Neoliberalism</h1>
+                    <p><strong>SW507 Course Group Presentation Outline</strong></p>
+                    <p>Group Members: Li Ka Kit (牛), Lam Ka Wing (Hebe), Liu Pik Ha (Vivian), Siu King San (Kingson), Cheung Ching Long (Isaac)</p>
+                    <p>Date: October 15, 2025</p>
+                </div>
+
+                <h2>Slide 1: Title (0.5 min)</h2>
+                <p>Policy Review of CSSA: Rights and Responsibilities under Neoliberalism</p>
+
+                <h2>Slide 2-3: Introduction (2 min)</h2>
+                <ul>
+                    <li>CSSA Background and Importance: Residual safety net, overlooking structural poverty.</li>
+                    <li>Policy Goals and Challenges: Reduce dependency but exacerbate inequality.</li>
+                </ul>
+
+                <h2>Slide 4-6: Welfare Ideology (3 min)</h2>
+                <ul>
+                    <li>Neoliberalism Core Features: Small government, individual self-reliance.</li>
+                    <li>CSSA Embodiment: Means-testing, work-oriented, conditional aid.</li>
+                    <li>Impact Analysis: Criticism for exacerbating inequality.</li>
+                </ul>
+
+                <h2>Slide 7-9: Paradigm Analysis (3 min)</h2>
+                <table>
+                    <tr><th>Dimensions</th><th>Entitlement</th><th>Workfare</th><th>Activation</th></tr>
+                    <tr><td>Ideological Roots</td><td>Social Democracy</td><td>Conservatism + Neoliberalism</td><td>"Third Way" + Neoliberalism + Social Investment</td></tr>
+                    <tr><td>Core Values</td><td>Solidarity, Egalitarianism</td><td>Individual Independence and Responsibility</td><td>Reciprocity, Equal Opportunities, Productivity</td></tr>
+                    <tr><td>Rights and Responsibilities Balance</td><td>Emphasizes individual rights: welfare is social right</td><td>Emphasizes individual responsibility: welfare is privilege</td><td>Balanced rights and responsibilities: welfare is contract</td></tr>
+                    <tr><td>Policy Problem Roots</td><td>Mainly structural: socio-economic transitions, recessions</td><td>Mainly individual: dependency culture, value deficiencies</td><td>Policy-based: disconnect between social and economic policies</td></tr>
+                    <tr><td>Policy Goals</td><td>Reduce poverty through income security and de-commodification</td><td>Improve work ethic, attitudes, self-esteem</td><td>Increase economic activity, promote employment, reduce in-work poverty</td></tr>
+                    <tr><td>Generosity of Assistance</td><td>High</td><td>Low: "less eligibility" principle</td><td>Medium: low basic but generous income supplements</td></tr>
+                    <tr><td>Policy Tools</td><td>Unconditional cash transfers</td><td>Cash transfers with work requirements and controls</td><td>Unconditional cash, conditional supplements, active measures (training, job assistance)</td></tr>
+                    <tr><td>Targeting Degree</td><td>Low: little differentiation (universal or broad eligibility)</td><td>High: "deserving" vs. "undeserving"</td><td>High: supplements limited to work-compliant</td></tr>
+                </table>
+                <ul>
+                    <li>CSSA Positioning: Leans toward Workfare, partial Activation, lacks Entitlement.</li>
+                    <li>Rights vs. Responsibilities Debate.</li>
+                </ul>
+
+                <h2>Slide 10-13: Justice Framework (4 min)</h2>
+                <ul>
+                    <li>Fairness: Distributive justice deficiency, violating Rawls principles.</li>
+                    <li>Procedural Justice: Partially met but with bias and low representativeness.</li>
+                    <li>Care: Ignores care needs.</li>
+                    <li>Honesty: Trust deficit, high non-take-up rates.</li>
+                </ul>
+                <table>
+                    <tr><th>Procedural Rules</th><th>CSSA Performance</th><th>Assessment</th></tr>
+                    <tr><td>Accuracy</td><td>Based on financial data</td><td>✓ Partially met</td></tr>
+                    <tr><td>Bias Suppression</td><td>Exists stigmatization of recipients</td><td>✗ Insufficient</td></tr>
+                    <tr><td>Consistency</td><td>Standardized application process</td><td>✓ Met</td></tr>
+                    <tr><td>Correctability</td><td>Appeal mechanism in place</td><td>✓ Met</td></tr>
+                    <tr><td>Ethicality</td><td>Consistent with "self-reliance" but ignores vulnerable needs</td><td>⚠ Partial conflict</td></tr>
+                    <tr><td>Representativeness</td><td>Lack of recipient voices</td><td>✗ Insufficient</td></tr>
+                </table>
+
+                <h2>Slide 14-16: Deprivation Analysis (3 min)</h2>
+                <ul>
+                    <li>HK Deprivation Indicators: Basic, health, housing, social participation.</li>
+                    <li>CSSA Assistance Insufficiency: Hard to afford social participation, leading to exclusion.</li>
+                    <li>Social Distance: Physical, cultural isolation deepens poverty.</li>
+                </ul>
+
+                <h2>Slide 17-20: Suggestions (5 min)</h2>
+                <ul>
+                    <li>Social Sustainable Development: Long-term stability, intergenerational solidarity.</li>
+                    <li>Policy Advocacy: Coalition building, lobbying, media advocacy.</li>
+                    <li>Bridging Organizations: Public-private partnerships, NGO integration.</li>
+                    <li>Specific Reforms: Flexible rules, green investments.</li>
+                </ul>
+
+                <h2>Slide 21: Conclusion (2 min)</h2>
+                <ul>
+                    <li>Optimization Directions: Shift to Activation, enhance equality.</li>
+                    <li>Future Research: Stigmatization impacts, Eco-Welfare comparisons.</li>
+                </ul>
+
+                <h2>Slide 22: References (1 min)</h2>
+                <ul>
+                    <li>Chan, D., & Wong, H. (2020). Measuring deprivation in Hong Kong. In Social indicators research series. Springer.</li>
+                    <li>Census and Statistics Department. (2019). Hong Kong poverty report 2018. Government of the Hong Kong Special Administrative Region.</li>
+                    <li>Coffman, J., & Beer, T. (2015). The advocacy strategy framework. Center for Evaluation Innovation.</li>
+                    <li>Daigneault, P. (2014). Three paradigms of social assistance. Sage Open, 4(4), 1-8. https://doi.org/10.1177/2158244014552888</li>
+                    <li>Esping-Andersen, G. (1990). The three worlds of welfare capitalism. Princeton University Press.</li>
+                    <li>Gen, S., & Wright, A. C. (2013). Policy advocacy organizations: A framework linking theory and practice. Journal of Policy Practice, 12(3), 163-193. https://doi.org/10.1080/15588742.2013.795915</li>
+                    <li>Ho, L. S., & Cheung, A. K. L. (2012). The social distance perspective of deprivation. Hong Kong Journal of Social Work, 46(1-2), 23-45.</li>
+                    <li>Liu, B., Wu, Y., & Chen, Z. (2023). Income, deprivation, and social exclusion: Toward a comprehensive poverty measurement. Social Policy & Administration, 57(3), 401-420.</li>
+                    <li>Liu, C. P. B. (2025). Advocacy for policy change and social justice [Small class teaching notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Liu, C. P. B. (2025). Key ideologies, concepts, theories, and models in social policy and welfare [Lecture notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Liu, C. P. B. (2025). Theoretical frameworks of social and welfare equality [Lecture notes]. SW507 Globalisation and Regionalisation in Social Welfare and Social Policy, Hong Kong Shue Yan University.</li>
+                    <li>Mudge, S. L. (2008). What is neo-liberalism? Socio-Economic Review, 6(4), 703-731. https://doi.org/10.1093/ser/mwn016</li>
+                    <li>Schroeder, D., Chatfield, K., Singh, M., Chennells, R., & Herissone-Kelly, P. (2019). The four values framework: Fairness, respect, care and honesty. In Equitable research partnerships (pp. 23-35). Springer. https://doi.org/10.1007/978-3-030-15745-6_3</li>
+                    <li>Titmuss, R. M. (1976). Essays on the 'welfare state' (3rd ed., with an introduction by Brian Abel-Smith). Allen & Unwin.</li>
+                    <li>Wong, H., & Chan, S. M. (2019). The impacts of housing factors on deprivation in a world city: The case of Hong Kong. Social Policy & Administration, 53(6), 872-888. https://doi.org/10.1111/spol.12431</li>
+                    <li>Yan, M. C., Cheung, J. C. S., Tsui, M. S., & Chu, C. K. (2017). Examining the neoliberal discourse of accountability: The case of Hong Kong's social service sector. International Social Work, 60(4), 976-989. https://doi.org/10.1177/0020872815626994</li>
+                    <li>Hong Kong Council of Social Service. (2025). Hong Kong poverty situation report. https://www.hkcss.org.hk/</li>
+                    <li>Social Welfare Department. (2025). Comprehensive Social Security Assistance statistics. https://www.swd.gov.hk/</li>
+                </ul>
+
+                <h2>Q&A Session (1.5 min)</h2>
+                <ul>
+                    <li>Question: Why does CSSA lean toward Workfare paradigm, exacerbating inequality?<br>Response: Workfare emphasizes responsibility and low assistance, but ignores structural factors like high living costs, excluding marginal poor (Daigneault, 2014).</li>
+                    <li>Question: How to apply the four-value framework to improve CSSA?<br>Response: Enhance fairness via Rawls' principles, strengthen care for carers, improve honesty with transparency (Schroeder et al., 2019).</li>
+                    <li>Question: How to implement the suggested advocacy strategies?<br>Response: Through coalition building and media advocacy, combine NGOs to fill gaps, push flexible rules (Gen & Wright, 2013).</li>
+                </ul>
+
+                <hr style="margin: 30px 0;">
+                <div style="text-align: center; margin-top: 30px; padding: 20px; border-top: 2px solid #333;">
+                    <p style="font-weight: bold; font-size: 12pt;">End</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        let scriptsVisible = false;
+        let isEnglish = false;
+
+        function toggleLanguage() {
+            const btn = document.getElementById('lang-toggle-btn');
+            isEnglish = !isEnglish;
+            if (isEnglish) {
+                document.body.classList.add('show-en');
+                btn.textContent = '中';
+            } else {
+                document.body.classList.remove('show-en');
+                btn.textContent = 'EN';
+            }
+        }
+
+        function showSlide(slideNumber) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            const targetSlide = document.getElementById(`slide${slideNumber}`);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+            }
+            
+            const navItems = document.querySelectorAll('.slide-nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            if (navItems[slideNumber - 1]) {
+                navItems[slideNumber - 1].classList.add('active');
+            }
+            
+            currentSlide = slideNumber;
+            
+            const presentationContent = document.querySelector('.presentation-content');
+            if (presentationContent) {
+                window.scrollTo({
+                    top: presentationContent.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function toggleContent(contentId) {
+            const content = document.getElementById(contentId);
+            const header = content.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            if (content && icon) {
+                content.classList.toggle('active');
+                icon.classList.toggle('rotated');
+            }
+        }
+
+        function toggleAllScripts() {
+            scriptsVisible = !scriptsVisible;
+            const allToggles = document.querySelectorAll('.toggle-content');
+            const allIcons = document.querySelectorAll('.toggle-icon');
+            const button = event.currentTarget;
+            
+            allToggles.forEach(toggle => {
+                toggle.classList.toggle('active', scriptsVisible);
+            });
+            
+            allIcons.forEach(icon => {
+                icon.classList.toggle('rotated', scriptsVisible);
+            });
+            
+            const zhText = scriptsVisible ? '隱藏所有講稿' : '顯示所有講稿';
+            const enText = scriptsVisible ? 'Hide All Scripts' : 'Show All Scripts';
+            const btnZh = button.querySelector('.lang-zh');
+            const btnEn = button.querySelector('.lang-en');
+            if (btnZh) btnZh.textContent = zhText;
+            if (btnEn) btnEn.textContent = enText;
+        }
+
+        function resetPresentation() {
+            showSlide(1);
+            
+            const allToggles = document.querySelectorAll('.toggle-content');
+            const allIcons = document.querySelectorAll('.toggle-icon');
+            
+            allToggles.forEach(toggle => toggle.classList.remove('active'));
+            allIcons.forEach(icon => icon.classList.remove('rotated'));
+            
+            scriptsVisible = false;
+            const toggleButton = document.querySelector('.controls .btn:first-child');
+            if (toggleButton) {
+                const btnZh = toggleButton.querySelector('.lang-zh');
+                const btnEn = toggleButton.querySelector('.lang-en');
+                if (btnZh) btnZh.textContent = '顯示所有講稿';
+                if (btnEn) btnEn.textContent = 'Show All Scripts';
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function exportToPDF() {
+            window.print();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            const totalSlides = document.querySelectorAll('.slide').length;
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides) showSlide(currentSlide + 1);
+            else if (e.key === 'ArrowLeft' && currentSlide > 1) showSlide(currentSlide - 1);
+            else if (e.key === 'Home') { e.preventDefault(); showSlide(1); }
+            else if (e.key === 'End') { e.preventDefault(); showSlide(totalSlides); }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showSlide(1);
+        });
+    </script>
+</body>
+</html>
