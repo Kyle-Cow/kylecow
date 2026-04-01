@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GRAND LOTTERY - Ultimate Effects Edition V6 (Search & Manage)</title>
+  <style>
+    body { margin:0; overflow:hidden; background:#05000e; font-family: 'Montserrat', sans-serif; }
+    #canvas-container { position: absolute; inset:0; z-index: 1; }
+    
+    /* UI Layer - Controls and Text */
+    #ui-layer {
+      position:absolute; inset:0; pointer-events:none;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      color:#fff; z-index:20;
+    }
+    
+    /* Main Central Button */
+    .btn {
+      pointer-events:auto; padding:14px 32px; font-size:1.15rem; font-weight:bold;
+      background: linear-gradient(45deg, #ffd700, #ffaa00); color:#000;
+      border:none; border-radius:50px; cursor:pointer; margin:10px;
+      box-shadow:0 0 20px rgba(255,215,0,0.6);
+      transition: all 0.3s;
+      user-select:none;
+      min-width: 200px;
+      position: relative; overflow: hidden;
+    }
+    .btn:hover { transform:scale(1.06); box-shadow:0 0 30px rgba(255,215,0,0.9); }
+    .btn:active { transform:scale(0.98); }
+    
+    /* Mode Specific Button Styles */
+    .btn.mode-third {
+        background: linear-gradient(45deg, #ffd700, #ffaa00);
+        box-shadow: 0 0 25px rgba(255,215,0,0.8);
+        border: 2px solid #fff;
+        color: #000;
+    }
+    .btn.mode-finale {
+        background: linear-gradient(45deg, #ff0055, #aa0033);
+        box-shadow: 0 0 30px rgba(255,0,85,0.8);
+        color: #fff;
+        border: 2px solid #ffaaaa;
+    }
+
+    #top-stats {
+      position:absolute; top:14px; left:50%; transform:translateX(-50%);
+      z-index:25; text-align:center; pointer-events:none;
+      width:min(1100px, 94vw);
+    }
+    #remaining { font-size:1.05rem; margin:6px; color:#00ffff; text-shadow:0 0 10px rgba(0,255,255,0.8); }
+    #picked { font-size:1.0rem; margin:4px; color:#ffd700; text-shadow:0 0 10px rgba(255,215,0,0.45); }
+    
+    /* Grid Layout for Winners */
+    .grid-container {
+      position: absolute; top: 80px; left: 0;
+      display: grid; width: 100%; height: calc(100vh - 180px);
+      gap: 20px; padding: 20px 40px;
+      box-sizing: border-box; z-index: 10; pointer-events: none;
+      justify-items: center;
+      align-items: center;
+    }
+    
+    .card-cell {
+      width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      pointer-events: auto; transition: transform 0.3s ease;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .card-cell:hover { transform: scale(1.02); z-index: 50; }
+
+    .card-cell img {
+        max-width: 100%; max-height: 90%;
+        object-fit: contain;
+        filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
+    }
+
+    #hotkey-hint {
+      position:absolute; left:14px; bottom:14px;
+      padding:10px 12px;
+      background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.12);
+      border-radius:10px; color:#ddd; font-size:0.9rem;
+      z-index:22; pointer-events:none; backdrop-filter: blur(6px);
+    }
+    
+    /* Backdrop & Modals */
+    #manage-backdrop, #pool-backdrop {
+      position:fixed; inset:0; background:rgba(0,0,0,0.75);
+      display:none; z-index:998; pointer-events:auto;
+      backdrop-filter: blur(5px);
+    }
+    #manage-backdrop.show, #pool-backdrop.show { display:block; }
+    
+    #manage-panel {
+      position:fixed; top:18px; right:18px;
+      background:rgba(0,0,0,0.95); padding:20px; border-radius:12px;
+      color:#fff; width:min(600px, calc(100vw - 36px)); max-height: calc(100vh - 36px);
+      overflow-y:auto; display:none; backdrop-filter:blur(10px);
+      border:1px solid #444; z-index:999; pointer-events:auto;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    }
+    #manage-panel.show { display:block; }
+
+    /* Remaining Pool Modal */
+    #pool-panel {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 90vw; height: 85vh;
+        background: rgba(10, 10, 20, 0.95);
+        border: 2px solid #00ffff;
+        box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+        z-index: 1000;
+        display: none;
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 20px;
+        color: #fff;
+    }
+    #pool-panel.show { display: flex; animation: panelPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+    @keyframes panelPop { from { opacity: 0; transform: translate(-50%, -40%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+    .pool-controls {
+        display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .pool-search-input {
+        flex: 1; padding: 10px; font-size: 1rem;
+        background: rgba(255,255,255,0.1); border: 1px solid #00aaaa;
+        color: #fff; border-radius: 6px; outline: none;
+    }
+    .pool-search-input:focus { border-color: #00ffff; background: rgba(255,255,255,0.15); }
+
+    .pool-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 10px;
+        overflow-y: auto;
+        padding: 10px;
+        flex: 1;
+    }
+    .pool-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    .pool-item:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: #00ffff;
+        transform: translateY(-2px);
+    }
+    .pool-no { font-size: 1.2em; color: #00ffff; font-weight: bold; }
+    .pool-name { font-size: 1.0em; color: #fff; text-align: center; margin-top: 4px; }
+    .pool-code { font-size: 0.8em; color: #aaa; margin-top: 2px; }
+    
+    /* Tab System */
+    .tab-header { display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid #444; padding-bottom:10px; }
+    .tab-btn {
+        background: transparent; border:none; color:#888; font-size:1rem; 
+        padding:8px 16px; cursor:pointer; font-weight:bold; border-radius:8px;
+    }
+    .tab-btn.active { background:rgba(255,215,0,0.15); color:#ffd700; }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    /* Table Styles */
+    .user-table-container { max-height: 300px; overflow-y: auto; border: 1px solid #444; border-radius: 6px; }
+    table.user-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    table.user-table th, table.user-table td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #333; }
+    table.user-table th { background: #222; position: sticky; top: 0; color: #ffd700; }
+    table.user-table tr:hover { background: rgba(255,255,255,0.05); }
+    .status-won { color: #0f0; font-weight: bold; }
+    .status-pending { color: #aaa; }
+    .action-btn { 
+        padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #555; 
+        background: #333; color: #fff; cursor: pointer; margin-right: 4px;
+    }
+    .action-btn:hover { background: #555; }
+    .action-btn.del { border-color: #844; color: #fcc; background: #422; }
+    .action-btn.del:hover { background: #622; }
+
+    textarea {
+      width:100%; height:170px; background:#111; color:#eee;
+      border:1px solid #555; border-radius:6px; padding:10px; box-sizing:border-box;
+      resize:vertical; font-family: monospace; font-size: 13px; line-height: 1.35;
+    }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .row > * { flex: 1 1 auto; }
+    .hint { font-size:0.92rem; color:#bbb; line-height:1.35; margin:10px 0 0; }
+    .divider { margin:14px 0; height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent); }
+    input[type="number"], input[type="text"] {
+      background:#111; color:#eee; border:1px solid #555; border-radius:8px;
+      padding:10px; font-size: 14px; box-sizing:border-box; outline:none;
+    }
+    label { font-size:0.92rem; color:#ddd; }
+    
+    .small-btn {
+      pointer-events:auto; padding:10px 14px; font-size:0.95rem;
+      border-radius:14px; border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.06); color:#fff; cursor:pointer; user-select:none;
+      white-space: nowrap;
+    }
+    .small-btn:hover { background:rgba(255,255,255,0.10); }
+    
+    #front-controls {
+      position:absolute; left:50%; bottom:18px; transform:translateX(-50%);
+      z-index:25; display:flex; flex-wrap:wrap; gap:10px;
+      pointer-events:none; justify-content:center; width:min(1200px, 98vw);
+      align-items: center;
+    }
+    #front-controls .small-btn, #front-controls .btn, #front-controls input { pointer-events:auto; }
+    #front-controls input { width:80px; text-align: center; }
+    #front-controls .btn { margin:0 10px; padding:12px 24px; font-size:1.1rem; border-radius:24px; }
+    
+    .file-input { display:none; }
+
+    /* Special Buttons */
+    .special-btn {
+      position: absolute; bottom: 20px;
+      width: 70px; height: 70px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.5); color: #fff;
+      font-size: 0.8rem; font-weight: bold;
+      display: flex; justify-content: center; align-items: center; text-align: center;
+      cursor: pointer; z-index: 30; pointer-events: auto;
+      transition: all 0.3s;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      line-height: 1.2; overflow: hidden;
+      backdrop-filter: blur(4px);
+    }
+    .special-btn:hover { transform: scale(1.15); border-color: #fff; background: rgba(50,50,50,0.8); }
+    .special-btn.active { transform: scale(1.1); border-width: 3px; background: rgba(255,255,255,0.2); }
+    
+    #btn-third-round { left: 30px; color: #ffd700; border-color: #aa8800; box-shadow: 0 0 15px rgba(255,215,0,0.3); }
+    #btn-third-round:hover, #btn-third-round.active { box-shadow: 0 0 25px rgba(255,215,0,0.8); border-color: #ffd700; }
+
+    #btn-grand-finale { right: 30px; color: #ff0055; border-color: #aa0033; box-shadow: 0 0 15px rgba(255,0,85,0.3); }
+    #btn-grand-finale:hover, #btn-grand-finale.active { box-shadow: 0 0 25px rgba(255,0,85,0.8); border-color: #ff0055; }
+
+    /* Pachinko Number Overlay */
+    #pachinko-overlay {
+        position: fixed; inset: 0; z-index: 1000;
+        display: none; justify-content: center; align-items: center;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+    }
+    #pachinko-text {
+        font-family: 'Impact', sans-serif;
+        font-size: 25rem;
+        font-weight: 900;
+        background: 
+            radial-gradient(circle at 30% 30%, #556b2f 0%, transparent 20%),
+            radial-gradient(circle at 70% 70%, #8fbc8f 0%, transparent 20%),
+            radial-gradient(circle at 40% 60%, #6b8e23 0%, transparent 25%),
+            linear-gradient(135deg, #2e3b23 0%, #4a5d23 100%);
+        background-size: 150% 150%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 50px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        pointer-events: none;
+    }
+
+    /* Warning Toast */
+    #warning-toast {
+        position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
+        background: rgba(255, 50, 50, 0.9);
+        color: white; padding: 15px 30px; border-radius: 50px;
+        box-shadow: 0 0 20px rgba(255,0,0,0.5);
+        font-size: 1.2rem; font-weight: bold;
+        z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    #warning-toast.show { opacity: 1; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div id="auto-grid" class="grid-container"></div>
+
+<!-- Pachinko Effect Overlay -->
+<div id="pachinko-overlay">
+    <div id="pachinko-text">0</div>
+</div>
+
+<!-- Warning Toast -->
+<div id="warning-toast">⚠️ 桌面尚有未處理的得獎者！請連按兩次 Enter 強制抽獎</div>
+
+<div id="ui-layer">
+  <div id="top-stats">
+    <div id="remaining">剩餘參與者：0 人</div>
+    <div id="picked">本輪已抽出：0 位（雙擊卡片可退回待抽區）</div>
+  </div>
+
+  <div id="front-controls">
+    
+    <!-- Left Group -->
+    <div class="row" style="gap:8px; align-items:center;">
+      <button id="view-pool" class="small-btn" style="background:rgba(0,100,255,0.4); border-color:#5af;">
+        檢視待抽名單
+      </button>
+      <label for="draw-count" class="subtle">連抽數量：</label>
+      <input id="draw-count" type="number" min="1" step="1" value="1" />
+      <button id="draw-many" class="small-btn">連抽確認</button>
+    </div>
+
+    <!-- Main Button -->
+    <button id="draw-one" class="btn">開始抽獎</button>
+    
+    <!-- Right Group -->
+    <div class="row" style="gap:5px; align-items:center;">
+        <button id="quick-finish" class="small-btn" style="background:rgba(255,200,0,0.2); border-color:#fe0; color:#fe0;">
+            ⚡ 快速完成
+        </button>
+        <button id="finalize-round" class="small-btn" style="border-color:rgba(255,215,0,0.35);">
+        本輪封存
+        </button>
+        <!-- New Buttons -->
+        <button id="btn-unclaimed-return" class="small-btn" style="border-color:rgba(0,255,255,0.3); color:#0ff;">
+        無人認領(返回)
+        </button>
+        <button id="btn-unclaimed-disq" class="small-btn" style="border-color:rgba(255,50,50,0.3); color:#f55;">
+        無人認領(廢除)
+        </button>
+    </div>
+  </div>
+  
+  <div id="hotkey-hint">
+    快捷鍵：<b>Enter</b> 抽獎 (雙擊強制)　<b>Shift+Enter</b> 連抽　<b>ESC</b> 略過動畫　<b>M</b> 後台
+  </div>
+</div>
+
+<!-- Special Mode Toggle Buttons -->
+<div id="btn-third-round" class="special-btn" title="切換至第三輪模式">第三輪<br>模式</div>
+<div id="btn-grand-finale" class="special-btn" title="切換至壓軸模式">壓軸<br>模式</div>
+
+<!-- Pool Viewer Modal -->
+<div id="pool-backdrop" aria-hidden="true"></div>
+<div id="pool-panel">
+    <div class="row" style="justify-content:space-between; margin-bottom:10px; border-bottom: 1px solid #00ffff; padding-bottom: 10px;">
+        <h2 style="margin:0; color:#00ffff;">待抽名單一覽</h2>
+        <div class="row" style="gap: 15px; align-items: baseline;">
+             <span style="color:#aaa;">共 <span id="pool-total-count" style="color:#fff; font-weight:bold;">0</span> 人</span>
+             <button id="close-pool" class="small-btn" style="font-size:1.2rem;">×</button>
+        </div>
+    </div>
+    <div class="pool-controls">
+        <input id="pool-search-input" type="text" placeholder="🔍 搜尋：輸入號碼、代碼或姓名..." class="pool-search-input">
+    </div>
+    <div id="pool-grid-content" class="pool-grid">
+        <!-- JS Generated -->
+    </div>
+</div>
+
+<div id="manage-backdrop" aria-hidden="true"></div>
+<div id="manage-panel" role="dialog" aria-modal="true" aria-label="後台管理">
+  <div class="row" style="justify-content:space-between; margin-bottom:10px;">
+    <h3 style="margin:0;">後台管理 (IndexedDB)</h3>
+    <div class="subtle">按 <b>M</b> 可關閉</div>
+  </div>
+
+  <div class="tab-header">
+      <button class="tab-btn active" onclick="switchTab('table-view')">名單列表 (管理)</button>
+      <button class="tab-btn" onclick="switchTab('batch-view')">快速貼上 (匯入)</button>
+      <button class="tab-btn" onclick="switchTab('settings-view')">設定 & 匯出</button>
+  </div>
+  
+  <!-- TAB 1: Table View -->
+  <div id="table-view" class="tab-content active">
+      <div class="row" style="margin-bottom:10px;">
+        <button id="btn-add-single" class="small-btn" style="background:#222; border:1px solid #666;">+ 新增參與者</button>
+        <div class="subtle" style="flex:1; text-align:right;">共 <span id="table-count">0</span> 人</div>
+      </div>
+      <div class="user-table-container">
+          <table class="user-table">
+              <thead>
+                  <tr>
+                      <th width="15%">No</th>
+                      <th width="15%">Code</th>
+                      <th width="30%">Name</th>
+                      <th width="20%">Status</th>
+                      <th width="20%">操作</th>
+                  </tr>
+              </thead>
+              <tbody id="user-table-body">
+                  <!-- JS Rendered -->
+              </tbody>
+          </table>
+      </div>
+  </div>
+
+  <!-- TAB 2: Batch View -->
+  <div id="batch-view" class="tab-content">
+      <h4 style="margin:0 0 8px;">快速貼上名單（每行一位）</h4>
+      <textarea id="names-input" placeholder="格式：001, ATH, 陳小明&#10;或：001 ATH 陳小明&#10;或：陳小明"></textarea>
+      <div class="hint">
+        支援 Excel 複製貼上 (Ctrl+C / Ctrl+V)。<br>
+        儲存後將自動轉換為表格模式並檢查重複。
+      </div>
+      <div class="row" style="margin-top:12px; gap:10px;">
+        <button id="save-names" class="btn">儲存並檢查</button>
+        <button id="reset-names" class="btn" style="background:#444;color:#fff;">重置為預設範例</button>
+      </div>
+  </div>
+
+  <!-- TAB 3: Settings & Export -->
+  <div id="settings-view" class="tab-content">
+      <h4 style="margin:0 0 8px;">卡片外觀設定</h4>
+      <div class="row" style="gap:10px;">
+          <button id="upload-bg-btn" class="small-btn" style="background:#222; border-color:#888;">上傳卡片背景圖片</button>
+          <input id="bg-file-input" type="file" accept="image/*" class="file-input" />
+          <button id="clear-bg-btn" class="small-btn" style="background:#442; border-color:#884;">重置回預設藍底</button>
+      </div>
+      <div class="divider"></div>
+      
+      <h4 style="margin:0 0 8px;">輪次管理</h4>
+      <div class="row" style="gap:10px; align-items:center;">
+          <label>目前輪次：<span id="current-round-display" style="color:#0ff; font-weight:bold;">0</span></label>
+          <input type="number" id="round-reset-val" value="0" style="width:70px;">
+          <button id="btn-reset-round" class="small-btn" style="background:#442; color:#ff8;">重置輪次計數</button>
+          <div class="subtle" style="font-size:0.8rem;">(僅重置數字，不影響紀錄)</div>
+      </div>
+      <div class="divider"></div>
+
+      <h4 style="margin:0 0 8px;">匯入 / 匯出 (IndexedDB)</h4>
+      <div class="row" style="gap:10px;">
+        <button id="export-names-json" class="small-btn">匯出名單 JSON</button>
+        <button id="export-winners-excel" class="small-btn">匯出得獎 Excel (分輪次)</button>
+        <button id="export-all-json" class="small-btn">匯出全部狀態 JSON (含圖片)</button>
+      </div>
+      <div class="row" style="margin-top:10px; gap:10px;">
+        <input id="import-file" class="file-input" type="file" accept="application/json" />
+        <button id="import-json" class="small-btn">匯入備份 JSON</button>
+        <button id="clear-history" class="small-btn" style="border-color:rgba(255,215,0,0.35);">清除所有紀錄</button>
+      </div>
+      <div class="divider"></div>
+      <h4 style="margin:0 0 8px;">資料庫管理</h4>
+      <div class="row" style="gap:10px;">
+          <button id="restore-last" class="small-btn">回到上一個復原點</button>
+          <button id="hard-reset-db" class="small-btn" style="background:#400; color:#faa;">清空資料庫(重設)</button>
+      </div>
+  </div>
+
+  <div class="row" style="margin-top:15px; justify-content:flex-end;">
+    <button id="close-panel" class="btn" style="background:#555;color:#fff; padding: 10px 30px;">關閉後台</button>
+  </div>
+</div>
+
+<div id="canvas-container"></div>
+
+<script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+// --- CONFIG ---
+const CONFIG = {
+  cardSize: { w: 10.4, h: 6.4, depth: 0.55 },
+  sphereRadius: 32,
+  gold: 0xffd700,
+  darkBg: 0x05000e,
+  neon: 0x00ffff,
+  bloomStrength: 1.4,
+  bloomRadius: 0.5,
+  bloomThreshold: 0.7
+};
+
+// --- GLOBAL STATE ---
+let state = {
+  isDrawing: false,
+  names: [],
+  cards: [],
+  sphereGroup: new THREE.Group(),
+  stageWinners: [],
+  round: 0,
+  rounds: [],
+  winners: [],
+  customBgImg: null, 
+  
+  // Modes
+  drawMode: 'normal', 
+  rainbowMode: false
+};
+let lastCheckpoint = null;
+let isSkipping = false;
+let lastEnterTime = 0; // For double enter check
+
+// --- INDEXED DB HELPER ---
+const DB_NAME = 'GrandLotteryDB_V5';
+const DB_VERSION = 1;
+const STORE_KEY = 'full_state';
+
+class LotteryDB {
+    constructor(){
+        this.db = null;
+    }
+    
+    async init() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('settings')) {
+                    db.createObjectStore('settings', { keyPath: 'id' });
+                }
+            };
+            req.onsuccess = (e) => {
+                this.db = e.target.result;
+                resolve();
+            };
+            req.onerror = (e) => reject(e);
+        });
+    }
+    
+    async saveState(stateObj) {
+        if (!this.db) await this.init();
+        const saveable = JSON.parse(JSON.stringify(serializeState(stateObj)));
+        
+        // Ensure image src is saved if exists
+        if (state.customBgImg && state.customBgImg.src) {
+             saveable.customBgImgSrc = state.customBgImg.src;
+        }
+
+        return new Promise((resolve, reject) => {
+            const tx = this.db.transaction('settings', 'readwrite');
+            const store = tx.objectStore('settings');
+            store.put({ id: STORE_KEY, data: saveable });
+            tx.oncomplete = () => resolve();
+            tx.onerror = (e) => reject(e);
+        });
+    }
+    
+    async loadState() {
+        if (!this.db) await this.init();
+        return new Promise((resolve, reject) => {
+            const tx = this.db.transaction('settings', 'readonly');
+            const store = tx.objectStore('settings');
+            const req = store.get(STORE_KEY);
+            req.onsuccess = () => resolve(req.result ? req.result.data : null);
+            req.onerror = (e) => reject(e);
+        });
+    }
+    
+    async clear() {
+        if (!this.db) await this.init();
+         return new Promise((resolve, reject) => {
+            const tx = this.db.transaction('settings', 'readwrite');
+            const store = tx.objectStore('settings');
+            store.clear();
+            tx.oncomplete = () => resolve();
+        });
+    }
+}
+
+const db = new LotteryDB();
+
+// --- STATE MANAGEMENT ---
+
+function initDefaultNames() {
+  const defaults = [
+    "001, ATH, 陳小明", "002, BTH, 林小美", "003, CTH, 黃大文", "004, DTH, 張家豪",
+    "005, ETH, 王小莉", "006, FTH, 李志強", "007, GTH, 何小欣", "008, HTH, 陳嘉琪",
+    "009, ITH, 周子健", "010, JTH, 鄭美玲"
+  ];
+  state.names = defaults.map(parseEntryLine).filter(Boolean);
+  // Add some fillers
+  for(let i=state.names.length; i<50; i++){
+    const no = String(i+1).padStart(3,'0');
+    state.names.push({ no, code: null, name: `參加者 ${i+1}` });
+  }
+}
+
+function serializeState(s = state){
+  return {
+    version: 5,
+    participants: s.names,
+    winners: s.winners,
+    rounds: s.rounds,
+    round: s.round,
+    stageWinners: s.stageWinners.map(w => ({ entry: w.entry })),
+    // Include the base64 string directly in export for portability
+    customBgImgSrc: s.customBgImg ? s.customBgImg.src : null 
+  };
+}
+
+function applyImportedState(obj){
+  if (Array.isArray(obj)) { state.names = normalizeParticipantsArray(obj); return; }
+  if (!obj || typeof obj !== 'object') throw new Error('JSON 格式不正確');
+  if (Array.isArray(obj.participants)) state.names = normalizeParticipantsArray(obj.participants);
+  else if (Array.isArray(obj.names)) state.names = normalizeParticipantsArray(obj.names);
+  if (Array.isArray(obj.winners)) state.winners = obj.winners;
+  if (Array.isArray(obj.rounds)) state.rounds = obj.rounds;
+  if (Number.isFinite(obj.round)) state.round = obj.round;
+  state.stageWinners = []; 
+  if (Array.isArray(obj.stageWinners)) {
+      obj.stageWinners.forEach(w => {
+          if(w.entry) state.stageWinners.push({ entry: w.entry });
+      });
+  }
+  
+  // Restore BG if string exists
+  if (obj.customBgImgSrc) {
+      const img = new Image();
+      img.onload = () => { state.customBgImg = img; updateGridLayout(); initCards(); };
+      img.src = obj.customBgImgSrc;
+  }
+  
+  updateGridLayout();
+}
+
+async function loadStateFromDB() {
+    try {
+        const data = await db.loadState();
+        if (data) {
+            applyImportedState(data);
+        } else {
+            initDefaultNames();
+        }
+    } catch (e) {
+        console.error("DB Load Error", e);
+        initDefaultNames();
+    }
+    updateRemaining();
+    updatePickedUI();
+    updateGridLayout();
+    initCards(); // Re-init 3D cards
+}
+
+async function saveStateToDB() {
+    try {
+        await db.saveState(state);
+    } catch(e) {
+        console.error("DB Save Error", e);
+        // Silent fail or alert("儲存失敗：資料庫錯誤");
+    }
+}
+
+function updateRemaining() { document.getElementById('remaining').textContent = `剩餘參與者：${state.names.length} 人`; }
+function updatePickedUI(){ document.getElementById('picked').textContent = `本輪已抽出：${state.stageWinners.length} 位（雙擊卡片可退回待抽區）`; }
+
+// --- PARSING & VALIDATION ---
+
+function parseEntryLine(line){
+  if (!line) return null;
+  const raw = String(line).trim();
+  if (!raw) return null;
+  let parts = raw.split(',').map(s => s.trim()).filter(Boolean);
+  if (parts.length === 1) {
+    const tokens = raw.split(/\s+/).filter(Boolean);
+    if (tokens.length >= 3) parts = [tokens[0], tokens[1], tokens.slice(2).join(' ')];
+    else return { no: null, code: null, name: raw };
+  }
+  if (parts.length >= 3) {
+    const no = parts[0] || null;
+    const code = parts[1] || null;
+    const name = parts.slice(2).join(' ') || '';
+    if (!name) return null;
+    return { no: normalizeNo(no), code: code || null, name: name.trim() };
+  }
+  if (parts.length === 2) {
+    const a = parts[0], b = parts[1];
+    if (/^\d+$/.test(a)) return { no: normalizeNo(a), code: null, name: b };
+    return { no: null, code: a, name: b };
+  }
+  return null;
+}
+function normalizeNo(no){
+  if (no == null) return null;
+  const s = String(no).trim();
+  if (!s) return null;
+  if (/^\d+$/.test(s)) return String(Number(s)).padStart(3,'0');
+  return s;
+}
+
+function normalizeParticipantsArray(arr){
+  return arr.map(v => {
+    if (typeof v === 'string') return parseEntryLine(v);
+    if (v && typeof v === 'object') {
+      const no = ('no' in v) ? normalizeNo(v.no) : null;
+      const code = ('code' in v) ? (v.code ? String(v.code) : null) : null;
+      const name = ('name' in v) ? String(v.name || '').trim() : '';
+      if (!name) return null;
+      return { no, code, name };
+    }
+    return null;
+  }).filter(Boolean);
+}
+
+// Check for Duplicates
+function validateList(list) {
+    const noMap = new Map();
+    const duplicates = [];
+    list.forEach(p => {
+        if (p.no) {
+            if (noMap.has(p.no)) {
+                duplicates.push(`編號重複: ${p.no} (${p.name} 與 ${noMap.get(p.no)})`);
+            } else {
+                noMap.set(p.no, p.name);
+            }
+        }
+    });
+    return duplicates;
+}
+
+
+// --- 3D SCENE SETUP ---
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(CONFIG.darkBg);
+scene.fog = new THREE.FogExp2(CONFIG.darkBg, 0.010);
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 2500);
+camera.position.set(0, 0, 95);
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1; 
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+// --- Custom Background Shader ---
+const finaleUniforms = {
+    iTime: { value: 0 },
+    iResolution: { value: new THREE.Vector2(innerWidth, innerHeight) },
+    iMode: { value: 0 } // 0=Off, 1=Third(Gold), 2=Finale(Rainbow)
+};
+
+const finaleMaterial = new THREE.ShaderMaterial({
+    uniforms: finaleUniforms,
+    transparent: true,
+    depthWrite: false,
+    vertexShader: `
+        varying vec2 vUv;
+        void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    `,
+    fragmentShader: `
+        varying vec2 vUv;
+        uniform float iTime;
+        uniform int iMode; 
+        void main() {
+            vec2 uv = vUv;
+            float waveB = abs(sin(uv.x * 20.0 + iTime * 5.0) * sin(uv.x * 5.0 - iTime)) * 0.15;
+            float waveT = abs(sin(uv.x * 22.0 - iTime * 4.0) * sin(uv.x * 7.0 + iTime)) * 0.15;
+            float waveL = abs(sin(uv.y * 18.0 + iTime * 3.0)) * 0.15;
+            float waveR = abs(sin(uv.y * 25.0 - iTime * 6.0)) * 0.15;
+            float widthMult = (iMode == 1) ? 0.45 : 1.0; 
+            float edge = 0.0;
+            edge += smoothstep(0.1 * widthMult + waveB, 0.0, uv.y);
+            edge += smoothstep(1.0 - (0.1 * widthMult + waveT), 1.0, uv.y);
+            edge += smoothstep(0.1 * widthMult + waveL, 0.0, uv.x);
+            edge += smoothstep(1.0 - (0.1 * widthMult + waveR), 1.0, uv.x);
+            vec3 color = vec3(0.0);
+            if (iMode == 1) {
+                color = vec3(1.0, 0.85, 0.2); 
+            } else {
+                vec3 cPink = vec3(1.0, 0.0, 0.4); vec3 cRed = vec3(1.0, 0.2, 0.0);
+                vec3 cYellow = vec3(1.0, 0.9, 0.0); vec3 cBlue = vec3(0.0, 0.5, 1.0);
+                vec3 cCyan = vec3(0.0, 1.0, 1.0); vec3 cGreen = vec3(0.0, 1.0, 0.2);
+                vec3 leftCol = mix(cBlue, cGreen, uv.y + sin(iTime)*0.2);
+                if (uv.y > 0.5) leftCol = mix(cGreen, cCyan, (uv.y - 0.5) * 2.0);
+                vec3 rightCol = mix(cRed, cPink, uv.y + cos(iTime)*0.2);
+                if (uv.y > 0.5) rightCol = mix(cPink, cYellow, (uv.y - 0.5) * 2.0);
+                color = mix(leftCol, rightCol, smoothstep(0.3, 0.7, uv.x));
+                color += 0.1 * sin(iTime * 2.0 + uv.x * 10.0);
+            }
+            float pulseBase = (iMode == 1) ? 0.5 : 0.8;
+            float pulseVar  = (iMode == 1) ? 0.15 : 0.2;
+            float pulse = pulseBase + pulseVar * sin(iTime * 10.0);
+            float alpha = edge * ((iMode == 1) ? 0.6 : 0.9);
+            gl_FragColor = vec4(color * edge * 2.0 * pulse, alpha); 
+        }
+    `
+});
+const bgPlaneGeo = new THREE.PlaneGeometry(300, 200);
+const finaleBgMesh = new THREE.Mesh(bgPlaneGeo, finaleMaterial);
+finaleBgMesh.position.set(0, 0, -50); 
+finaleBgMesh.visible = false; 
+scene.add(finaleBgMesh);
+
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight), CONFIG.bloomStrength, CONFIG.bloomRadius, CONFIG.bloomThreshold);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+const goldLight = new THREE.PointLight(CONFIG.gold, 1600);
+goldLight.position.set(50,35,65);
+scene.add(goldLight);
+const neonLight = new THREE.PointLight(CONFIG.neon, 900);
+neonLight.position.set(-55,-25,55);
+scene.add(neonLight);
+scene.add(state.sphereGroup);
+
+const geometry = new THREE.BoxGeometry(CONFIG.cardSize.w, CONFIG.cardSize.h, CONFIG.cardSize.depth);
+
+function drawCardCanvas(entry) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 900; canvas.height = 560;
+  const ctx = canvas.getContext('2d');
+  
+  // Background
+  if (state.customBgImg) {
+    ctx.drawImage(state.customBgImg, 0, 0, 900, 560);
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(0,0,900,560);
+  } else {
+    const grad = ctx.createLinearGradient(0,0,900,560);
+    grad.addColorStop(0, '#22004e');
+    grad.addColorStop(0.55, '#10002b');
+    grad.addColorStop(1, '#080018');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,900,560);
+  }
+  
+  // Borders
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 22;
+  ctx.strokeRect(12,12,876,536);
+  
+  ctx.shadowColor = 'rgba(0,255,255,0.55)';
+  ctx.shadowBlur = 26;
+  ctx.strokeStyle = 'rgba(0,255,255,0.35)';
+  ctx.lineWidth = 7;
+  ctx.strokeRect(46,46,808,468);
+  ctx.shadowBlur = 0;
+  
+  const no = entry.no ? entry.no : '???';
+  const code = entry.code ? entry.code : '';
+  const name = entry.name ? entry.name : '';
+
+  // === Updated Layout ===
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+  ctx.font = `bold 220px Montserrat`;
+  ctx.fillStyle = '#ffffff';
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = 'rgba(0,0,0,0.8)';
+  
+  const numY = 220;
+  ctx.strokeText(no, 450, numY);
+  ctx.fillText(no, 450, numY);
+  
+  const textStartY = 380;
+  const lineHeight = 100;
+
+  ctx.font = 'bold 80px Montserrat'; 
+  ctx.fillStyle = '#ffd700'; 
+  ctx.strokeText(name, 450, textStartY);
+  ctx.fillText(name, 450, textStartY);
+
+  if (code) {
+      ctx.font = 'bold 65px Montserrat';
+      ctx.fillStyle = '#00ffff'; 
+      ctx.strokeText(code, 450, textStartY + lineHeight);
+      ctx.fillText(code, 450, textStartY + lineHeight);
+  }
+  return canvas;
+}
+
+function createCardTexture(entry) {
+  const canvas = drawCardCanvas(entry);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function createCard(entry) {
+  const texture = createCardTexture(entry);
+  const material = new THREE.MeshPhysicalMaterial({
+    map: texture,
+    roughness: 0.15,
+    metalness: 0.4,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.1,
+    reflectivity: 0.9,
+    side: THREE.DoubleSide
+  });
+  const card = new THREE.Mesh(geometry, material);
+  card.userData = { entry };
+  return card;
+}
+
+function disposeCard(card){
+  if (!card) return;
+  card.geometry?.dispose?.();
+  card.material?.map?.dispose?.();
+  card.material?.dispose?.();
+}
+
+function clearCards(){
+  state.cards.forEach(card => {
+    state.sphereGroup.remove(card);
+    disposeCard(card);
+  });
+  state.cards = [];
+}
+
+function initCards() {
+  clearCards();
+  state.cards = state.names.map((entry) => {
+    const card = createCard(entry);
+    state.sphereGroup.add(card);
+    return card;
+  });
+  update3DLayout(false);
+}
+
+// Start sequence
+(async ()=>{
+    await loadStateFromDB();
+    // Animation Loop
+    animate();
+})();
+
+function update3DLayout(animate = false) {
+  const count = state.cards.length;
+  if (count === 0) return;
+  const phi = Math.PI * (3 - Math.sqrt(5));
+  const dummy = new THREE.Object3D();
+  state.cards.forEach((card, i) => {
+    const y = (count === 1) ? 0 : 1 - (i / (count - 1)) * 2;
+    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+    const theta = phi * i;
+    const x = Math.cos(theta) * radiusAtY;
+    const z = Math.sin(theta) * radiusAtY;
+    const targetPos = new THREE.Vector3(x, y, z).multiplyScalar(CONFIG.sphereRadius);
+    dummy.position.copy(targetPos);
+    dummy.lookAt(scene.position);
+    dummy.rotateY(Math.PI);
+    if (animate) {
+      gsap.to(card.position, { x: targetPos.x, y: targetPos.y, z: targetPos.z, duration: 1.6, ease: "power3.out" });
+      gsap.to(card.quaternion, { x: dummy.quaternion.x, y: dummy.quaternion.y, z: dummy.quaternion.z, w: dummy.quaternion.w, duration: 1.6, ease: "power3.out" });
+    } else {
+      card.position.copy(targetPos);
+      card.quaternion.copy(dummy.quaternion);
+    }
+  });
+}
+
+const clock = new THREE.Clock();
+let spinSpeed = { value: 0.55 };
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const time = clock.elapsedTime;
+  
+  // Update Shader Uniforms
+  finaleUniforms.iTime.value = time;
+  
+  state.sphereGroup.rotation.y += spinSpeed.value * dt;
+  state.sphereGroup.rotation.x = Math.sin(time * 0.15) * 0.07;
+  
+  // --- Background Visibility & Mode ---
+  if (state.drawMode === 'third') {
+      finaleBgMesh.visible = true;
+      finaleUniforms.iMode.value = 1; // Gold Mode
+  } else if (state.drawMode === 'finale') {
+      finaleBgMesh.visible = true;
+      finaleUniforms.iMode.value = 2; // Rainbow Mode
+  } else {
+      finaleBgMesh.visible = false;
+      finaleUniforms.iMode.value = 0;
+  }
+  
+  // Lighting & Bloom based on Mode
+  if (state.rainbowMode) {
+      const h1 = (time * 0.5) % 1;
+      const h2 = (time * 0.5 + 0.5) % 1;
+      goldLight.color.setHSL(h1, 1, 0.5);
+      neonLight.color.setHSL(h2, 1, 0.5);
+      bloom.strength = 2.5 + Math.sin(time * 5) * 0.5;
+  } else {
+      goldLight.color.setHex(CONFIG.gold);
+      neonLight.color.setHex(CONFIG.neon);
+      bloom.strength = CONFIG.bloomStrength;
+  }
+
+  composer.render();
+}
+
+function computeGridDims(n, width, height) {
+    if (n <= 0) return { rows: 1, cols: 1 };
+    if (n === 4) return { rows: 2, cols: 2 };
+    const aspect = width / height;
+    let best = { rows: 1, cols: n, score: Infinity };
+    for (let rows = 1; rows <= n; rows++) {
+        const cols = Math.ceil(n / rows);
+        const gridAspect = cols / rows;
+        const fillPenalty = (rows * cols - n) / (rows * cols);
+        const score = Math.abs(gridAspect - aspect) + fillPenalty * 0.5;
+        if (score < best.score) best = { rows, cols, score };
+    }
+    return best;
+}
+
+function updateGridLayout() {
+    const container = document.getElementById('auto-grid');
+    container.innerHTML = '';
+    const count = state.stageWinners.length;
+    if (count === 0) return;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const { rows, cols } = computeGridDims(count, width, height);
+    container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+    state.stageWinners.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'card-cell';
+        const canvas = drawCardCanvas(item.entry);
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL();
+        div.appendChild(img);
+        
+        div.ondblclick = () => {
+             if(confirm(`確定要將 ${item.entry.name} 退回待抽區嗎？`)){
+                 returnWinnerToPool(index);
+             }
+        };
+        div.title = "雙擊左鍵退回此得獎者";
+        
+        container.appendChild(div);
+        gsap.from(div, { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(1.7)" });
+    });
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
+  finaleUniforms.iResolution.value.set(innerWidth, innerHeight);
+  updateGridLayout();
+});
+
+function showPachinkoEffect(n) {
+    return new Promise(resolve => {
+        if(isSkipping) { resolve(); return; }
+        const overlay = document.getElementById('pachinko-overlay');
+        const text = document.getElementById('pachinko-text');
+        text.textContent = n;
+        overlay.style.display = 'flex';
+        const tl = gsap.timeline({
+            onComplete: () => {
+                overlay.style.display = 'none';
+                resolve();
+            }
+        });
+        tl.fromTo(text, 
+            { scale: 0, opacity: 0, rotation: -30 }, 
+            { scale: 1.5, opacity: 1, rotation: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" }
+        );
+        tl.to(text, { scale: 1.8, duration: 0.1, yoyo: true, repeat: 5, ease: "power1.inOut" });
+        tl.to(text, { scale: 3, opacity: 0, duration: 0.4, ease: "power2.in" }, "+=0.5");
+    });
+}
+
+// --- LOGIC ---
+async function executeDraw(forced = false) {
+    if (state.isDrawing) return;
+
+    // --- Block Logic if Unclaimed Winners exist ---
+    if (!forced && state.stageWinners.length > 0) {
+        // Double Tap Logic Helper
+        const now = Date.now();
+        if (now - lastEnterTime < 1500) {
+            // Success: Double tap detected
+        } else {
+            // First tap or too slow
+            lastEnterTime = now;
+            showToast("⚠️ 桌面尚有未處理的得獎者！請連按兩次 Enter 強制抽獎");
+            
+            // If triggered by Mouse click, we need a confirm dialog instead because they can't "double click" the button easily
+            // We can detect if it's a mouse click event by checking the event object, but for simplicity:
+            // If they click the button, we show confirm. If they use keyboard, we show toast.
+            // Since this function is called by both, let's just default to toast + return.
+            // BUT, if it is a click, we might want to ask confirmation immediately.
+            return;
+        }
+    }
+
+    const n = Number(document.getElementById('draw-count').value || 1);
+    if (n > 1) { await showPachinkoEffect(n); }
+    drawCount(n, state.drawMode);
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('warning-toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+async function drawCount(k, mode = 'normal'){
+  if (state.isDrawing) return;
+  if (state.names.length === 0) { alert("所有人都已抽出！"); return; }
+  
+  isSkipping = false; 
+  gsap.globalTimeline.timeScale(1);
+
+  k = Math.max(1, Math.floor(k || 1));
+  k = Math.min(k, state.names.length);
+  
+  // If starting a fresh batch (and previous batch was empty/cleared), log new round
+  if (state.stageWinners.length === 0) {
+    lastCheckpoint = JSON.stringify(serializeState());
+    state.round += 1;
+    updateRoundDisplay();
+    const roundObj = { round: state.round, timestamp: new Date().toISOString(), winners: [], closed: false };
+    state.rounds.push(roundObj);
+  }
+  
+  state.isDrawing = true;
+  setFrontButtonsEnabled(false);
+
+  // --- Animation Setup based on Mode ---
+  if (mode === 'third') {
+      state.rainbowMode = true;
+      await tweenPromise(spinSpeed, { value: 25.0 }, 2.0, "power2.in");
+      gsap.to(camera.rotation, { z: 0.2, duration: 2, yoyo: true, repeat: -1 });
+      
+  } else if (mode === 'finale') {
+      state.rainbowMode = true;
+      
+      const tl = gsap.timeline();
+      state.cards.forEach((card, i) => {
+         const tx = (Math.random() - 0.5) * 150;
+         const ty = (Math.random() - 0.5) * 100;
+         const tz = 40 + Math.random() * 40; 
+         
+         tl.to(card.position, {
+             x: tx, y: ty, z: tz,
+             duration: 1.5 + Math.random(),
+             ease: "power2.out"
+         }, 0);
+         tl.to(card.rotation, {
+             x: Math.random() * Math.PI * 4,
+             y: Math.random() * Math.PI * 4,
+             duration: 2
+         }, 0);
+      });
+      
+      await tl.then();
+      await delay(800);
+      
+      update3DLayout(true); 
+      await delay(1600);
+      await tweenPromise(spinSpeed, { value: 30.0 }, 2.5, "power1.in");
+      
+  } else {
+      state.rainbowMode = false;
+      await tweenPromise(spinSpeed, { value: 10.5 }, 1.7, "power2.in");
+  }
+
+  await tweenPromise(spinSpeed, { value: 0.32 }, 2.0, "power2.out");
+  const delayTime = (mode === 'third') ? 200 : (mode === 'finale' ? 800 : 500);
+
+  for (let i=0; i<k; i++){
+    if (state.names.length === 0) break;
+    const winnerIdx = Math.floor(Math.random() * state.names.length);
+    await revealWinner(winnerIdx, mode);
+    updatePickedUI();
+    saveStateToDB();
+    await delay(isSkipping ? 50 : delayTime);
+  }
+
+  await tweenPromise(spinSpeed, { value: 0.55 }, 0.7, "power2.out");
+  state.rainbowMode = false;
+  gsap.to(camera.rotation, { z: 0, duration: 1 });
+  state.isDrawing = false;
+  setFrontButtonsEnabled(true);
+  gsap.globalTimeline.timeScale(1); 
+  updateMainButtonText();
+}
+
+async function revealWinner(poolIndex, mode){
+  const entry = state.names[poolIndex];
+  const card3D = state.cards[poolIndex];
+  scene.attach(card3D); 
+  
+  const scale = (mode === 'finale') ? 3.0 : 1.5; 
+  const zPos = (mode === 'finale') ? 70 : 60;
+  
+  const tl = gsap.timeline();
+  
+  if (mode === 'finale') {
+      card3D.rotation.set(0,0,0);
+      card3D.scale.set(scale, scale, scale);
+      
+      const startX = 150; 
+      const duration = 3.5; 
+      
+      tl.fromTo(card3D.position, 
+          { x: startX, y: 0, z: zPos },
+          { x: 0, y: 0, z: zPos, duration: duration, ease: "power2.out" }
+      );
+      
+      tl.fromTo(card3D.rotation,
+          { y: -0.5, z: -0.1 },
+          { y: 0, z: 0, duration: duration, ease: "power2.out" },
+          "<"
+      );
+      
+  } else {
+      tl.to(card3D.position, { x: 0, y: 0, z: zPos, duration: 0.8, ease: "back.out(1.2)" })
+        .to(card3D.rotation, { x: 0, y: 0, z: 0, duration: 0.8, ease: "power2.out" }, "<")
+        .to(card3D.scale, { x: scale, y: scale, z: scale, duration: 0.8 }, "<");
+  }
+
+  await tl.then();
+  
+  state.stageWinners.push({ entry, sourcePoolIndexAtPick: poolIndex });
+  const winRecord = {
+    round: state.round,
+    timestamp: new Date().toISOString(),
+    entry
+  };
+  state.winners.push(winRecord);
+  let roundObj = state.rounds.find(r => r.round === state.round);
+  if (roundObj) roundObj.winners.push(entry);
+  
+  state.names.splice(poolIndex, 1);
+  state.cards.splice(poolIndex, 1);
+  scene.remove(card3D);
+  disposeCard(card3D);
+  
+  updateRemaining();
+  updateGridLayout();
+  update3DLayout(true); 
+}
+
+function returnWinnerToPool(stageIndex){
+  if (state.isDrawing) return;
+  const item = state.stageWinners[stageIndex];
+  if (!item) return;
+  returnWinnerToPoolData(item);
+  state.stageWinners.splice(stageIndex, 1);
+  updateRemaining();
+  updatePickedUI();
+  saveStateToDB();
+  updateGridLayout();
+  const newCard = createCard(item.entry);
+  newCard.scale.set(0.1, 0.1, 0.1);
+  state.cards.push(newCard);
+  state.sphereGroup.add(newCard);
+  gsap.to(newCard.scale, {x:1, y:1, z:1, duration: 0.5, ease: "back.out"});
+  update3DLayout(true);
+}
+
+function returnWinnerToPoolData(item){
+    // Remove from winners history first
+    const wIdx = state.winners.findIndex(w => w.entry.no === item.entry.no && w.entry.name === item.entry.name);
+    if(wIdx !== -1) state.winners.splice(wIdx, 1);
+    
+    // Add back to names
+    state.names.push(item.entry);
+}
+
+function delay(ms){ return new Promise(res => setTimeout(res, ms)); }
+function tweenPromise(target, vars, duration, ease){
+  return new Promise(res => {
+    gsap.to(target, { ...vars, duration, ease, onComplete: res });
+  });
+}
+
+function setFrontButtonsEnabled(enabled){
+  const ids = ['draw-one','draw-many','draw-count','finalize-round', 'btn-third-round', 'btn-grand-finale', 'btn-unclaimed-return', 'btn-unclaimed-disq', 'view-pool', 'quick-finish'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (enabled) {
+        el.style.opacity = 1;
+        el.style.pointerEvents = 'auto';
+    } else {
+        el.style.opacity = 0.5;
+        el.style.pointerEvents = 'none';
+    }
+  });
+}
+
+// Mode Switching
+function setMode(mode) {
+    state.drawMode = mode;
+    updateMainButtonText();
+    
+    // UI Feedback for buttons
+    document.getElementById('btn-third-round').classList.toggle('active', mode === 'third');
+    document.getElementById('btn-grand-finale').classList.toggle('active', mode === 'finale');
+}
+
+function updateMainButtonText() {
+    const btn = document.getElementById('draw-one');
+    btn.className = 'btn'; // Reset
+    if (state.names.length === 0) {
+        btn.textContent = "已全部抽出";
+        return;
+    }
+    
+    if (state.drawMode === 'third') {
+        btn.textContent = "開始第三輪抽獎 (Enter)";
+        btn.classList.add('mode-third');
+    } else if (state.drawMode === 'finale') {
+        btn.textContent = "開始壓軸大獎 (Enter)";
+        btn.classList.add('mode-finale');
+    } else {
+        btn.textContent = "開始抽獎 (Enter)";
+    }
+}
+
+// Button Events
+document.getElementById('draw-one').onclick = () => {
+    // If blocked, asking via confirm dialog for mouse users
+    if (state.stageWinners.length > 0) {
+        if(confirm("桌面尚有未處理得獎者，確定要強制繼續抽獎嗎？")) {
+            executeDraw(true);
+        }
+    } else {
+        executeDraw();
+    }
+};
+
+document.getElementById('draw-many').onclick = () => {
+    if (state.stageWinners.length > 0) {
+        if(confirm("桌面尚有未處理得獎者，確定要強制繼續抽獎嗎？")) {
+            executeDraw(true);
+        }
+    } else {
+        executeDraw();
+    }
+};
+
+document.getElementById('quick-finish').onclick = () => {
+    if (!state.isDrawing) return;
+    isSkipping = true;
+    gsap.globalTimeline.timeScale(100);
+};
+
+document.getElementById('btn-third-round').onclick = () => {
+    if(state.drawMode === 'third') setMode('normal'); // Toggle off
+    else setMode('third');
+    if(state.drawMode !== 'finale' && state.drawMode !== 'third') finaleBgMesh.visible = false;
+};
+
+document.getElementById('btn-grand-finale').onclick = () => {
+    if(state.drawMode === 'finale') setMode('normal'); // Toggle off
+    else setMode('finale');
+};
+
+document.getElementById('finalize-round').onclick = () => {
+  if (state.stageWinners.length === 0) {
+    alert('本輪未有得獎者。');
+    return;
+  }
+  const roundObj = state.rounds.find(r => r.round === state.round);
+  if (roundObj) roundObj.closed = true;
+  state.stageWinners = [];
+  updateGridLayout();
+  updatePickedUI();
+  saveStateToDB();
+  alert(`已封存第 ${state.round} 輪。`);
+};
+
+// Unclaimed Buttons Logic
+function handleUnclaimed(action) {
+    if (state.stageWinners.length === 0) { alert('目前無中獎者。'); return; }
+    
+    // Default to last one if only 1, otherwise prompt
+    let targetNo = null;
+    if (state.stageWinners.length === 1) {
+        targetNo = state.stageWinners[0].entry.no;
+        if(!confirm(`確定要處理得獎者 ${state.stageWinners[0].entry.name} (No.${targetNo})？`)) return;
+    } else {
+        targetNo = prompt("請輸入要處理的得獎者「編號 (No)」或「完整姓名」：");
+    }
+    
+    if(!targetNo) return;
+    
+    const idx = state.stageWinners.findIndex(w => w.entry.no === targetNo || w.entry.name === targetNo);
+    if(idx === -1) { alert("找不到該得獎者。"); return; }
+    
+    const winner = state.stageWinners[idx];
+    
+    // Remove from stage winners
+    state.stageWinners.splice(idx, 1);
+    
+    // If Return, add back to pool
+    if (action === 'return') {
+        returnWinnerToPoolData(winner);
+        // Add visual card back
+        const newCard = createCard(winner.entry);
+        state.cards.push(newCard);
+        state.sphereGroup.add(newCard);
+        update3DLayout(true);
+        alert(`已將 ${winner.entry.name} 返回抽獎區。`);
+    } else {
+        // Disqualify: Remove from winners list if it was added (it is added at reveal)
+        const wIdx = state.winners.findIndex(w => w.entry.no === winner.entry.no);
+        if(wIdx !== -1) state.winners.splice(wIdx, 1);
+        
+        alert(`已取消 ${winner.entry.name} 的資格 (不返回抽獎區)。`);
+    }
+    
+    updateRemaining();
+    updatePickedUI();
+    saveStateToDB();
+    updateGridLayout();
+}
+
+document.getElementById('btn-unclaimed-return').onclick = () => handleUnclaimed('return');
+document.getElementById('btn-unclaimed-disq').onclick = () => handleUnclaimed('disq');
+
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+      if(state.isDrawing) {
+          isSkipping = true;
+          gsap.globalTimeline.timeScale(100); // Super speed
+      }
+      closePanel();
+      document.getElementById('pool-backdrop').classList.remove('show');
+      document.getElementById('pool-panel').classList.remove('show');
+  }
+  
+  if (e.key === 'Enter') {
+    if (panel.classList.contains('show')) return;
+    e.preventDefault();
+    if (e.shiftKey) {
+       executeDraw();
+    } else {
+       executeDraw();
+    }
+  }
+});
+
+// --- NEW MANAGEMENT PANEL LOGIC (Table + Validation) ---
+const panel = document.getElementById('manage-panel');
+const backdrop = document.getElementById('manage-backdrop');
+
+function renderUserTable() {
+    const tbody = document.getElementById('user-table-body');
+    const countSpan = document.getElementById('table-count');
+    tbody.innerHTML = '';
+    
+    // Merge Names (Pending) and Winners (Won) for display
+    let allParticipants = [];
+    
+    // Add Pending
+    state.names.forEach(p => {
+        allParticipants.push({ ...p, status: 'pending', round: null, originalIdx: null });
+    });
+    
+    // Add Winners
+    state.winners.forEach(w => {
+        allParticipants.push({ ...w.entry, status: 'won', round: w.round, originalIdx: null });
+    });
+    
+    // Sort by No
+    allParticipants.sort((a,b) => {
+        if(a.no && b.no) return a.no.localeCompare(b.no);
+        return a.name.localeCompare(b.name);
+    });
+    
+    countSpan.textContent = allParticipants.length;
+    
+    allParticipants.forEach((p) => {
+        const tr = document.createElement('tr');
+        
+        // No
+        const tdNo = document.createElement('td');
+        tdNo.textContent = p.no || '-';
+        
+        // Code
+        const tdCode = document.createElement('td');
+        tdCode.textContent = p.code || '-';
+        
+        // Name
+        const tdName = document.createElement('td');
+        tdName.textContent = p.name;
+        
+        // Status
+        const tdStatus = document.createElement('td');
+        if (p.status === 'won') {
+            tdStatus.innerHTML = `<span class="status-won">✅ 已中獎 (R${p.round})</span>`;
+        } else {
+            tdStatus.innerHTML = `<span class="status-pending">待抽</span>`;
+        }
+        
+        // Actions
+        const tdAction = document.createElement('td');
+        
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'action-btn';
+        btnEdit.textContent = '修改';
+        btnEdit.onclick = () => editParticipantMixed(p);
+        
+        const btnDel = document.createElement('button');
+        btnDel.className = 'action-btn del';
+        btnDel.textContent = '刪除';
+        btnDel.onclick = () => deleteParticipantMixed(p);
+        
+        tdAction.appendChild(btnEdit);
+        tdAction.appendChild(btnDel);
+        
+        tr.appendChild(tdNo);
+        tr.appendChild(tdCode);
+        tr.appendChild(tdName);
+        tr.appendChild(tdStatus);
+        tr.appendChild(tdAction);
+        tbody.appendChild(tr);
+    });
+}
+
+// Helpers for mixed list editing
+function findParticipantIndex(p, list) {
+    return list.findIndex(x => x.name === p.name && x.no === p.no);
+}
+
+function editParticipantMixed(p) {
+    const isWon = p.status === 'won';
+    const list = isWon ? state.winners : state.names;
+    // For winners, the object is { entry: ... }, for names it is direct object
+    const idx = isWon 
+        ? state.winners.findIndex(w => w.entry.name === p.name && w.entry.no === p.no)
+        : state.names.findIndex(n => n.name === p.name && n.no === p.no);
+        
+    if (idx === -1) { alert("找不到資料 (可能已被更動)"); return; }
+    
+    const currentEntry = isWon ? state.winners[idx].entry : state.names[idx];
+
+    const newName = prompt("修改姓名:", currentEntry.name);
+    if (newName === null) return;
+    const newNo = prompt("修改編號 (No):", currentEntry.no || "");
+    const newCode = prompt("修改代碼 (Code):", currentEntry.code || "");
+
+    const updatedEntry = { 
+        name: newName.trim(), 
+        no: newNo ? String(newNo).trim() : null, 
+        code: newCode ? String(newCode).trim() : null 
+    };
+    
+    if (isWon) {
+        state.winners[idx].entry = updatedEntry;
+    } else {
+        state.names[idx] = updatedEntry;
+    }
+    
+    saveStateToDB().then(() => {
+        renderUserTable();
+        if(!isWon) initCards(); // Only re-init cards if pending list changed
+    });
+}
+
+function deleteParticipantMixed(p) {
+    if(!confirm(`確定刪除 ${p.name} 嗎？`)) return;
+    const isWon = p.status === 'won';
+    
+    if (isWon) {
+        const idx = state.winners.findIndex(w => w.entry.name === p.name && w.entry.no === p.no);
+        if(idx !== -1) state.winners.splice(idx, 1);
+    } else {
+        const idx = state.names.findIndex(n => n.name === p.name && n.no === p.no);
+        if(idx !== -1) state.names.splice(idx, 1);
+    }
+    
+    saveStateToDB().then(() => {
+        renderUserTable();
+        updateRemaining();
+        if(!isWon) initCards();
+    });
+}
+
+window.switchTab = function(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    
+    const tabs = ['table-view', 'batch-view', 'settings-view'];
+    const idx = tabs.indexOf(tabId);
+    if(idx !== -1) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+    
+    if (tabId === 'table-view') {
+        renderUserTable();
+    } else if (tabId === 'batch-view') {
+        // Sync Text area with current names
+        document.getElementById('names-input').value = 
+            state.names.map(e => `${e.no ?? ''}, ${e.code ?? ''}, ${e.name}`.replace(/\s*,\s*,\s*/g, ', ').replace(/^\s*,\s*/,'').trim()).join('\n');
+    } else if (tabId === 'settings-view') {
+        document.getElementById('round-reset-val').value = state.round;
+        updateRoundDisplay();
+    }
+};
+
+document.getElementById('btn-add-single').onclick = () => {
+    const name = prompt("請輸入姓名:");
+    if (!name) return;
+    const no = prompt("請輸入編號 (可選):");
+    const code = prompt("請輸入代碼 (可選):");
+    
+    // Check duplicates in BOTH lists
+    const existsInNames = state.names.some(x => x.no === String(no).trim());
+    const existsInWinners = state.winners.some(w => w.entry.no === String(no).trim());
+
+    if (no && (existsInNames || existsInWinners)) {
+        alert(`編號 ${no} 已存在 (可能已中獎或在待抽區)！加入失敗。`);
+        return;
+    }
+    
+    state.names.push({
+        name: name.trim(),
+        no: no ? String(no).trim() : null,
+        code: code ? String(code).trim() : null
+    });
+    
+    saveStateToDB().then(() => {
+        renderUserTable();
+        updateRemaining();
+        initCards();
+    });
+};
+
+function openPanel(){
+  panel.classList.add('show');
+  backdrop.classList.add('show');
+  // Default to Table View
+  switchTab('table-view');
+}
+function closePanel(){ panel.classList.remove('show'); backdrop.classList.remove('show'); }
+function togglePanel(){ if (panel.classList.contains('show')) closePanel(); else openPanel(); }
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'm' || e.key === 'M') togglePanel();
+});
+document.getElementById('close-panel').onclick = closePanel;
+backdrop.addEventListener('click', closePanel);
+
+document.getElementById('save-names').onclick = () => {
+  const text = document.getElementById('names-input').value;
+  const list = text.split('\n').map(n => n.trim()).filter(Boolean).map(parseEntryLine).filter(Boolean);
+  
+  // Normalize IDs
+  const normalizedList = normalizeParticipantsArray(list);
+  
+  // Validation (Checking strictly within new list for now)
+  const duplicates = validateList(normalizedList);
+  if (duplicates.length > 0) {
+      alert("⚠️ 發現重複資料，請修正後再儲存：\n\n" + duplicates.join("\n"));
+      return; 
+  }
+  
+  state.names = normalizedList;
+  saveStateToDB().then(() => {
+      alert("✅ 已儲存！將切換至列表檢視。");
+      updateRemaining();
+      initCards();
+      switchTab('table-view'); // Auto switch to table
+  });
+};
+
+document.getElementById('reset-names').onclick = () => {
+  if (!confirm('確定要重置名單為預設？')) return;
+  initDefaultNames();
+  saveStateToDB().then(() => {
+      updateRemaining();
+      initCards();
+      switchTab('table-view');
+  });
+};
+
+const bgInput = document.getElementById('bg-file-input');
+document.getElementById('upload-bg-btn').onclick = () => bgInput.click();
+document.getElementById('clear-bg-btn').onclick = () => {
+    state.customBgImg = null;
+    saveStateToDB();
+    updateGridLayout();
+    initCards(); 
+    alert('已重置為預設背景。');
+};
+bgInput.addEventListener('change', () => {
+    const file = bgInput.files?.[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            state.customBgImg = img;
+            saveStateToDB(); // Save logic handles image
+            updateGridLayout(); 
+            initCards(); 
+            alert('卡片背景已更新！');
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    bgInput.value = '';
+});
+
+// --- POOL VIEWER LOGIC ---
+const poolPanel = document.getElementById('pool-panel');
+const poolBackdrop = document.getElementById('pool-backdrop');
+const poolContent = document.getElementById('pool-grid-content');
+const poolSearchInput = document.getElementById('pool-search-input');
+
+function renderPoolGrid(filterText = '') {
+    poolContent.innerHTML = '';
+    const query = filterText.toLowerCase().trim();
+    
+    // Sort names by No if possible
+    let sortedNames = [...state.names].sort((a,b) => {
+        if(a.no && b.no) return a.no.localeCompare(b.no);
+        return 0;
+    });
+
+    // Filter
+    if (query) {
+        sortedNames = sortedNames.filter(p => {
+            return (p.no && p.no.toLowerCase().includes(query)) ||
+                   (p.name && p.name.toLowerCase().includes(query)) ||
+                   (p.code && p.code.toLowerCase().includes(query));
+        });
+    }
+
+    document.getElementById('pool-total-count').textContent = sortedNames.length;
+
+    sortedNames.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'pool-item';
+        div.innerHTML = `
+            <div class="pool-no">${p.no || '-'}</div>
+            <div class="pool-name">${p.name}</div>
+            <div class="pool-code">${p.code || ''}</div>
+        `;
+        poolContent.appendChild(div);
+    });
+}
+
+document.getElementById('view-pool').onclick = () => {
+    poolSearchInput.value = ''; // Reset search
+    renderPoolGrid();
+    
+    poolBackdrop.classList.add('show');
+    poolPanel.classList.add('show');
+    setTimeout(() => poolSearchInput.focus(), 100);
+};
+
+poolSearchInput.addEventListener('input', (e) => {
+    renderPoolGrid(e.target.value);
+});
+
+document.getElementById('close-pool').onclick = () => {
+    poolBackdrop.classList.remove('show');
+    poolPanel.classList.remove('show');
+};
+poolBackdrop.onclick = (e) => {
+    if(e.target === poolBackdrop) {
+        poolBackdrop.classList.remove('show');
+        poolPanel.classList.remove('show');
+    }
+};
+
+
+// --- EXPORT / IMPORT ---
+
+function downloadJSON(filename, data){
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+document.getElementById('export-names-json').onclick = () => downloadJSON(`participants.json`, { participants: state.names });
+document.getElementById('export-all-json').onclick = () => downloadJSON(`lottery_full_backup.json`, serializeState());
+
+document.getElementById('export-winners-excel').onclick = () => {
+  const wb = XLSX.utils.book_new();
+  const ws_data = [];
+
+  const roundsMap = {};
+  state.winners.forEach(w => {
+      const r = w.round || 0;
+      if (!roundsMap[r]) roundsMap[r] = [];
+      roundsMap[r].push(w);
+  });
+
+  const roundKeys = Object.keys(roundsMap).map(Number).sort((a,b) => a-b);
+  
+  if (roundKeys.length === 0) {
+      alert("目前沒有得獎資料可匯出。");
+      return;
+  }
+
+  roundKeys.forEach((rKey, idx) => {
+      const winners = roundsMap[rKey];
+      if (ws_data.length > 0) ws_data.push([]);
+      if (ws_data.length > 0) ws_data.push([]); 
+
+      ws_data.push([`=== 第 ${rKey} 輪 ===`]);
+      ws_data.push([`共 ${winners.length} 位得獎者`]);
+      ws_data.push(["時間 (Time)", "編號 (No)", "代碼 (Code)", "姓名 (Name)"]);
+
+      winners.forEach(w => {
+          ws_data.push([
+              w.timestamp.split('T')[1].split('.')[0], 
+              w.entry.no,
+              w.entry.code,
+              w.entry.name
+          ]);
+      });
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb, ws, "Winners");
+  XLSX.writeFile(wb, "winners_grouped.xlsx");
+};
+
+const importFile = document.getElementById('import-file');
+document.getElementById('import-json').onclick = () => importFile.click();
+importFile.addEventListener('change', async () => {
+  const file = importFile.files?.[0];
+  if (!file) return;
+  try{
+    const text = await file.text();
+    const obj = JSON.parse(text);
+    if (!confirm('確定要匯入備份檔？（會覆蓋目前名單與狀態）')) { importFile.value = ''; return; }
+    applyImportedState(obj);
+    saveStateToDB();
+    updateRemaining();
+    updatePickedUI();
+    initCards();
+    alert('匯入完成！');
+  }catch(e){ 
+      console.error(e);
+      alert('匯入失敗：JSON 格式錯誤或檔案損毀。'); 
+  } 
+  finally { importFile.value = ''; }
+});
+
+document.getElementById('clear-history').onclick = () => {
+  if (!confirm('確定要清除「已得獎/抽獎紀錄」？')) return;
+  state.winners = [];
+  state.rounds = [];
+  state.round = 0;
+  state.stageWinners = [];
+  
+  saveStateToDB();
+  updateGridLayout();
+  updatePickedUI();
+  updateRoundDisplay();
+  alert('已清除紀錄。');
+};
+
+document.getElementById('hard-reset-db').onclick = () => {
+    if(!confirm('⚠️ 警告：這將會清空整個 IndexedDB 資料庫並重整頁面。\n所有資料將會遺失！確定執行？')) return;
+    db.clear().then(() => {
+        location.reload();
+    });
+};
+
+document.getElementById('restore-last').onclick = () => {
+  if (!lastCheckpoint) { alert('沒有可用的復原點 (本工作階段)。'); return; }
+  if (!confirm('確定要還原到上一個復原點？')) return;
+  const obj = JSON.parse(lastCheckpoint);
+  if (obj) {
+    applyImportedState(obj);
+    saveStateToDB();
+    updateRemaining();
+    updatePickedUI();
+    initCards();
+    alert('已還原！');
+  }
+};
+
+// Round Reset Logic
+function updateRoundDisplay() {
+    document.getElementById('current-round-display').textContent = state.round;
+}
+
+document.getElementById('btn-reset-round').onclick = () => {
+    const val = parseInt(document.getElementById('round-reset-val').value, 10);
+    if (isNaN(val) || val < 0) { alert('請輸入有效的數字'); return; }
+    if (!confirm(`確定要將輪次計數重置為 ${val} 嗎？\n(這只會改變顯示的輪次數字，不會刪除已得獎紀錄)`)) return;
+    state.round = val;
+    saveStateToDB();
+    updateRoundDisplay();
+    alert(`輪次已更新為第 ${val} 輪`);
+};
+
+</script>
+</body>
+</html>
